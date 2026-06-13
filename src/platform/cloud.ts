@@ -53,7 +53,7 @@ export interface CloudProvider {
   /** Optional admin tools (gated by ADMIN_EMAILS + Firestore rules). */
   isAdmin?(): boolean;
   listPendingUsers?(): Promise<PendingUser[]>;
-  approveUser?(uid: string): Promise<void>;
+  approveUser?(uid: string, email?: string, name?: string): Promise<void>;
   listFeedback?(): Promise<FeedbackEntry[]>;
   /** Optional: record a learner's per-game feedback. */
   submitFeedback?(gameId: string, rating: number, comment: string): Promise<void>;
@@ -137,8 +137,8 @@ class CloudSync {
   async listPendingUsers(): Promise<PendingUser[]> {
     return (await this.provider.listPendingUsers?.()) ?? [];
   }
-  async approveUser(uid: string): Promise<void> {
-    await this.provider.approveUser?.(uid);
+  async approveUser(uid: string, email = "", name = ""): Promise<void> {
+    await this.provider.approveUser?.(uid, email, name);
   }
   async listFeedback(): Promise<FeedbackEntry[]> {
     return (await this.provider.listFeedback?.()) ?? [];

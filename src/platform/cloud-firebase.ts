@@ -190,9 +190,11 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
       return snap.docs.map((d: any) => ({ uid: d.id, name: d.data().name || "", email: d.data().email || "" }));
     },
 
-    async approveUser(uid: string): Promise<void> {
+    async approveUser(uid: string, email = "", name = ""): Promise<void> {
       await init();
       await fsMod.updateDoc(fsMod.doc(db, "users", uid), { approved: true });
+      // Let the learner know they're in (Apps Script emails them on type "approved").
+      if (email) postNotify({ type: "approved", email, name, time: new Date().toISOString() });
     },
 
     async listFeedback(): Promise<FeedbackEntry[]> {

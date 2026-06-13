@@ -70,7 +70,7 @@ export function renderAdmin(root: HTMLElement): void {
                   b.textContent = "Approving…";
                   b.toggleAttribute("disabled", true);
                   try {
-                    await c.approveUser(u.uid);
+                    await c.approveUser(u.uid, u.email, u.name);
                     row.classList.add("done");
                     row.replaceChildren(el("div", { class: "admin-who" }, el("strong", {}, `✓ ${u.name || u.email} approved`)));
                   } catch {

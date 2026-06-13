@@ -17,10 +17,13 @@ interface Surface {
   color: string;
 }
 
+// Friction values tuned so each surface brings the sled to rest at a distinct,
+// on-screen spot (carpet ≈ near, wood ≈ middle, ice ≈ far) — see placeTarget(),
+// which sits the target exactly where one of them stops so a round is solvable.
 const SURFACES: Surface[] = [
-  { key: "ice", label: "Ice", emoji: "🧊", friction: 0.012, color: "#bae6fd" },
-  { key: "wood", label: "Wood", emoji: "🪵", friction: 0.05, color: "#d6a55c" },
-  { key: "carpet", label: "Carpet", emoji: "🧶", friction: 0.11, color: "#f9a8d4" },
+  { key: "ice", label: "Ice", emoji: "🧊", friction: 0.016, color: "#bae6fd" },
+  { key: "wood", label: "Wood", emoji: "🪵", friction: 0.032, color: "#d6a55c" },
+  { key: "carpet", label: "Carpet", emoji: "🧶", friction: 0.07, color: "#f9a8d4" },
 ];
 
 class Friction implements GameInstance {
@@ -60,7 +63,27 @@ class Friction implements GameInstance {
   }
 
   private placeTarget(): void {
-    this.target.x = 300 + Math.random() * 360;
+    // Pick a random surface and place the target exactly where that surface
+    // brings the sled to rest — so every round is solvable: choose that surface
+    // and you stop on the spot. A wrong (rougher/smoother) surface clearly
+    // over- or under-shoots, which is the lesson.
+    const s = SURFACES[Math.floor(Math.random() * SURFACES.length)];
+    const nose = this.stopNose(s);
+    const x = nose - this.target.w / 2;
+    this.target.x = Math.max(20, Math.min(W - 20 - this.target.w, x));
+  }
+
+  // Simulate the slide for a surface and return where the sled's nose stops.
+  // Mirrors tick() at one frame-step so the target lines up with real play.
+  private stopNose(s: Surface): number {
+    let x = START_X;
+    let vx = this.launchSpeed;
+    for (let i = 0; i < 5000; i++) {
+      x += vx;
+      vx = Math.max(0, vx - s.friction * 9.8 * 0.5);
+      if (vx <= 0.02 || x > W - 30) break;
+    }
+    return Math.min(x, W - 30) + 26;
   }
 
   private buildPanel(): void {
@@ -125,37 +148,50 @@ class Friction implements GameInstance {
     this.ctx.services.audio.play("click");
   }
 
+  private acc = 0; // fixed-timestep accumulator
+
   private tick(dtMs: number): void {
     if (this.ended) return;
-    const f = dtMs / 16.67;
-    if (this.sliding) {
-      this.x += this.vx * f;
-      // friction reduces speed each frame
-      this.vx = Math.max(0, this.vx - this.surface.friction * 9.8 * f * 0.5);
-      if (this.vx <= 0.02 || this.x > W - 30) {
-        this.vx = 0;
-        this.sliding = false;
-        this.goBtn.disabled = false;
-        const nose = this.x + 26;
-        const hit = nose >= this.target.x && nose <= this.target.x + this.target.w;
-        if (hit) {
-          this.hits += 1;
-          this.ctx.services.audio.play("tick");
-          this.coachEl.textContent = "🎯 Perfect stop! That surface had just the right friction.";
-          this.statusEl.textContent = `${this.hits} / ${NEED}`;
-          if (this.hits >= NEED) this.finish();
-          else this.placeTarget();
-        } else {
-          this.misses += 1;
-          this.ctx.services.audio.play("fail");
-          this.coachEl.textContent =
-            nose < this.target.x
-              ? "Stopped too soon — too much friction. Try a smoother surface so it slides farther."
-              : "Slid too far — too little friction. Try a rougher surface to stop sooner.";
-        }
+    // Integrate in fixed 16.67ms steps so the sled ALWAYS stops at the same
+    // spot regardless of frame rate — and exactly where stopNose() predicts, so
+    // the target placed there is reachable. (A variable step made the stop
+    // distance drift with fps, which made rounds unwinnable.)
+    this.acc += dtMs;
+    let steps = 0;
+    while (this.sliding && this.acc >= 16.67 && steps < 30) {
+      this.step();
+      this.acc -= 16.67;
+      steps++;
+    }
+    if (!this.sliding) this.acc = 0;
+    this.render();
+  }
+
+  private step(): void {
+    this.x += this.vx;
+    this.vx = Math.max(0, this.vx - this.surface.friction * 9.8 * 0.5);
+    if (this.vx <= 0.02 || this.x > W - 30) {
+      this.vx = 0;
+      this.sliding = false;
+      this.goBtn.disabled = false;
+      const nose = this.x + 26;
+      const hit = nose >= this.target.x && nose <= this.target.x + this.target.w;
+      if (hit) {
+        this.hits += 1;
+        this.ctx.services.audio.play("tick");
+        this.coachEl.textContent = "🎯 Perfect stop! That surface had just the right friction.";
+        this.statusEl.textContent = `${this.hits} / ${NEED}`;
+        if (this.hits >= NEED) this.finish();
+        else this.placeTarget();
+      } else {
+        this.misses += 1;
+        this.ctx.services.audio.play("fail");
+        this.coachEl.textContent =
+          nose < this.target.x
+            ? "Stopped too soon — too much friction. Try a smoother surface so it slides farther."
+            : "Slid too far — too little friction. Try a rougher surface to stop sooner.";
       }
     }
-    this.render();
   }
 
   private finish(): void {

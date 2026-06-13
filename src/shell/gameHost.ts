@@ -9,7 +9,7 @@ import { cloud } from "@platform/cloud";
 
 // A compact "How was this game?" widget for the outcome card. One tap to rate,
 // optional comment, then it posts to the feedback store and thanks the learner.
-function makeFeedbackBlock(gameId: string): HTMLElement {
+function makeFeedbackBlock(gameId: string, title = "How was this game?"): HTMLElement {
   const wrap = el("div", { class: "win-feedback" });
   let chosen = 0;
   const comment = el("textarea", {
@@ -66,7 +66,7 @@ function makeFeedbackBlock(gameId: string): HTMLElement {
       ),
     ),
   );
-  wrap.append(el("div", { class: "wf-title" }, "How was this game?"), facesRow, sendRow);
+  wrap.append(el("div", { class: "wf-title" }, title), facesRow, sendRow);
   return wrap;
 }
 
@@ -135,7 +135,15 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
     "← Missions",
   );
 
-  const actions = el("div", { class: "host-actions" }, hintBtn, restartBtn, backBtn);
+  // Feedback any time — not just on the win screen — so a learner can report a
+  // game that won't work or isn't fun even if they can't finish it.
+  const feedbackBtn = el(
+    "button",
+    { class: "btn secondary", onclick: () => openFeedback() },
+    "💬 Feedback",
+  );
+
+  const actions = el("div", { class: "host-actions" }, hintBtn, feedbackBtn, restartBtn, backBtn);
 
   const missionBanner = el(
     "div",
@@ -154,6 +162,24 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
   // Overlay lives inside the canvas wrap so it covers the play surface only.
   function clearOverlay(): void {
     canvasWrap.querySelector(".overlay")?.remove();
+  }
+
+  // Mid-game feedback panel (opened from the Feedback button).
+  function openFeedback(): void {
+    clearOverlay();
+    const card = el(
+      "div",
+      { class: "outcome-card" },
+      el("div", { class: "outcome-emoji" }, "💬"),
+      el("h2", {}, "Tell us how it's going"),
+      makeFeedbackBlock(meta.id, "Is everything working? Let us know!"),
+      el(
+        "div",
+        { class: "outcome-actions" },
+        el("button", { class: "btn secondary", onclick: () => clearOverlay() }, "Close"),
+      ),
+    );
+    canvasWrap.append(el("div", { class: "overlay" }, card));
   }
 
   function showOutcome(kind: "success" | "fail", detail: OutcomeDetail): void {

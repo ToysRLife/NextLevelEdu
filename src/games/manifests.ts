@@ -1228,5 +1228,65 @@ export const GAME_MANIFESTS: GameManifest[] = [
     "mission": "Position Earth's tilted axis to create summer, winter, and an equinox in the north.",
     "estMinutes": 3,
     "takeaway": "Earth's tilt causes the seasons (gentle intro)."
+  },
+  {
+    "id": "thermostat",
+    "conceptId": "ess-26",
+    "title": "Planet Thermostat",
+    "stream": "earth-space",
+    "gradeBand": "6-8",
+    "emoji": "🌡️",
+    "blurb": "Tune Earth's CO₂ to hit the target temperature and see the greenhouse effect in action.",
+    "mission": "Set the CO₂ level to hold the planet at each target temperature.",
+    "estMinutes": 4,
+    "takeaway": "Greenhouse gases like CO₂ trap heat like a blanket, so more CO₂ warms the planet and less lets it cool. That's the greenhouse effect that sets Earth's temperature."
+  },
+  {
+    "id": "rockcycle",
+    "conceptId": "ess-29",
+    "title": "Rock Cycle",
+    "stream": "earth-space",
+    "gradeBand": "6-8",
+    "emoji": "🪨",
+    "blurb": "Cool, weather, compact, and melt rocks to transform one type into another around the rock cycle.",
+    "mission": "Apply Earth's processes to turn each starting rock into the target rock.",
+    "estMinutes": 4,
+    "takeaway": "Earth recycles rock through cooling, weathering, compacting, heat & pressure, and melting — turning igneous, sedimentary, and metamorphic rock into one another."
+  },
+  {
+    "id": "starlife",
+    "conceptId": "ess-27",
+    "title": "Star Life Cycle",
+    "stream": "earth-space",
+    "gradeBand": "6-8",
+    "emoji": "⭐",
+    "blurb": "Set a star's mass and watch its life unfold — from giant to white dwarf, neutron star, or black hole.",
+    "mission": "Choose a mass so each star ends as the target type.",
+    "estMinutes": 3,
+    "takeaway": "A star's mass decides its fate: low-mass stars fade into white dwarfs, while heavy stars explode as supernovae and leave behind neutron stars or black holes."
+  },
+  {
+    "id": "stormchaser",
+    "conceptId": "ess-30",
+    "title": "Storm Chaser",
+    "stream": "earth-space",
+    "gradeBand": "6-8",
+    "emoji": "⛈️",
+    "blurb": "Mix temperature and humidity to brew sun, clouds, rain, or a thunderstorm on demand.",
+    "mission": "Set the air's temperature and humidity to brew each target forecast.",
+    "estMinutes": 4,
+    "takeaway": "Temperature and moisture make the weather: dry air is sunny, moist air clouds and rains, and warm, very moist air builds into thunderstorms."
+  },
+  {
+    "id": "tectonic",
+    "conceptId": "ess-28",
+    "title": "Tectonic Sandbox",
+    "stream": "earth-space",
+    "gradeBand": "6-8",
+    "emoji": "🌋",
+    "blurb": "Pick the right plate boundary and speed to build mountains, ridges, and trenches.",
+    "mission": "Match the boundary to each landform and set the plate speed to its target size.",
+    "estMinutes": 4,
+    "takeaway": "Moving plates shape the crust: convergent boundaries push it up into mountains or down into trenches, divergent boundaries pull it apart into ridges and valleys."
   }
 ];

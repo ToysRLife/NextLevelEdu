@@ -193,6 +193,116 @@ try {
   fail("forces", String(e));
 }
 
+// --- thermostat (Planet Thermostat): ∃ CO₂∈[280,1000]step20 with the predicted
+//     temp within the tightest (master) tolerance of each target. ----------------
+try {
+  const n = failures.length;
+  const src = read("src/games/thermostat/index.ts");
+  const tempFor = (co2) => 14 + 6 * Math.log2(co2 / 280);
+  const rounds = [...src.matchAll(/target:\s*(\d+)\s*\}/g)].map((m) => +m[1]);
+  const tol = 0.4; // byTier master
+  if (!rounds.length) fail("thermostat", "could not parse ROUNDS");
+  rounds.forEach((t, i) => {
+    let okR = false;
+    for (let co2 = 280; co2 <= 1000; co2 += 20) if (Math.abs(tempFor(co2) - t) <= tol) { okR = true; break; }
+    if (!okR) fail("thermostat", `round ${i + 1} (target ${t}°C) unreachable with CO₂ 280–1000`);
+  });
+  if (rounds.length && failures.length === n) pass("thermostat", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("thermostat", String(e));
+}
+
+// --- starlife (Star Life Cycle): every target fate must have a mass in
+//     [0.1,30]step0.1 that produces it. -------------------------------------------
+try {
+  const n = failures.length;
+  const src = read("src/games/starlife/index.ts");
+  const fateFor = (m) => (m < 0.5 ? "Red Dwarf" : m < 8 ? "White Dwarf" : m < 20 ? "Neutron Star" : "Black Hole");
+  const arr = src.match(/ROUNDS:\s*Fate\[\]\s*=\s*\[([^\]]*)\]/)?.[1] ?? "";
+  const rounds = [...arr.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  if (!rounds.length) fail("starlife", "could not parse ROUNDS");
+  rounds.forEach((t, i) => {
+    let okR = false;
+    for (let m = 0.1; m <= 30 + 1e-9; m += 0.1) if (fateFor(m) === t) { okR = true; break; }
+    if (!okR) fail("starlife", `round ${i + 1} (fate ${t}) unreachable with mass 0.1–30`);
+  });
+  if (rounds.length && failures.length === n) pass("starlife", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("starlife", String(e));
+}
+
+// --- tectonic (Tectonic Sandbox): ∃ speed∈[1,10]step0.5 with speed×500 within the
+//     tightest (master) tolerance of each target size. ---------------------------
+try {
+  const n = failures.length;
+  const src = read("src/games/tectonic/index.ts");
+  const rounds = [...src.matchAll(/type:\s*"(\w+)",\s*target:\s*(\d+)/g)].map((m) => ({ type: m[1], t: +m[2] }));
+  const tol = 250; // byTier master
+  if (!rounds.length) fail("tectonic", "could not parse ROUNDS");
+  rounds.forEach((r, i) => {
+    let okR = false;
+    for (let s = 1; s <= 10; s += 0.5) if (Math.abs(s * 500 - r.t) <= tol) { okR = true; break; }
+    if (!okR) fail("tectonic", `round ${i + 1} (${r.type}, ${r.t} m) unreachable with plate speed 1–10`);
+  });
+  if (rounds.length && failures.length === n) pass("tectonic", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("tectonic", String(e));
+}
+
+// --- stormchaser (Storm Chaser): every target forecast must be reachable with
+//     some temp∈[0,40]step1 and humidity∈[0,100]step5. ---------------------------
+try {
+  const n = failures.length;
+  const src = read("src/games/stormchaser/index.ts");
+  const forecast = (t, h) => (h < 30 ? "Sunny" : h < 60 ? "Cloudy" : t > 22 ? "Thunderstorm" : "Rain");
+  const arr = src.match(/ROUNDS:\s*Weather\[\]\s*=\s*\[([^\]]*)\]/)?.[1] ?? "";
+  const rounds = [...arr.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  if (!rounds.length) fail("stormchaser", "could not parse ROUNDS");
+  rounds.forEach((target, i) => {
+    let okR = false;
+    for (let t = 0; t <= 40 && !okR; t++) for (let h = 0; h <= 100; h += 5) if (forecast(t, h) === target) { okR = true; break; }
+    if (!okR) fail("stormchaser", `round ${i + 1} (forecast ${target}) unreachable`);
+  });
+  if (rounds.length && failures.length === n) pass("stormchaser", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("stormchaser", String(e));
+}
+
+// --- rockcycle (Rock Cycle): each round's target must be reachable from its start
+//     by applying processes (BFS over the transition table). ---------------------
+try {
+  const n = failures.length;
+  const src = read("src/games/rockcycle/index.ts");
+  // Transition table mirrors NEXT in the game source.
+  const NEXT = {
+    Magma: { cool: "Igneous" },
+    Igneous: { weather: "Sediment", metamorph: "Metamorphic", melt: "Magma" },
+    Sediment: { compact: "Sedimentary" },
+    Sedimentary: { metamorph: "Metamorphic", weather: "Sediment", melt: "Magma" },
+    Metamorphic: { melt: "Magma", weather: "Sediment" },
+  };
+  const reachable = (start, target) => {
+    if (start === target) return true;
+    const q = [start], seen = new Set([start]);
+    while (q.length) {
+      const r = q.shift();
+      for (const next of Object.values(NEXT[r] ?? {})) {
+        if (next === target) return true;
+        if (!seen.has(next)) { seen.add(next); q.push(next); }
+      }
+    }
+    return false;
+  };
+  const rounds = [...src.matchAll(/start:\s*"(\w+)",\s*target:\s*"(\w+)"/g)].map((m) => ({ s: m[1], t: m[2] }));
+  if (!rounds.length) fail("rockcycle", "could not parse ROUNDS");
+  rounds.forEach((r, i) => {
+    if (!reachable(r.s, r.t)) fail("rockcycle", `round ${i + 1} (${r.s} → ${r.t}) has no path through the rock cycle`);
+  });
+  if (rounds.length && failures.length === n) pass("rockcycle", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("rockcycle", String(e));
+}
+
 // --- report ---
 for (const line of ok) console.log(line);
 if (failures.length) {

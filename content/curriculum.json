@@ -147,7 +147,12 @@
         { "id": "ess-22", "title": "Conservation", "gradeBand": "2-5", "ngss": "5-ESS3-1", "summary": "Protecting our environment and resources." },
         { "id": "ess-23", "title": "Maps & Earth's Surface", "gradeBand": "2-4", "ngss": "2-ESS2-2", "summary": "Representing places and features." },
         { "id": "ess-24", "title": "Climate vs Weather", "gradeBand": "3-5", "ngss": "3-ESS2-2", "summary": "Long-term climate vs day-to-day weather." },
-        { "id": "ess-25", "title": "Natural Hazards & Safety", "gradeBand": "3-4", "ngss": "3-ESS3-1", "summary": "Storms and floods, and how to stay safe." }
+        { "id": "ess-25", "title": "Natural Hazards & Safety", "gradeBand": "3-4", "ngss": "3-ESS3-1", "summary": "Storms and floods, and how to stay safe." },
+        { "id": "ess-26", "title": "Greenhouse Effect & Climate", "gradeBand": "6-8", "ngss": "MS-ESS3-5", "summary": "Greenhouse gases like CO₂ trap heat like a blanket, so more CO₂ warms the planet and less lets it cool. That's the greenhouse effect that sets Earth's temperature." },
+        { "id": "ess-27", "title": "Life Cycle of Stars", "gradeBand": "6-8", "ngss": "MS-ESS1-2", "summary": "A star's mass decides its fate: low-mass stars fade into white dwarfs, while heavy stars explode as supernovae and leave behind neutron stars or black holes." },
+        { "id": "ess-28", "title": "Plate Tectonics & Boundaries", "gradeBand": "6-8", "ngss": "MS-ESS2-3", "summary": "Moving plates shape the crust: convergent boundaries push it up into mountains or down into trenches, divergent boundaries pull it apart into ridges and valleys." },
+        { "id": "ess-29", "title": "The Rock Cycle", "gradeBand": "6-8", "ngss": "MS-ESS2-1", "summary": "Earth recycles rock through cooling, weathering, compacting, heat & pressure, and melting — turning igneous, sedimentary, and metamorphic rock into one another." },
+        { "id": "ess-30", "title": "Weather Systems", "gradeBand": "6-8", "ngss": "MS-ESS2-5", "summary": "Temperature and moisture make the weather: dry air is sunny, moist air clouds and rains, and warm, very moist air builds into thunderstorms." }
       ]
     }
   ]

@@ -14,6 +14,7 @@ import { SIGNUP_NOTIFY_URL } from "./cloud-config";
 
 const CACHE = "nlecloud:fbuser"; // cached signed-in user (uid survives reloads)
 const APPROVAL = "nlecloud:approved:"; // + uid -> "1" | "0" (last-known approval)
+const NOTIFIED = "nlecloud:notified:"; // + uid -> last admin-notify epoch ms (throttle)
 
 export function makeFirebaseProvider(config: Record<string, string>): CloudProvider {
   let ready: Promise<void> | null = null;
@@ -75,7 +76,19 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
     }
   }
 
-  function notifySignup(uid: string, email: string, name: string): void {
+  // Notify the admin that an account is pending — on first signup AND on later
+  // sign-ins while still unapproved — so a missed first email isn't the only
+  // chance. Throttled per-account so reloads don't spam.
+  const NOTIFY_THROTTLE_MS = 10 * 60 * 1000; // 10 minutes
+  function maybeNotify(uid: string, email: string, name: string): void {
+    if (!SIGNUP_NOTIFY_URL) return;
+    try {
+      const last = Number(localStorage.getItem(NOTIFIED + uid) || 0);
+      if (Date.now() - last < NOTIFY_THROTTLE_MS) return;
+      localStorage.setItem(NOTIFIED + uid, String(Date.now()));
+    } catch {
+      /* if storage is unavailable, just send */
+    }
     postNotify({ uid, email, name, time: new Date().toISOString() });
   }
 
@@ -160,34 +173,37 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
     async accountStatus(user: CloudUser): Promise<{ approved: boolean }> {
       await init();
       const ref = fsMod.doc(db, "users", user.uid);
+      const email = auth.currentUser?.email || "";
+      const name = auth.currentUser?.displayName || user.name || "";
       try {
         const snap = await fsMod.getDoc(ref);
-        if (!snap.exists()) {
-          const email = auth.currentUser?.email || "";
-          const name = auth.currentUser?.displayName || user.name || "";
-          // Grandfather: an account that already has saved progress predates the
-          // approval gate (a new user can't write a save until approved), so it's
-          // trusted — auto-approve and record it. Otherwise it's a fresh signup:
-          // register as pending and notify the admin.
+        let approved: boolean;
+        if (snap.exists()) {
+          approved = snap.data()?.approved === true;
+        } else {
+          // First sign-in. Grandfather an account that already has saved progress
+          // (it predates the gate — a new user can't write a save until approved);
+          // otherwise register it as pending.
           const hasSave = (await fsMod.getDoc(fsMod.doc(db, "saves", user.uid))).exists();
-          if (hasSave) {
-            await fsMod.setDoc(ref, { email, name, approved: true, grandfathered: true, createdAt: fsMod.serverTimestamp() });
-            cacheApproval(user.uid, true);
-            return { approved: true };
-          }
-          await fsMod.setDoc(ref, { email, name, approved: false, createdAt: fsMod.serverTimestamp() });
-          notifySignup(user.uid, email, name);
-          cacheApproval(user.uid, false);
-          return { approved: false };
+          approved = hasSave;
+          await fsMod.setDoc(
+            ref,
+            hasSave
+              ? { email, name, approved: true, grandfathered: true, createdAt: fsMod.serverTimestamp() }
+              : { email, name, approved: false, createdAt: fsMod.serverTimestamp() },
+          );
         }
-        const approved = snap.data()?.approved === true;
         cacheApproval(user.uid, approved);
+        // Alert the admin on every pending sign-in (throttled), not just the first.
+        if (!approved) maybeNotify(user.uid, email, name);
         return { approved };
       } catch {
         // Network/permission hiccup — fall back to the last-known value so an
-        // already-approved user isn't locked out by a transient error.
-        const cached = localStorage.getItem(APPROVAL + user.uid);
-        return { approved: cached === "1" };
+        // already-approved user isn't locked out by a transient error, and still
+        // try to alert the admin if this account looks unapproved.
+        const approved = localStorage.getItem(APPROVAL + user.uid) === "1";
+        if (!approved) maybeNotify(user.uid, email, name);
+        return { approved };
       }
     },
 

@@ -21,7 +21,8 @@ export const FIREBASE_CONFIG: Record<string, string> = {
 // Google Apps Script web app (or any endpoint) that emails you — see the
 // ADMIN_APPROVAL section of the README/setup notes. The app POSTs JSON:
 //   { uid, email, name, time }
-export const SIGNUP_NOTIFY_URL = "";
+export const SIGNUP_NOTIFY_URL =
+  "https://script.google.com/macros/s/AKfycbye3uyjm8uvgKdJ1rtCs3uX1czXwDMiEi1RTItkqwQ0D26ne1B_QDD7D4kwcfGBacHFew/exec";
 
 export function getProvider(): CloudProvider {
   return FIREBASE_CONFIG.apiKey ? makeFirebaseProvider(FIREBASE_CONFIG) : new LocalCloudProvider();

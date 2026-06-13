@@ -33,6 +33,8 @@ class Ramp implements GameInstance {
   private ended = false;
 
   private forceEl!: HTMLElement;
+  private angleEl!: HTMLElement;
+  private formulaEl!: HTMLElement;
   private statusEl!: HTMLElement;
   private coachEl!: HTMLElement;
 
@@ -79,6 +81,8 @@ class Ramp implements GameInstance {
     );
 
     this.forceEl = el("span", {}, "");
+    this.angleEl = el("span", { style: { color: "var(--accent-orange)" } }, "");
+    this.formulaEl = el("span", { style: { color: "var(--accent-purple)", fontVariantNumeric: "tabular-nums" } }, "");
     this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `0 / ${ROUNDS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
@@ -95,7 +99,10 @@ class Ramp implements GameInstance {
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "📐 Ramp steepness"),
       slider,
+      el("div", { class: "metric" }, el("span", {}, "📐 Ramp angle"), this.angleEl),
       pushBtn,
+      el("div", { class: "control-label", style: { marginTop: "8px" } }, "🧮 Force = weight × sin(angle)"),
+      el("div", { class: "metric" }, el("span", {}, "Your crate"), this.formulaEl),
       el("div", { class: "metric" }, el("span", {}, "💪 Force needed"), this.forceEl),
       el("div", { class: "metric" }, el("span", {}, "📦 Crates moved"), this.statusEl),
       this.coachEl,
@@ -104,7 +111,12 @@ class Ramp implements GameInstance {
   }
 
   private updateReadout(): void {
+    const r = this.round();
     const need = this.forceNeeded();
+    this.angleEl.textContent = `${this.angleDeg}°`;
+    // Show the formula with the live numbers plugged in, so the learner can
+    // reason out which angle keeps the force within their strength.
+    this.formulaEl.textContent = `${r.weight} × sin(${this.angleDeg}°) ≈ ${need.toFixed(0)}`;
     this.forceEl.textContent = `${need.toFixed(0)} / ${MAX_FORCE} 💪`;
     this.forceEl.style.color = need <= MAX_FORCE ? "var(--accent-green)" : "var(--accent-red)";
     this.coachEl.textContent =

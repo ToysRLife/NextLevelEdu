@@ -144,8 +144,18 @@ class Collisions implements GameInstance {
             this.ctx.services.audio.play("reward");
             this.coachEl.textContent = "🥅 Sunk it! The cue's motion passed straight through to the end ball.";
             this.statusEl.textContent = `${this.hits} / ${NEED}`;
-            if (this.hits >= NEED) this.finish();
-            else this.placePocket();
+            if (this.hits >= NEED) {
+              this.finish();
+            } else {
+              // Reset the table to its starting layout for the next shot, so the
+              // balls are visibly ready (don't wait for the next Launch click).
+              this.placePocket();
+              this.cueX = 100;
+              this.cueV = 0;
+              this.endX = CHAIN_X + 3 * (R * 2);
+              this.endV = 0;
+              this.transferred = false;
+            }
           } else {
             this.misses += 1;
             this.ctx.services.audio.play("fail");

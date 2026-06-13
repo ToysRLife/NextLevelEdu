@@ -51,7 +51,7 @@ class SunHeat implements GameInstance {
     const choices = el("div", { class: "chip-row" },
       el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.choose(true) }, "👍 Yes, the Sun"),
       el("button", { class: "btn secondary", onclick: () => this.choose(false) }, "👎 No"));
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `1 / ${CLAIMS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${CLAIMS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
     this.coachEl.textContent = "Does the Sun really do this?";
     clear(this.ctx.panel);

@@ -71,7 +71,7 @@ class WeatherWear implements GameInstance {
       ...GEAR.map((g) => el("button", { class: "chip", onclick: () => this.choose(g.key) }, `${g.emoji} ${g.label}`)),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `1 / ${WEATHERS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.idx + 1} / ${WEATHERS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },

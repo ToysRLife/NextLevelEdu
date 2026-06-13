@@ -61,7 +61,7 @@ class ManMade implements GameInstance {
       el("button", { class: "btn", style: { background: "var(--accent-purple)" }, onclick: () => this.choose(false) }, "🏭 Man-made"),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `1 / ${ITEMS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${ITEMS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },

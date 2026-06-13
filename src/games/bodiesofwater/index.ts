@@ -50,7 +50,7 @@ class BodiesOfWater implements GameInstance {
   private buildPanel(): void {
     const chips = el("div", { class: "chip-row", style: { flexWrap: "wrap" } },
       ...NAMES.map((n) => el("button", { class: "chip", onclick: () => this.choose(n) }, n)));
-    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `1 / ${BODIES.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.idx + 1} / ${BODIES.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" } });
     this.coachEl.textContent = "Which body of water is shown?";
     clear(this.ctx.panel);

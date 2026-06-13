@@ -58,7 +58,7 @@ class MagnetSort implements GameInstance {
       el("button", { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.choose(true) }, "🧲 Sticks"),
       el("button", { class: "btn secondary", onclick: () => this.choose(false) }, "🚫 Doesn't stick"),
     );
-    this.progressEl = el("span", { style: { color: "var(--accent-red)" } }, `1 / ${ITEMS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-red)" } }, `${this.idx + 1} / ${ITEMS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-red)", background: "#fef2f2" } });
     this.coachEl.textContent = "Will the magnet stick to this?";
     clear(this.ctx.panel);

@@ -92,7 +92,7 @@ class Habitats implements GameInstance {
   }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `1 / ${ANIMALS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${ANIMALS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },

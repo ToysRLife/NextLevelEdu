@@ -84,7 +84,7 @@ class OddOneOut implements GameInstance {
   }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-pink)" } }, `1 / ${ROUNDS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-pink)" } }, `${this.idx + 1} / ${ROUNDS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-pink)", background: "#fdf2f8" },

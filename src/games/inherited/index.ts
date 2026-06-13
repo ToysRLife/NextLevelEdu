@@ -65,7 +65,7 @@ class Inherited implements GameInstance {
       el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.choose("dad") }, "👨 From Dad"),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-purple)" } }, `1 / ${TRAITS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-purple)" } }, `${this.idx + 1} / ${TRAITS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },

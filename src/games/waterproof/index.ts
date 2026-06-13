@@ -61,7 +61,9 @@ class Waterproof implements GameInstance {
       el("button", { class: "btn secondary", onclick: () => this.guess(false) }, "🧽 Soaks in"),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `1 / ${MATERIALS.length}`);
+    // Reflect the real position — buildPanel() runs for each material, so a
+    // hardcoded "1 / N" would freeze the counter until the last one.
+    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.idx + 1} / ${MATERIALS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },

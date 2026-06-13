@@ -60,7 +60,7 @@ class Hazards implements GameInstance {
   private buildPanel(): void {
     const chips = el("div", { class: "chip-row", style: { flexWrap: "wrap" } },
       ...ACTIONS.map((a) => el("button", { class: "chip", onclick: () => this.choose(a.key) }, `${a.emoji} ${a.label}`)));
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `1 / ${HAZARDS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${HAZARDS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
     this.coachEl.textContent = "What's the safest thing to do?";
     clear(this.ctx.panel);

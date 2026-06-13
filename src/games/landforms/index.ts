@@ -59,7 +59,7 @@ class Landforms implements GameInstance {
       ...NAMES.map((n) => el("button", { class: "chip", onclick: () => this.choose(n) }, n)),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `1 / ${FORMS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${FORMS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },

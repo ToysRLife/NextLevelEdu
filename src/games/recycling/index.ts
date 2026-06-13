@@ -78,7 +78,7 @@ class Recycling implements GameInstance {
       ),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `1 / ${ITEMS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${ITEMS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },

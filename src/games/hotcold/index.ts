@@ -60,7 +60,7 @@ class HotCold implements GameInstance {
   private buildPanel(): void {
     const chips = el("div", { class: "chip-row", style: { flexWrap: "wrap" } },
       ...RESULTS.map((r) => el("button", { class: "chip", onclick: () => this.choose(r.key) }, `${r.emoji} ${r.label}`)));
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `1 / ${SCENARIOS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${SCENARIOS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
     this.coachEl.textContent = "What happens to it?";
     clear(this.ctx.panel);

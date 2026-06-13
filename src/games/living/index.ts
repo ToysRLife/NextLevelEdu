@@ -61,7 +61,7 @@ class Living implements GameInstance {
       el("button", { class: "btn secondary", onclick: () => this.choose(false) }, "🪨 Non-living"),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `1 / ${THINGS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${THINGS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },

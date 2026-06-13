@@ -72,7 +72,7 @@ class Variation implements GameInstance {
   private current(): Round { return this.order[this.idx]; }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `1 / ${ROUNDS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${ROUNDS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" } });
     this.coachEl.textContent = `Tap ${this.current().prompt}.`;
     clear(this.ctx.panel);

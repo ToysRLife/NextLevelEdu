@@ -53,7 +53,7 @@ class ClimateWeather implements GameInstance {
     const choices = el("div", { class: "chip-row" },
       el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.choose(true) }, "🌦️ Weather (now)"),
       el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.choose(false) }, "🌍 Climate (usual)"));
-    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `1 / ${STATEMENTS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.idx + 1} / ${STATEMENTS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" } });
     this.coachEl.textContent = "Is this weather or climate?";
     clear(this.ctx.panel);

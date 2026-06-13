@@ -96,7 +96,7 @@ class Minerals implements GameInstance {
       ...NAMES.map((n) => el("button", { class: "chip", onclick: () => this.choose(n) }, n)),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `1 / ${SPECIMENS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${SPECIMENS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },

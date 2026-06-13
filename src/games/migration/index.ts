@@ -64,7 +64,7 @@ class Migration implements GameInstance {
       el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.choose("active") }, "🧥 Stay active"),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `1 / ${ANIMALS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.idx + 1} / ${ANIMALS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },

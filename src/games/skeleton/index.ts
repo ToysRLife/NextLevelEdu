@@ -69,7 +69,7 @@ class Skeleton implements GameInstance {
   }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-purple)" } }, `1 / ${BONES.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-purple)" } }, `${this.idx + 1} / ${BONES.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },

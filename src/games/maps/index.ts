@@ -51,7 +51,7 @@ class Maps implements GameInstance {
   private current(): Feature { return this.order[this.idx]; }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `1 / ${FEATURES.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${FEATURES.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
     this.coachEl.textContent = `Find the ${this.current().name.toLowerCase()} on the map.`;
     clear(this.ctx.panel);

@@ -53,7 +53,7 @@ class MixItUp implements GameInstance {
     const choices = el("div", { class: "chip-row" },
       el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.choose(true) }, "🥣 Mixture"),
       el("button", { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.choose(false) }, "🆕 New substance"));
-    this.progressEl = el("span", { style: { color: "var(--accent-pink)" } }, `1 / ${ITEMS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-pink)" } }, `${this.idx + 1} / ${ITEMS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-pink)", background: "#fdf2f8" } });
     this.coachEl.textContent = "Can you separate it back into its parts?";
     clear(this.ctx.panel);

@@ -53,7 +53,7 @@ class BodyParts implements GameInstance {
   private current(): Part { return this.order[this.idx]; }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-purple)" } }, `1 / ${PARTS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-purple)" } }, `${this.idx + 1} / ${PARTS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" } });
     this.coachEl.textContent = `Tap the ${this.current().name.toLowerCase()} on the body.`;
     clear(this.ctx.panel);

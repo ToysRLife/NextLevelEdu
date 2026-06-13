@@ -53,7 +53,7 @@ class Conserve implements GameInstance {
     const choices = el("div", { class: "chip-row" },
       el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.choose(true) }, "🌍 Helps the planet"),
       el("button", { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.choose(false) }, "🚯 Wastes / harms"));
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `1 / ${ACTIONS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${ACTIONS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" } });
     this.coachEl.textContent = "Is this good or bad for the planet?";
     clear(this.ctx.panel);

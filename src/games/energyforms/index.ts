@@ -70,7 +70,7 @@ class EnergyForms implements GameInstance {
       ...FORMS.map((fm) => el("button", { class: "chip", onclick: () => this.choose(fm.key) }, `${fm.emoji} ${fm.label}`)),
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-yellow)" } }, `1 / ${ITEMS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-yellow)" } }, `${this.idx + 1} / ${ITEMS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-yellow)", background: "#fefce8" },

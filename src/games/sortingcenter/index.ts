@@ -62,7 +62,7 @@ class SortingCenter implements GameInstance {
   private current(): Item { return this.order[this.idx]; }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `1 / ${ITEMS.length}`);
+    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${ITEMS.length}`);
     this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
     this.coachEl.textContent = "Drag the object into the right bin: metal or not.";
     clear(this.ctx.panel);

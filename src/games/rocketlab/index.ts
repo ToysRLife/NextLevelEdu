@@ -198,7 +198,13 @@ class RocketLab implements GameInstance {
       if (this.hits >= ROUNDS.length) {
         this.finish();
       } else {
+        // Reset the rocket + graph to the pad so the next mission starts clean
+        // (otherwise the rocket sits stuck at the top with the old graph).
         this.idx += 1;
+        this.v = 0;
+        this.t = 0;
+        this.rocketY = PAD_Y;
+        this.points = [];
         this.coachEl.textContent = `🚀 Orbit reached at ${finalV.toFixed(0)} m/s! Next mission — pick a new thrust and mass.`;
         this.buildPanel();
       }

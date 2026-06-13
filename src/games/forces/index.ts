@@ -17,10 +17,14 @@ interface Surface {
   color: string;
 }
 
+// Friction tuned so EVERY surface can reach the target zone with some push in
+// the slider range (slippery ice needs a gentle push, grippy carpet a hard one)
+// — verified by the solvability guard. Earlier values made wood/carpet
+// impossible to reach no matter how hard you pushed.
 const SURFACES: Surface[] = [
-  { key: "ice", label: "🧊 Ice", friction: 0.018, color: "#bae6fd" },
-  { key: "wood", label: "🪵 Wood", friction: 0.05, color: "#d6a866" },
-  { key: "carpet", label: "🧶 Carpet", friction: 0.11, color: "#c084fc" },
+  { key: "ice", label: "🧊 Ice", friction: 0.004, color: "#bae6fd" },
+  { key: "wood", label: "🪵 Wood", friction: 0.015, color: "#d6a866" },
+  { key: "carpet", label: "🧶 Carpet", friction: 0.034, color: "#c084fc" },
 ];
 
 // Target gets a little wider for younger learners so the force/friction

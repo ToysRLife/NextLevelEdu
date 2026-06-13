@@ -78,7 +78,9 @@ class Absorbency implements GameInstance {
       ),
     );
 
-    this.volEl = el("span", {}, "100%");
+    // Reflect the real spill level — buildPanel() runs on every material switch,
+    // so a hardcoded "100%" would wrongly reset the readout after mopping.
+    this.volEl = el("span", {}, `${Math.round(this.volume * 100)}%`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
@@ -118,7 +120,13 @@ class Absorbency implements GameInstance {
     this.ctx.services.audio.play("tick");
     this.volEl.textContent = `${Math.round(this.volume * 100)}%`;
     this.coachEl.textContent = `🧽 ${m.label} soaks it up! It pulls water into the spaces inside it.`;
-    if (this.volume <= 0) this.win();
+    // Count a nearly-dry floor as done, so low-soak materials can't leave a
+    // sliver that never reaches exactly zero.
+    if (this.volume <= 0.05) {
+      this.volume = 0;
+      this.volEl.textContent = "0%";
+      this.win();
+    }
   }
 
   private win(): void {

@@ -162,6 +162,37 @@ try {
   fail("tugforces", String(e));
 }
 
+// --- forces (Push It!): every surface must have a push (2..14, step 0.5) that
+//     stops the box centred in the target zone. Simulates the exact discrete
+//     slide; uses the tightest (master) zone width. -----------------------------
+try {
+  const n = failures.length;
+  const src = read("src/games/forces/index.ts");
+  const frictions = [...src.matchAll(/friction:\s*([\d.]+)/g)].map((m) => +m[1]);
+  const W = 800, BOX = 70, START_X = 90, zoneX = 560, zoneW = 64; // master zone (tightest)
+  const center = (push, fr) => {
+    let x = START_X, v = push * 1.4;
+    for (let i = 0; i < 6000; i++) {
+      x += v;
+      v = Math.max(0, v - fr * 9);
+      if (v <= 0 || x + BOX > W) break;
+    }
+    return Math.min(x, W - BOX) + BOX / 2;
+  };
+  if (!frictions.length) fail("forces", "could not parse SURFACES");
+  frictions.forEach((fr, i) => {
+    let okR = false;
+    for (let p = 2; p <= 14; p += 0.5) {
+      const cen = center(p, fr);
+      if (cen >= zoneX && cen <= zoneX + zoneW) { okR = true; break; }
+    }
+    if (!okR) fail("forces", `surface #${i + 1} (friction ${fr}) can't stop in the zone at any push`);
+  });
+  if (frictions.length && failures.length === n) pass("forces", `${frictions.length} surfaces solvable`);
+} catch (e) {
+  fail("forces", String(e));
+}
+
 // --- report ---
 for (const line of ok) console.log(line);
 if (failures.length) {

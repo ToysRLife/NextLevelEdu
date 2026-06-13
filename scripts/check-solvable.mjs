@@ -78,6 +78,90 @@ try {
   fail("rocketlab", String(e));
 }
 
+// --- coaster (Coaster Architect): launch height (slider max) must exceed the
+//     tallest hill peak of every round. ------------------------------------------
+try {
+  const n = failures.length;
+  const src = read("src/games/coaster/index.ts");
+  const maxLaunch = +(src.match(/min:\s*10,\s*max:\s*(\d+)/)?.[1] ?? 100);
+  const rounds = [...src.matchAll(/hills:\s*\[([^\]]*)\]/g)].map((m) => [...m[1].matchAll(/peak:\s*(\d+)/g)].map((p) => +p[1]));
+  if (!rounds.length) fail("coaster", "could not parse ROUNDS");
+  rounds.forEach((peaks, i) => {
+    const tallest = Math.max(...peaks);
+    if (maxLaunch <= tallest) fail("coaster", `round ${i + 1} tallest hill ${tallest}m ≥ max launch ${maxLaunch}m`);
+  });
+  if (rounds.length && failures.length === n) pass("coaster", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("coaster", String(e));
+}
+
+// --- crashtest: ∃ massA∈[2,10]step1, speedA∈[2,10]step0.5 with combined speed
+//     (mA·vA)/(mA+mB) within tol of targetV. -----------------------------------
+try {
+  const n = failures.length;
+  const src = read("src/games/crashtest/index.ts");
+  const rounds = [...src.matchAll(/massB:\s*(\d+),\s*targetV:\s*(\d+)/g)].map((m) => ({ mb: +m[1], t: +m[2] }));
+  const tol = 0.3;
+  if (!rounds.length) fail("crashtest", "could not parse ROUNDS");
+  rounds.forEach((r, i) => {
+    let okR = false;
+    for (let m = 2; m <= 10 && !okR; m++) for (let v = 2; v <= 10; v += 0.5) if (Math.abs((m * v) / (m + r.mb) - r.t) <= tol) { okR = true; break; }
+    if (!okR) fail("crashtest", `round ${i + 1} (mB ${r.mb}, target ${r.t}) unreachable with the sliders`);
+  });
+  if (rounds.length && failures.length === n) pass("crashtest", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("crashtest", String(e));
+}
+
+// --- cocoa: max insulation (10) must keep temp ≥ target at the check time. ------
+try {
+  const n = failures.length;
+  const src = read("src/games/cocoa/index.ts");
+  const T0 = 90, ENV = 20;
+  const coolingK = (i) => 0.12 / (1 + i * 0.45);
+  const tempAt = (i, min) => ENV + (T0 - ENV) * Math.exp(-coolingK(i) * min);
+  const rounds = [...src.matchAll(/target:\s*(\d+),\s*checkMin:\s*(\d+)/g)].map((m) => ({ t: +m[1], c: +m[2] }));
+  if (!rounds.length) fail("cocoa", "could not parse ROUNDS");
+  rounds.forEach((r, i) => {
+    if (tempAt(10, r.c) < r.t) fail("cocoa", `round ${i + 1} can't stay ≥ ${r.t}°C at ${r.c} min even fully insulated`);
+  });
+  if (rounds.length && failures.length === n) pass("cocoa", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("cocoa", String(e));
+}
+
+// --- orbitlab: circular speed √(GM/r0) must be inside the slider range ±tol. ----
+try {
+  const n = failures.length;
+  const src = read("src/games/orbitlab/index.ts");
+  const GM = +(src.match(/GM\s*=\s*(\d+)/)?.[1] ?? 3200);
+  const rounds = [...src.matchAll(/r0:\s*(\d+)/g)].map((m) => +m[1]);
+  const tol = 0.25, lo = 1, hi = 8;
+  if (!rounds.length) fail("orbitlab", "could not parse ROUNDS");
+  rounds.forEach((r0, i) => {
+    const v = Math.sqrt(GM / r0);
+    if (v - tol < lo || v + tol > hi) fail("orbitlab", `round ${i + 1} orbit speed ${v.toFixed(1)} outside slider ${lo}–${hi}`);
+  });
+  if (rounds.length && failures.length === n) pass("orbitlab", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("orbitlab", String(e));
+}
+
+// --- tugforces: your pull = enemy + targetNet must be within the slider [0,100]. -
+try {
+  const n = failures.length;
+  const src = read("src/games/tugforces/index.ts");
+  const rounds = [...src.matchAll(/enemy:\s*(\d+),\s*targetNet:\s*(-?\d+)/g)].map((m) => ({ e: +m[1], t: +m[2] }));
+  if (!rounds.length) fail("tugforces", "could not parse ROUNDS");
+  rounds.forEach((r, i) => {
+    const need = r.e + r.t;
+    if (need < 0 || need > 100) fail("tugforces", `round ${i + 1} needs pull ${need}N, outside slider 0–100`);
+  });
+  if (rounds.length && failures.length === n) pass("tugforces", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("tugforces", String(e));
+}
+
 // --- report ---
 for (const line of ok) console.log(line);
 if (failures.length) {

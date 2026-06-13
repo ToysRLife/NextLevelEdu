@@ -306,6 +306,54 @@ export const GAME_MANIFESTS: GameManifest[] = [
     "takeaway": "Light moves straight until something blocks it."
   },
   {
+    "id": "coaster",
+    "conceptId": "phys-27",
+    "title": "Coaster Architect",
+    "stream": "physics",
+    "gradeBand": "6-8",
+    "emoji": "🎢",
+    "blurb": "Set the launch height so stored energy carries the coaster over every hill.",
+    "mission": "Use energy conservation to clear each track — start higher than the tallest hill.",
+    "estMinutes": 4,
+    "takeaway": "Energy is conserved — it changes between potential (height) and kinetic (motion) but the total stays the same. To clear a hill you need at least its height stored as potential energy at the start."
+  },
+  {
+    "id": "crashtest",
+    "conceptId": "phys-28",
+    "title": "Crash Test",
+    "stream": "physics",
+    "gradeBand": "6-8",
+    "emoji": "💥",
+    "blurb": "Pick a cart's mass and speed so momentum carries the wreck into the zone.",
+    "mission": "Use conservation of momentum to land the stuck carts in each target zone.",
+    "estMinutes": 4,
+    "takeaway": "Momentum (mass × velocity) is conserved in a collision. When objects stick together, the combined speed is (mA·vA + mB·vB) ÷ (mA + mB)."
+  },
+  {
+    "id": "cocoa",
+    "conceptId": "phys-29",
+    "title": "Keep the Cocoa Hot",
+    "stream": "physics",
+    "gradeBand": "6-8",
+    "emoji": "☕",
+    "blurb": "Add insulation to slow heat loss and keep the cocoa above the target temperature.",
+    "mission": "Use insulation to keep each mug warm enough at the check time.",
+    "estMinutes": 4,
+    "takeaway": "Heat flows from hot to cold until temperatures even out. Insulation slows that flow, so a hot object stays warm longer."
+  },
+  {
+    "id": "orbitlab",
+    "conceptId": "phys-30",
+    "title": "Orbit Engineer",
+    "stream": "physics",
+    "gradeBand": "6-8",
+    "emoji": "🛰️",
+    "blurb": "Find the launch speed that keeps a satellite in a steady circular orbit.",
+    "mission": "Match v = √(GM ÷ r) at each orbit radius to keep the satellite circling.",
+    "estMinutes": 4,
+    "takeaway": "Gravity pulls a satellite toward a planet; if it moves sideways fast enough it keeps 'missing' and orbits. The circular-orbit speed is v = √(GM ÷ r)."
+  },
+  {
     "id": "rocketlab",
     "conceptId": "phys-26",
     "title": "Rocket Lab",
@@ -316,6 +364,18 @@ export const GAME_MANIFESTS: GameManifest[] = [
     "mission": "Use a = F ÷ m to reach each target speed by the end of the burn.",
     "estMinutes": 4,
     "takeaway": "Acceleration depends on the net force and the object's mass: a = F ÷ m. More force speeds things up faster; more mass resists the change."
+  },
+  {
+    "id": "tugforces",
+    "conceptId": "phys-31",
+    "title": "Tug of Forces",
+    "stream": "physics",
+    "gradeBand": "6-8",
+    "emoji": "🪢",
+    "blurb": "Balance action and reaction — set your pull so the net force lands the flag on target.",
+    "mission": "Use net force (your pull − their pull) to place the flag on each marker.",
+    "estMinutes": 3,
+    "takeaway": "Forces come in equal, opposite pairs, but motion is set by the NET force — the difference between opposing pushes. Equal forces balance to no motion."
   },
   {
     "id": "colormix",

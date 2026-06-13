@@ -241,7 +241,10 @@ class Friction implements GameInstance {
     // instead of guessing blindly.
     if (!this.sliding && !this.ended) {
       const gNose = this.stopNose(this.surface);
-      const onTarget = gNose >= this.target.x && gNose <= this.target.x + this.target.w;
+      // The purple prediction always shows. The green "lines up!" confirmation is
+      // a stronger aid, revealed only once the learner has asked for a hint.
+      const hintsUsed = this.ctx.services.hints.count() > 0;
+      const onTarget = hintsUsed && gNose >= this.target.x && gNose <= this.target.x + this.target.w;
       c.save();
       c.globalAlpha = 0.45;
       c.fillStyle = onTarget ? "#16a34a" : "#7c3aed";

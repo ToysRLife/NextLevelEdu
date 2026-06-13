@@ -103,6 +103,7 @@ class Friction implements GameInstance {
               if (this.sliding) return;
               this.surface = s;
               this.buildPanel();
+              this.render(); // refresh the prediction ghost right away
             },
           },
           `${s.emoji} ${s.label}`,
@@ -234,6 +235,32 @@ class Friction implements GameInstance {
     c.font = "20px serif";
     c.textAlign = "center";
     c.fillText("🎯", this.target.x + this.target.w / 2, GROUND - 24);
+
+    // Prediction ghost: where THIS surface would bring the sled to rest. Updates
+    // live as the learner switches surfaces, so they can match it to the target
+    // instead of guessing blindly.
+    if (!this.sliding && !this.ended) {
+      const gNose = this.stopNose(this.surface);
+      const onTarget = gNose >= this.target.x && gNose <= this.target.x + this.target.w;
+      c.save();
+      c.globalAlpha = 0.45;
+      c.fillStyle = onTarget ? "#16a34a" : "#7c3aed";
+      this.roundRect(c, gNose - 26, GROUND - 30, 52, 26, 6);
+      c.fill();
+      c.setLineDash([6, 5]);
+      c.globalAlpha = 0.75;
+      c.strokeStyle = onTarget ? "#16a34a" : "#7c3aed";
+      c.lineWidth = 2;
+      c.beginPath();
+      c.moveTo(gNose, GROUND - 42);
+      c.lineTo(gNose, GROUND - 2);
+      c.stroke();
+      c.restore();
+      c.fillStyle = onTarget ? "#15803d" : "#7c3aed";
+      c.font = "bold 12px Nunito, sans-serif";
+      c.textAlign = "center";
+      c.fillText(onTarget ? "lines up! 🎯" : "would stop here", gNose, GROUND - 50);
+    }
 
     // sled
     c.fillStyle = "#7c3aed";

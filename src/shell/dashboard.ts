@@ -72,11 +72,10 @@ export function renderDashboard(root: HTMLElement): void {
           if (unlocked) location.hash = `#/play/${meta.id}`;
         },
       },
-      heart,
+      unlocked ? heart : el("div", { class: "sc-locktag" }, "🔒"),
       el("div", { class: "sc-emoji" }, meta.emoji),
       el("div", { class: "sc-title" }, meta.title),
-      badges,
-      unlocked ? null : el("div", { class: "sc-lock" }, unlockHint(meta)),
+      unlocked ? badges : el("div", { class: "sc-lock" }, unlockHint(meta)),
     );
   }
 

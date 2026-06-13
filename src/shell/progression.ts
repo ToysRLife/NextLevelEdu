@@ -67,7 +67,7 @@ export function isUnlocked(meta: GameManifest): boolean {
 
 /** Human label for a locked game's gate. */
 export function unlockHint(meta: GameManifest): string {
-  return `🔒 Finish Level ${currentLevel(meta.stream) + 1} to unlock`;
+  return `Finish Level ${currentLevel(meta.stream) + 1} (5 games) to unlock`;
 }
 
 /** The current level's not-yet-won, unlocked games for a stream (what to do next). */

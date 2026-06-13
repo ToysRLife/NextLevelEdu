@@ -306,6 +306,18 @@ export const GAME_MANIFESTS: GameManifest[] = [
     "takeaway": "Light moves straight until something blocks it."
   },
   {
+    "id": "rocketlab",
+    "conceptId": "phys-26",
+    "title": "Rocket Lab",
+    "stream": "physics",
+    "gradeBand": "6-8",
+    "emoji": "🚀",
+    "blurb": "Engineer a launch with Newton's 2nd law — balance thrust and mass to hit orbit speed.",
+    "mission": "Use a = F ÷ m to reach each target speed by the end of the burn.",
+    "estMinutes": 4,
+    "takeaway": "Acceleration depends on the net force and the object's mass: a = F ÷ m. More force speeds things up faster; more mass resists the change."
+  },
+  {
     "id": "colormix",
     "conceptId": "chem-24",
     "title": "Color Mixer",

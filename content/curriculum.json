@@ -39,7 +39,8 @@
         { "id": "phys-22", "title": "Conductors & Insulators", "gradeBand": "4-5", "ngss": "4-PS3-2*", "summary": "What lets electricity through and what blocks it." },
         { "id": "phys-23", "title": "Static Electricity", "gradeBand": "4-5", "ngss": "3-PS2-3", "summary": "Charges that make hair stand up and balloons stick." },
         { "id": "phys-24", "title": "Collisions & Motion Transfer", "gradeBand": "4", "ngss": "4-PS3-3", "summary": "Moving things pass on their motion when they hit." },
-        { "id": "phys-25", "title": "Stored vs Moving Energy", "gradeBand": "4-5", "ngss": "4-PS3-1", "summary": "Potential (stored) vs kinetic (moving) energy." }
+        { "id": "phys-25", "title": "Stored vs Moving Energy", "gradeBand": "4-5", "ngss": "4-PS3-1", "summary": "Potential (stored) vs kinetic (moving) energy." },
+        { "id": "phys-26", "title": "Newton's Second Law (F = ma)", "gradeBand": "6-8", "ngss": "MS-PS2-2", "summary": "Acceleration depends on the net force and the object's mass: a = F ÷ m. More force speeds things up faster; more mass resists the change." }
       ]
     },
     {

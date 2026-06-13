@@ -42,6 +42,29 @@ export function renderPendingApproval(root: HTMLElement, state: "checking" | "pe
         },
         "🔄 Check again",
       ),
+    );
+    if (c.canRemind()) {
+      card.append(
+        el(
+          "button",
+          {
+            class: "btn secondary",
+            onclick: (e: Event) => {
+              const btn = e.currentTarget as HTMLButtonElement;
+              void c.remind();
+              btn.textContent = "📨 Reminder sent!";
+              btn.toggleAttribute("disabled", true);
+              setTimeout(() => {
+                btn.textContent = "📨 Remind the grown-up";
+                btn.toggleAttribute("disabled", false);
+              }, 30000);
+            },
+          },
+          "📨 Remind the grown-up",
+        ),
+      );
+    }
+    card.append(
       el("button", { class: "btn secondary", onclick: () => void c.signOut() }, "Sign out"),
       el("p", { class: "login-foot" }, "An approval usually only takes a little while."),
     );

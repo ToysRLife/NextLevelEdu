@@ -58,21 +58,25 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
     }
   }
 
-  // Fire-and-forget admin notification for a brand-new signup. Uses no-cors so
-  // it works against a simple endpoint (e.g. a Google Apps Script web app)
-  // without CORS headers; we don't need to read the response.
-  function notifySignup(uid: string, email: string, name: string): void {
+  // Fire-and-forget admin notification. Uses no-cors so it works against a
+  // simple endpoint (e.g. a Google Apps Script web app) without CORS headers;
+  // we don't need to read the response.
+  function postNotify(payload: Record<string, unknown>): void {
     if (!SIGNUP_NOTIFY_URL) return;
     try {
       void fetch(SIGNUP_NOTIFY_URL, {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ uid, email, name, time: new Date().toISOString() }),
+        body: JSON.stringify(payload),
       });
     } catch {
       /* notification is best-effort */
     }
+  }
+
+  function notifySignup(uid: string, email: string, name: string): void {
+    postNotify({ uid, email, name, time: new Date().toISOString() });
   }
 
   return {
@@ -135,6 +139,20 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
     cachedApproval(uid: string): boolean | null {
       const v = localStorage.getItem(APPROVAL + uid);
       return v === null ? null : v === "1";
+    },
+
+    // Re-send the admin notification (the pending screen's "remind" button), so
+    // a waiting learner can nudge the admin if the first email was missed.
+    async remind(): Promise<void> {
+      await init();
+      const u = auth.currentUser;
+      postNotify({
+        uid: u?.uid || "",
+        email: u?.email || "",
+        name: u?.displayName || "",
+        time: new Date().toISOString(),
+        reminder: true,
+      });
     },
 
     // Admin-approval gate. On first sign-in, registers a pending account record

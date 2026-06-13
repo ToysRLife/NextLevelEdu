@@ -34,6 +34,8 @@ export interface CloudProvider {
   /** Optional: last-known approval for a uid, for instant render before the
    *  network check resolves. */
   cachedApproval?(uid: string): boolean | null;
+  /** Optional: re-send the admin signup notification (pending-screen reminder). */
+  remind?(): Promise<void>;
 }
 
 export type SyncStatus = "off" | "syncing" | "synced" | "error";
@@ -97,6 +99,14 @@ class CloudSync {
   /** Re-check approval (the pending screen's "Check again" button). */
   async recheck(): Promise<void> {
     if (this.user) await this.merge("signin");
+  }
+  /** Whether a reminder can be sent (an approval gate is configured). */
+  canRemind(): boolean {
+    return !!this.provider.remind;
+  }
+  /** Re-send the admin notification (pending screen's "Remind" button). */
+  async remind(): Promise<void> {
+    await this.provider.remind?.();
   }
 
   private emit(): void {

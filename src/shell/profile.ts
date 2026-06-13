@@ -24,6 +24,34 @@ export function savePersona(persona: Persona): void {
   window.dispatchEvent(new CustomEvent("persona-changed"));
 }
 
+// --- Favorites & recently-played (drives the Netflix-style home shelves). ---
+export function getFavorites(): string[] {
+  return read<string[]>("favorites", []);
+}
+export function isFavorite(id: string): boolean {
+  return getFavorites().includes(id);
+}
+/** Toggle a game's favorite state; returns the new state. */
+export function toggleFavorite(id: string): boolean {
+  const favs = getFavorites();
+  const i = favs.indexOf(id);
+  if (i >= 0) favs.splice(i, 1);
+  else favs.unshift(id);
+  write("favorites", favs);
+  window.dispatchEvent(new CustomEvent("favorites-changed"));
+  return i < 0;
+}
+
+export function getRecent(): string[] {
+  return read<string[]>("recent", []);
+}
+/** Record that a game was opened (most-recent first, capped). */
+export function recordRecent(id: string): void {
+  const recent = getRecent().filter((x) => x !== id);
+  recent.unshift(id);
+  write("recent", recent.slice(0, 20));
+}
+
 // --- Rank: a sense of progression earned purely from learning (joules). ---
 const RANKS: { min: number; title: string }[] = [
   { min: 0, title: "Cadet" },

@@ -159,6 +159,48 @@ nav {
 }
 .tag.best { background: #fff7da; color: #b7791f; }
 
+/* --- HOME SHELVES (Netflix-style horizontal rows) --- */
+.shelf { margin: 8px 0 26px; }
+.shelf-title { font-family: var(--display); color: var(--text-main); font-size: 1.3rem; margin: 0 0 12px; }
+.shelf-row {
+  display: flex; gap: 14px; overflow-x: auto; overflow-y: hidden;
+  padding: 4px 2px 14px; scroll-snap-type: x proximity; scroll-behavior: smooth;
+}
+.shelf-row::-webkit-scrollbar { height: 8px; }
+.shelf-row::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 999px; }
+.shelf-card {
+  flex: 0 0 auto; width: 172px; min-height: 156px; scroll-snap-align: start;
+  background: var(--panel-bg); border: none; border-top: 6px solid var(--accent-blue);
+  border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-soft);
+  text-align: left; cursor: pointer; position: relative;
+  display: flex; flex-direction: column; gap: 8px; transition: transform 0.15s, box-shadow 0.15s;
+}
+.shelf-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 18px 40px rgba(10, 8, 40, 0.4); }
+.shelf-card.physics { border-top-color: var(--accent-blue); }
+.shelf-card.biology { border-top-color: var(--accent-green); }
+.shelf-card.chemistry { border-top-color: var(--accent-pink); }
+.shelf-card.earth-space { border-top-color: var(--accent-orange); }
+.shelf-card.locked { filter: grayscale(0.75); opacity: 0.6; cursor: not-allowed; }
+.shelf-card.locked:hover { transform: none; box-shadow: var(--shadow-soft); }
+.sc-emoji { font-size: 2.4rem; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15)); }
+.sc-title { font-weight: 800; color: var(--text-main); font-size: 1rem; line-height: 1.18; }
+.sc-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+.diff-badge, .done-badge {
+  font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 999px;
+  background: var(--panel-soft); color: var(--text-muted); white-space: nowrap;
+}
+.diff-badge.easy { background: #dcfce7; color: #15803d; }
+.diff-badge.medium { background: #fef3c7; color: #b45309; }
+.diff-badge.hard { background: #fee2e2; color: #b91c1c; }
+.done-badge { background: #dcfce7; color: #15803d; }
+.sc-lock { font-size: 0.7rem; font-weight: 800; color: var(--text-muted); }
+.fav-btn {
+  position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; padding: 0;
+  border: none; border-radius: 999px; background: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem; line-height: 1; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18); z-index: 2;
+}
+.fav-btn:hover { transform: scale(1.12); }
+
 /* --- REWARD WORLDS --- */
 .world-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 .world-card {

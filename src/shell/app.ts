@@ -9,6 +9,7 @@ import { renderOnboarding } from "./onboarding";
 import { renderLoginGate } from "./loginGate";
 import { renderPendingApproval } from "./pendingApproval";
 import { renderAdmin } from "./adminPage";
+import { isUnlocked } from "./progression";
 import { GAME_MANIFESTS } from "../registry";
 import { createAudioService } from "@platform/audio";
 import { cloud } from "@platform/cloud";
@@ -76,9 +77,10 @@ export function mountApp(root: HTMLElement): void {
     const play = PLAY_ROUTE.exec(location.hash);
     if (play) {
       const meta = GAME_MANIFESTS.find((m) => m.id === play[1]);
-      if (meta) {
+      if (meta && isUnlocked(meta)) {
         cleanup = renderGameHost(view, meta);
       } else {
+        // Unknown or still-locked game — send them back to the home shelves.
         location.hash = "#/";
       }
       return;

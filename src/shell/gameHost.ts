@@ -1,7 +1,7 @@
 import type { GameManifest, GameInstance, OutcomeDetail, DifficultyTier } from "@sdk/types";
 import { el, clear } from "@core/dom";
 import { createServices } from "@platform/services";
-import { addJoules, addResources, getLevel, recordPlayToday, recordPerformance } from "./profile";
+import { addJoules, addResources, getLevel, recordPlayToday, recordPerformance, recordRecent } from "./profile";
 import { getWorldReward } from "./worlds";
 import { checkBadges } from "./badges";
 import { loadGame } from "../registry";
@@ -158,6 +158,7 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
 
   clear(root);
   root.append(host);
+  recordRecent(meta.id); // for the home "Jump back in" shelf
 
   // Overlay lives inside the canvas wrap so it covers the play surface only.
   function clearOverlay(): void {

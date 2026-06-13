@@ -11,6 +11,7 @@ import {
   unlockHint,
   streamGames,
   nextUpFor,
+  streamProgress,
   STREAMS,
   type Difficulty,
 } from "./progression";
@@ -79,25 +80,20 @@ export function renderDashboard(root: HTMLElement): void {
     );
   }
 
-  function shelf(title: string, metas: GameManifest[]): HTMLElement | null {
+  function shelf(title: string, metas: GameManifest[], caption?: string): HTMLElement | null {
     const list = metas.filter(matchDiff);
     if (!list.length) return null;
     return el(
       "section",
       { class: "shelf" },
-      el("h3", { class: "shelf-title" }, title),
+      el(
+        "div",
+        { class: "shelf-head" },
+        el("h3", { class: "shelf-title" }, title),
+        caption ? el("span", { class: "shelf-caption" }, caption) : null,
+      ),
       el("div", { class: "shelf-row" }, ...list.map(card)),
     );
-  }
-
-  // Order within a subject shelf: favorites → unlocked & unfinished → finished → locked.
-  function orderStream(metas: GameManifest[]): GameManifest[] {
-    const rank = (m: GameManifest) => {
-      if (isFavorite(m.id)) return 0;
-      if (!isUnlocked(m)) return 3;
-      return hasWon(m.id) ? 2 : 1;
-    };
-    return [...metas].sort((a, b) => rank(a) - rank(b));
   }
 
   const shelves: (HTMLElement | null)[] = [];
@@ -118,9 +114,14 @@ export function renderDashboard(root: HTMLElement): void {
   const recommended = STREAMS.flatMap((s) => nextUpFor(s.id)).slice(0, 12);
   shelves.push(shelf("✨ Recommended Next", recommended));
 
-  // One shelf per subject.
+  // One shelf per subject — an ordered "course path" (Level 1's games, then
+  // Level 2's, …) with a caption telling the learner what unlocks next.
   for (const s of STREAMS) {
-    shelves.push(shelf(s.label, orderStream(streamGames(s.id))));
+    const p = streamProgress(s.id);
+    const caption = p.allDone
+      ? "🏆 All levels complete!"
+      : `Level ${p.level} · ${p.done}/${p.size} done — finish ${p.remaining} more to unlock Level ${p.level + 1}`;
+    shelves.push(shelf(s.label, streamGames(s.id), caption));
   }
 
   const filterBar = el(

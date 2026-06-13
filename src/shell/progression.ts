@@ -70,6 +70,27 @@ export function unlockHint(meta: GameManifest): string {
   return `Finish Level ${currentLevel(meta.stream) + 1} (5 games) to unlock`;
 }
 
+/** Progress through the current level of a stream — drives the shelf caption. */
+export function streamProgress(stream: Stream): {
+  level: number; // 1-based
+  done: number;
+  size: number;
+  remaining: number;
+  allDone: boolean;
+} {
+  const games = streamGames(stream);
+  const lvl = currentLevel(stream);
+  const slice = games.slice(lvl * LEVEL_SIZE, (lvl + 1) * LEVEL_SIZE);
+  const done = slice.filter((g) => hasWon(g.id)).length;
+  return {
+    level: lvl + 1,
+    done,
+    size: slice.length,
+    remaining: slice.length - done,
+    allDone: games.every((g) => hasWon(g.id)),
+  };
+}
+
 /** The current level's not-yet-won, unlocked games for a stream (what to do next). */
 export function nextUpFor(stream: Stream): GameManifest[] {
   const games = streamGames(stream);

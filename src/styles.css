@@ -161,7 +161,9 @@ nav {
 
 /* --- HOME SHELVES (Netflix-style horizontal rows) --- */
 .shelf { margin: 8px 0 26px; }
-.shelf-title { font-family: var(--display); color: var(--text-main); font-size: 1.3rem; margin: 0 0 12px; }
+.shelf-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 12px; }
+.shelf-title { font-family: var(--display); color: #eaf0ff; font-size: 1.3rem; margin: 0; }
+.shelf-caption { color: #aeb6d4; font-weight: 700; font-size: 0.85rem; }
 .shelf-row {
   display: flex; gap: 14px; overflow-x: auto; overflow-y: hidden;
   padding: 4px 2px 14px; scroll-snap-type: x proximity; scroll-behavior: smooth;

@@ -16,10 +16,13 @@ interface Round {
   effortWeight: number; // the weight the player slides on the right
 }
 
+// Every round must be solvable within the beam: the balance distance
+// (loadWeight × loadDist ÷ effortWeight) has to be a whole number from 1 to 7
+// (the farthest notch). Keep them lighter-you-balances-farther for the lesson.
 const ROUNDS: Round[] = [
-  { loadWeight: 4, loadDist: 5, effortWeight: 4 }, // balance at 5
-  { loadWeight: 6, loadDist: 4, effortWeight: 3 }, // balance at 8
-  { loadWeight: 2, loadDist: 6, effortWeight: 4 }, // balance at 3
+  { loadWeight: 4, loadDist: 5, effortWeight: 4 }, // balance at 5  (20 ÷ 4)
+  { loadWeight: 6, loadDist: 4, effortWeight: 4 }, // balance at 6  (24 ÷ 4)
+  { loadWeight: 2, loadDist: 6, effortWeight: 4 }, // balance at 3  (12 ÷ 4)
 ];
 
 class Levers implements GameInstance {

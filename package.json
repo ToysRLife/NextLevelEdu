@@ -1,0 +1,23 @@
+{
+  "name": "nextlevel-edu",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "NextLevel Edu — K-12 science learning through games",
+  "scripts": {
+    "dev": "vite",
+    "gen:manifests": "node scripts/gen-manifests.mjs",
+    "prebuild": "node scripts/gen-manifests.mjs",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11"
+  },
+  "dependencies": {
+    "firebase": "^12.14.0"
+  }
+}

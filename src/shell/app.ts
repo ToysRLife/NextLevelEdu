@@ -7,6 +7,7 @@ import { renderBadges } from "./badgesPage";
 import { renderCloud } from "./cloudPage";
 import { renderOnboarding } from "./onboarding";
 import { renderLoginGate } from "./loginGate";
+import { renderPendingApproval } from "./pendingApproval";
 import { GAME_MANIFESTS } from "../registry";
 import { createAudioService } from "@platform/audio";
 import { cloud } from "@platform/cloud";
@@ -47,7 +48,15 @@ export function mountApp(root: HTMLElement): void {
     return;
   }
 
-  // Gate 2: signed in but no explorer persona yet — pick an alias + avatar.
+  // Gate 2: account must be approved by an admin. New sign-ups stay inactive
+  // (a pending screen) until approved; "checking" is the brief verify state.
+  const approval = c.getApproval();
+  if (approval !== "approved") {
+    renderPendingApproval(root, approval);
+    return;
+  }
+
+  // Gate 3: signed in but no explorer persona yet — pick an alias + avatar.
   if (!hasPersona()) {
     renderOnboarding(root, () => mountApp(root));
     return;

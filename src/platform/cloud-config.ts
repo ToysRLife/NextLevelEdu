@@ -16,6 +16,13 @@ export const FIREBASE_CONFIG: Record<string, string> = {
   measurementId: "G-5LS0KCK21W",
 };
 
+// Optional: a webhook called once when a brand-new account signs up, so an
+// admin can be notified (e.g. by email). Leave empty to disable. Point it at a
+// Google Apps Script web app (or any endpoint) that emails you — see the
+// ADMIN_APPROVAL section of the README/setup notes. The app POSTs JSON:
+//   { uid, email, name, time }
+export const SIGNUP_NOTIFY_URL = "";
+
 export function getProvider(): CloudProvider {
   return FIREBASE_CONFIG.apiKey ? makeFirebaseProvider(FIREBASE_CONFIG) : new LocalCloudProvider();
 }

@@ -1,4 +1,5 @@
 import type { CloudProvider, CloudUser, CloudDoc } from "./cloud";
+import { SIGNUP_NOTIFY_URL } from "./cloud-config";
 
 // Real cross-device cloud save via Firebase Auth (Google) + Firestore.
 //
@@ -12,6 +13,7 @@ import type { CloudProvider, CloudUser, CloudDoc } from "./cloud";
 // getProvider() in cloud-config.ts), keeping the initial bundle small.
 
 const CACHE = "nlecloud:fbuser"; // cached signed-in user (uid survives reloads)
+const APPROVAL = "nlecloud:approved:"; // + uid -> "1" | "0" (last-known approval)
 
 export function makeFirebaseProvider(config: Record<string, string>): CloudProvider {
   let ready: Promise<void> | null = null;
@@ -46,6 +48,31 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
 
   function toUser(u: any): CloudUser {
     return { uid: u.uid, name: u.displayName || u.email || "Me" };
+  }
+
+  function cacheApproval(uid: string, approved: boolean): void {
+    try {
+      localStorage.setItem(APPROVAL + uid, approved ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  }
+
+  // Fire-and-forget admin notification for a brand-new signup. Uses no-cors so
+  // it works against a simple endpoint (e.g. a Google Apps Script web app)
+  // without CORS headers; we don't need to read the response.
+  function notifySignup(uid: string, email: string, name: string): void {
+    if (!SIGNUP_NOTIFY_URL) return;
+    try {
+      void fetch(SIGNUP_NOTIFY_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ uid, email, name, time: new Date().toISOString() }),
+      });
+    } catch {
+      /* notification is best-effort */
+    }
   }
 
   return {
@@ -103,6 +130,47 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
       await init();
       await authMod.signOut(auth);
       cache(null);
+    },
+
+    cachedApproval(uid: string): boolean | null {
+      const v = localStorage.getItem(APPROVAL + uid);
+      return v === null ? null : v === "1";
+    },
+
+    // Admin-approval gate. On first sign-in, registers a pending account record
+    // (users/{uid}) and notifies the admin; thereafter reports its approved flag.
+    async accountStatus(user: CloudUser): Promise<{ approved: boolean }> {
+      await init();
+      const ref = fsMod.doc(db, "users", user.uid);
+      try {
+        const snap = await fsMod.getDoc(ref);
+        if (!snap.exists()) {
+          const email = auth.currentUser?.email || "";
+          const name = auth.currentUser?.displayName || user.name || "";
+          // Grandfather: an account that already has saved progress predates the
+          // approval gate (a new user can't write a save until approved), so it's
+          // trusted — auto-approve and record it. Otherwise it's a fresh signup:
+          // register as pending and notify the admin.
+          const hasSave = (await fsMod.getDoc(fsMod.doc(db, "saves", user.uid))).exists();
+          if (hasSave) {
+            await fsMod.setDoc(ref, { email, name, approved: true, grandfathered: true, createdAt: fsMod.serverTimestamp() });
+            cacheApproval(user.uid, true);
+            return { approved: true };
+          }
+          await fsMod.setDoc(ref, { email, name, approved: false, createdAt: fsMod.serverTimestamp() });
+          notifySignup(user.uid, email, name);
+          cacheApproval(user.uid, false);
+          return { approved: false };
+        }
+        const approved = snap.data()?.approved === true;
+        cacheApproval(user.uid, approved);
+        return { approved };
+      } catch {
+        // Network/permission hiccup — fall back to the last-known value so an
+        // already-approved user isn't locked out by a transient error.
+        const cached = localStorage.getItem(APPROVAL + user.uid);
+        return { approved: cached === "1" };
+      }
     },
 
     async load(uid: string): Promise<CloudDoc | null> {

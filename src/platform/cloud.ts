@@ -28,13 +28,21 @@ export interface CloudProvider {
   save(uid: string, doc: CloudDoc): Promise<void>;
   /** Optional: finish a sign-in that completed via a full-page redirect. */
   resumeRedirect?(): Promise<CloudUser | null>;
+  /** Optional: admin-approval gate. Registers a new account (pending) on first
+   *  sign-in and reports whether it's been approved. Absent ⇒ always approved. */
+  accountStatus?(user: CloudUser): Promise<{ approved: boolean }>;
+  /** Optional: last-known approval for a uid, for instant render before the
+   *  network check resolves. */
+  cachedApproval?(uid: string): boolean | null;
 }
 
 export type SyncStatus = "off" | "syncing" | "synced" | "error";
+export type Approval = "checking" | "approved" | "pending";
 
 class CloudSync {
   private user: CloudUser | null;
   private status: SyncStatus = "off";
+  private approval: Approval = "checking";
   private applying = false; // true while writing a downloaded snapshot
   private pushTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -43,6 +51,13 @@ class CloudSync {
     onStorageWrite(() => this.onLocalWrite());
     if (this.user) {
       this.status = "syncing";
+      // Seed approval from the last-known value so a returning, approved user
+      // doesn't flash the "checking" screen; merge() re-verifies in the network.
+      if (!provider.accountStatus) this.approval = "approved";
+      else {
+        const cached = provider.cachedApproval?.(this.user.uid);
+        this.approval = cached === true ? "approved" : "checking";
+      }
       // Resume the session after the app has mounted its listeners.
       setTimeout(() => this.merge("resume"), 0);
     } else if (provider.resumeRedirect) {
@@ -74,6 +89,15 @@ class CloudSync {
   getStatus(): SyncStatus {
     return this.status;
   }
+  /** Admin-approval state for the signed-in account (always "approved" when no
+   *  approval gate is configured, e.g. the local/demo provider). */
+  getApproval(): Approval {
+    return this.approval;
+  }
+  /** Re-check approval (the pending screen's "Check again" button). */
+  async recheck(): Promise<void> {
+    if (this.user) await this.merge("signin");
+  }
 
   private emit(): void {
     window.dispatchEvent(new CustomEvent("cloud-changed"));
@@ -100,6 +124,7 @@ class CloudSync {
     }
     this.user = null;
     this.status = "off";
+    this.approval = "checking";
     // Clear this device so the next sign-in starts clean (cloud holds the backup).
     clearLocal();
     this.emit();
@@ -116,6 +141,20 @@ class CloudSync {
     this.status = "syncing";
     this.emit();
     try {
+      // Admin-approval gate: a new account is registered as pending and cannot
+      // sync (or play) until an admin approves it in the backend.
+      if (this.provider.accountStatus) {
+        const { approved } = await this.provider.accountStatus(this.user);
+        this.approval = approved ? "approved" : "pending";
+        if (!approved) {
+          this.status = "off"; // inactive account — no save sync
+          this.emit();
+          window.dispatchEvent(new CustomEvent("cloud-ready"));
+          return;
+        }
+      } else {
+        this.approval = "approved";
+      }
       const cloudDoc = await this.provider.load(this.user.uid);
       if (!cloudDoc) {
         // First time on this account — seed the cloud with local progress.
@@ -133,10 +172,11 @@ class CloudSync {
       this.status = "error";
     }
     this.emit();
-    // Sign-in only: signal that the cloud data is fully settled (restored or
-    // seeded). The gate waits for THIS — not the earlier "syncing" status — so a
-    // returning user's persona is back before we decide app vs. onboarding.
-    if (mode === "signin") window.dispatchEvent(new CustomEvent("cloud-ready"));
+    // Signal that the account is fully settled (approval checked + data
+    // restored/seeded). The gate waits for THIS — not the earlier "syncing"
+    // status — before deciding pending vs. onboarding vs. app. Fired for both
+    // sign-in and resume so a reload transitions out of the "checking" state.
+    window.dispatchEvent(new CustomEvent("cloud-ready"));
   }
 
   private onLocalWrite(): void {

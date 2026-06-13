@@ -182,9 +182,16 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
           approved = snap.data()?.approved === true;
         } else {
           // First sign-in. Grandfather an account that already has saved progress
-          // (it predates the gate — a new user can't write a save until approved);
-          // otherwise register it as pending.
-          const hasSave = (await fsMod.getDoc(fsMod.doc(db, "saves", user.uid))).exists();
+          // (it predates the gate). NOTE: reading saves/{uid} is itself gated by
+          // the approval rule, so a brand-new (unapproved) account's read is DENIED
+          // and throws — we must treat that as "no save" and register as pending,
+          // NOT let it abort the users-doc creation below.
+          let hasSave = false;
+          try {
+            hasSave = (await fsMod.getDoc(fsMod.doc(db, "saves", user.uid))).exists();
+          } catch {
+            hasSave = false;
+          }
           approved = hasSave;
           await fsMod.setDoc(
             ref,

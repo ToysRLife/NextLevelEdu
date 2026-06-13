@@ -180,10 +180,16 @@ class Friction implements GameInstance {
       if (hit) {
         this.hits += 1;
         this.ctx.services.audio.play("tick");
-        this.coachEl.textContent = "🎯 Perfect stop! That surface had just the right friction.";
         this.statusEl.textContent = `${this.hits} / ${NEED}`;
-        if (this.hits >= NEED) this.finish();
-        else this.placeTarget();
+        if (this.hits >= NEED) {
+          this.finish();
+        } else {
+          // Set up the next round: new target, and bring the sled back to the
+          // start line so it's clearly ready for another push.
+          this.placeTarget();
+          this.x = START_X;
+          this.coachEl.textContent = `🎯 Perfect stop! ${this.hits} of ${NEED} done. New target — pick a surface and push again!`;
+        }
       } else {
         this.misses += 1;
         this.ctx.services.audio.play("fail");

@@ -8,6 +8,7 @@ import { renderCloud } from "./cloudPage";
 import { renderOnboarding } from "./onboarding";
 import { renderLoginGate } from "./loginGate";
 import { renderPendingApproval } from "./pendingApproval";
+import { renderAdmin } from "./adminPage";
 import { GAME_MANIFESTS } from "../registry";
 import { createAudioService } from "@platform/audio";
 import { cloud } from "@platform/cloud";
@@ -104,6 +105,11 @@ export function mountApp(root: HTMLElement): void {
       return;
     }
 
+    if (location.hash === "#/admin") {
+      renderAdmin(view);
+      return;
+    }
+
     renderDashboard(view);
   }
 
@@ -155,6 +161,7 @@ function mountNav(root: HTMLElement, view: HTMLElement): void {
       el("button", { class: "nav-link", onclick: () => (location.hash = "#/") }, "🎯 Missions"),
       el("button", { class: "nav-link", onclick: () => (location.hash = "#/worlds") }, "🏗️ Worlds"),
       el("button", { class: "nav-link", onclick: () => (location.hash = "#/badges") }, "🏅 Trophies"),
+      cloud().isAdmin() ? el("button", { class: "nav-link", onclick: () => (location.hash = "#/admin") }, "🛠️ Admin") : null,
       cloudBtn(),
       muteBtn(),
     ),

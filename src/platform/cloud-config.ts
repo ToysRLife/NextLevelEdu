@@ -24,6 +24,11 @@ export const FIREBASE_CONFIG: Record<string, string> = {
 export const SIGNUP_NOTIFY_URL =
   "https://script.google.com/macros/s/AKfycbye3uyjm8uvgKdJ1rtCs3uX1czXwDMiEi1RTItkqwQ0D26ne1B_QDD7D4kwcfGBacHFew/exec";
 
+// Admin accounts (by Google email). These see the in-app Admin page and can
+// approve pending users / read feedback. MUST also be listed in the Firestore
+// rules' isAdmin() so the writes are actually permitted server-side.
+export const ADMIN_EMAILS = ["chetanchauhan14@gmail.com"];
+
 export function getProvider(): CloudProvider {
   return FIREBASE_CONFIG.apiKey ? makeFirebaseProvider(FIREBASE_CONFIG) : new LocalCloudProvider();
 }

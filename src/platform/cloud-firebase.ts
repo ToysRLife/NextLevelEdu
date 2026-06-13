@@ -1,5 +1,5 @@
-import type { CloudProvider, CloudUser, CloudDoc } from "./cloud";
-import { SIGNUP_NOTIFY_URL } from "./cloud-config";
+import type { CloudProvider, CloudUser, CloudDoc, PendingUser, FeedbackEntry } from "./cloud";
+import { SIGNUP_NOTIFY_URL, ADMIN_EMAILS } from "./cloud-config";
 
 // Real cross-device cloud save via Firebase Auth (Google) + Firestore.
 //
@@ -48,7 +48,16 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
   }
 
   function toUser(u: any): CloudUser {
-    return { uid: u.uid, name: u.displayName || u.email || "Me" };
+    return { uid: u.uid, name: u.displayName || u.email || "Me", email: u.email || "" };
+  }
+
+  function cachedEmail(): string {
+    try {
+      const raw = localStorage.getItem(CACHE);
+      return raw ? JSON.parse(raw).email || "" : "";
+    } catch {
+      return "";
+    }
   }
 
   function cacheApproval(uid: string, approved: boolean): void {
@@ -168,10 +177,55 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
       });
     },
 
+    // --- Admin tools (server-side enforcement is in the Firestore rules) ---
+    isAdmin(): boolean {
+      const email = cachedEmail() || auth?.currentUser?.email || "";
+      return !!email && ADMIN_EMAILS.includes(email);
+    },
+
+    async listPendingUsers(): Promise<PendingUser[]> {
+      await init();
+      const q = fsMod.query(fsMod.collection(db, "users"), fsMod.where("approved", "==", false));
+      const snap = await fsMod.getDocs(q);
+      return snap.docs.map((d: any) => ({ uid: d.id, name: d.data().name || "", email: d.data().email || "" }));
+    },
+
+    async approveUser(uid: string): Promise<void> {
+      await init();
+      await fsMod.updateDoc(fsMod.doc(db, "users", uid), { approved: true });
+    },
+
+    async listFeedback(): Promise<FeedbackEntry[]> {
+      await init();
+      const q = fsMod.query(fsMod.collection(db, "feedback"), fsMod.orderBy("time", "desc"), fsMod.limit(50));
+      const snap = await fsMod.getDocs(q);
+      return snap.docs.map((d: any) => ({
+        gameId: d.data().gameId || "",
+        rating: d.data().rating || 0,
+        comment: d.data().comment || "",
+        email: d.data().email || "",
+      }));
+    },
+
+    async submitFeedback(gameId: string, rating: number, comment: string): Promise<void> {
+      await init();
+      const u = auth.currentUser;
+      await fsMod.addDoc(fsMod.collection(db, "feedback"), {
+        gameId,
+        rating,
+        comment: comment || "",
+        uid: u?.uid || "",
+        email: u?.email || "",
+        time: fsMod.serverTimestamp(),
+      });
+    },
+
     // Admin-approval gate. On first sign-in, registers a pending account record
     // (users/{uid}) and notifies the admin; thereafter reports its approved flag.
     async accountStatus(user: CloudUser): Promise<{ approved: boolean }> {
       await init();
+      // Refresh the cached user so its email is present (needed by isAdmin()).
+      if (auth.currentUser) cache(toUser(auth.currentUser));
       const ref = fsMod.doc(db, "users", user.uid);
       const email = auth.currentUser?.email || "";
       const name = auth.currentUser?.displayName || user.name || "";

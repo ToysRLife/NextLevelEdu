@@ -5,6 +5,70 @@ import { addJoules, addResources, getLevel, recordPlayToday, recordPerformance }
 import { getWorldReward } from "./worlds";
 import { checkBadges } from "./badges";
 import { loadGame } from "../registry";
+import { cloud } from "@platform/cloud";
+
+// A compact "How was this game?" widget for the outcome card. One tap to rate,
+// optional comment, then it posts to the feedback store and thanks the learner.
+function makeFeedbackBlock(gameId: string): HTMLElement {
+  const wrap = el("div", { class: "win-feedback" });
+  let chosen = 0;
+  const comment = el("textarea", {
+    class: "wf-comment",
+    rows: "2",
+    maxlength: "300",
+    placeholder: "Tell us more (optional)",
+  }) as HTMLTextAreaElement;
+  const sendRow = el(
+    "div",
+    { class: "wf-send", style: { display: "none" } },
+    comment,
+    el(
+      "button",
+      {
+        class: "btn small",
+        onclick: async (e: Event) => {
+          const b = e.currentTarget as HTMLButtonElement;
+          b.textContent = "Sending…";
+          b.toggleAttribute("disabled", true);
+          try {
+            await cloud().submitFeedback(gameId, chosen, comment.value.trim());
+          } catch {
+            /* best-effort */
+          }
+          clear(wrap);
+          wrap.append(el("div", { class: "wf-thanks" }, "💜 Thanks for your feedback!"));
+        },
+      },
+      "Send",
+    ),
+  );
+  const faces: [number, string][] = [
+    [1, "😕"],
+    [2, "🙂"],
+    [3, "😍"],
+  ];
+  const facesRow = el(
+    "div",
+    { class: "wf-faces" },
+    ...faces.map(([r, emoji]) =>
+      el(
+        "button",
+        {
+          class: "wf-face",
+          onclick: (e: Event) => {
+            chosen = r;
+            facesRow.querySelectorAll(".wf-face").forEach((b) => b.classList.remove("on"));
+            (e.currentTarget as HTMLElement).classList.add("on");
+            sendRow.style.display = "flex";
+          },
+        },
+        emoji,
+      ),
+    ),
+  );
+  wrap.append(el("div", { class: "wf-title" }, "How was this game?"), facesRow, sendRow);
+  return wrap;
+}
 
 // Mounts a single game: builds the host chrome (panel + stage + actions),
 // wires platform services, and renders the dual-outcome overlay. The game's
@@ -183,6 +247,7 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
       rewardPills,
       worldBlock,
       badgeBlock,
+      makeFeedbackBlock(meta.id),
       el(
         "div",
         { class: "outcome-actions" },

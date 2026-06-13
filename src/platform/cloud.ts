@@ -9,6 +9,20 @@ import { getProvider } from "./cloud-config";
 export interface CloudUser {
   uid: string;
   name: string;
+  email?: string;
+}
+
+export interface PendingUser {
+  uid: string;
+  name: string;
+  email: string;
+}
+
+export interface FeedbackEntry {
+  gameId: string;
+  rating: number; // 1=meh, 2=ok, 3=loved it
+  comment: string;
+  email: string;
 }
 
 export interface CloudDoc {
@@ -36,6 +50,13 @@ export interface CloudProvider {
   cachedApproval?(uid: string): boolean | null;
   /** Optional: re-send the admin signup notification (pending-screen reminder). */
   remind?(): Promise<void>;
+  /** Optional admin tools (gated by ADMIN_EMAILS + Firestore rules). */
+  isAdmin?(): boolean;
+  listPendingUsers?(): Promise<PendingUser[]>;
+  approveUser?(uid: string): Promise<void>;
+  listFeedback?(): Promise<FeedbackEntry[]>;
+  /** Optional: record a learner's per-game feedback. */
+  submitFeedback?(gameId: string, rating: number, comment: string): Promise<void>;
 }
 
 export type SyncStatus = "off" | "syncing" | "synced" | "error";
@@ -107,6 +128,24 @@ class CloudSync {
   /** Re-send the admin notification (pending screen's "Remind" button). */
   async remind(): Promise<void> {
     await this.provider.remind?.();
+  }
+
+  // --- Admin tools ---
+  isAdmin(): boolean {
+    return this.provider.isAdmin?.() ?? false;
+  }
+  async listPendingUsers(): Promise<PendingUser[]> {
+    return (await this.provider.listPendingUsers?.()) ?? [];
+  }
+  async approveUser(uid: string): Promise<void> {
+    await this.provider.approveUser?.(uid);
+  }
+  async listFeedback(): Promise<FeedbackEntry[]> {
+    return (await this.provider.listFeedback?.()) ?? [];
+  }
+  /** Record a learner's feedback for a game (no-op if unsupported). */
+  async submitFeedback(gameId: string, rating: number, comment: string): Promise<void> {
+    await this.provider.submitFeedback?.(gameId, rating, comment);
   }
 
   private emit(): void {

@@ -2,7 +2,14 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '../../lib/auth';
 import { LogoutButton } from '@/components/LogoutButton';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 
@@ -33,7 +40,9 @@ export default async function DashboardPage() {
                 <div>
                   <p className="text-sm text-sky-300">Welcome back</p>
                   <CardTitle>Hello, {session.user?.name}</CardTitle>
-                  <CardDescription>Track your learning progress and continue your adventures.</CardDescription>
+                  <CardDescription>
+                    Track your learning progress and continue your adventures.
+                  </CardDescription>
                 </div>
                 <div className="flex items-center gap-3">
                   <Button>View assignments</Button>
@@ -107,8 +116,12 @@ export default async function DashboardPage() {
                   <Card key={subject.title} className="border-slate-800/70 bg-slate-900/90 p-5">
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                        <p className="text-sm uppercase tracking-[0.18em] text-slate-500">{subject.grade}</p>
-                        <h3 className="mt-3 text-xl font-semibold text-slate-100">{subject.title}</h3>
+                        <p className="text-sm uppercase tracking-[0.18em] text-slate-500">
+                          {subject.grade}
+                        </p>
+                        <h3 className="mt-3 text-xl font-semibold text-slate-100">
+                          {subject.title}
+                        </h3>
                       </div>
                       <Badge>{subject.topics} topics</Badge>
                     </div>
@@ -133,7 +146,10 @@ export default async function DashboardPage() {
             <CardContent>
               <div className="space-y-4">
                 {recentActivity.map((activity) => (
-                  <div key={activity.title} className="rounded-3xl border border-slate-800/70 bg-slate-900/80 p-4">
+                  <div
+                    key={activity.title}
+                    className="rounded-3xl border border-slate-800/70 bg-slate-900/80 p-4"
+                  >
                     <p className="font-medium text-slate-100">{activity.title}</p>
                     <p className="mt-2 text-sm text-slate-500">{activity.time}</p>
                   </div>

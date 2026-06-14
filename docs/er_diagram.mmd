@@ -1,0 +1,145 @@
+erDiagram
+    USER {
+        string id
+        string role
+        string firstName
+        string lastName
+        string email
+        string passwordHash
+        datetime emailVerified
+        int grade
+        datetime createdAt
+    }
+
+    PARENT_STUDENT {
+        string id
+        string parentId
+        string studentId
+        datetime createdAt
+    }
+
+    ACCOUNT {
+        int id
+        string userId
+        string provider
+        string providerAccountId
+        string type
+        string access_token
+        string refresh_token
+        int expires_at
+        string id_token
+        datetime session_state
+    }
+
+    SESSION {
+        string id
+        string sessionToken
+        string userId
+        datetime expires
+    }
+
+    VERIFICATION_TOKEN {
+        string identifier
+        string token
+        datetime expires
+    }
+
+    SUBJECT {
+        string id
+        string name
+        int grade
+        string description
+        datetime createdAt
+    }
+
+    CHAPTER {
+        string id
+        string subjectId
+        string title
+        int order
+        datetime createdAt
+    }
+
+    QUESTION {
+        string id
+        string chapterId
+        string text
+        string type
+        int difficulty
+        string options
+        string answer
+        datetime createdAt
+    }
+
+    GAME {
+        string id
+        string name
+        string subjectId
+        string gameType
+        int grade
+        string config
+        datetime createdAt
+    }
+
+    GAME_QUESTION {
+        string id
+        string gameId
+        string questionId
+        int order
+    }
+
+    PROGRESS {
+        string id
+        string studentId
+        string subjectId
+        string chapterId
+        string questionId
+        string gameId
+        float score
+        int attempts
+        string status
+        datetime completedAt
+        string meta
+        datetime createdAt
+    }
+
+    ACHIEVEMENT {
+        string id
+        string name
+        string description
+        string criteria
+        int points
+        datetime createdAt
+    }
+
+    USER_ACHIEVEMENT {
+        string id
+        string userId
+        string achievementId
+        datetime unlockedAt
+        string progress
+        datetime createdAt
+    }
+
+    %% Relationships
+    USER ||--o{ PARENT_STUDENT : "parent"
+    USER ||--o{ PARENT_STUDENT : "student"
+
+    SUBJECT ||--o{ CHAPTER : "has"
+    CHAPTER ||--o{ QUESTION : "contains"
+
+    GAME ||--o{ GAME_QUESTION : "includes"
+    QUESTION ||--o{ GAME_QUESTION : "used_in"
+
+    USER ||--o{ PROGRESS : "records"
+    SUBJECT ||--o{ GAME : "maps_to"
+    USER ||--o{ USER_ACHIEVEMENT : "earns"
+    ACHIEVEMENT ||--o{ USER_ACHIEVEMENT : "awarded"
+
+    USER ||--o{ ACCOUNT : "has"
+    USER ||--o{ SESSION : "has"
+
+    %% Optional relationships for analytics
+    PROGRESS }o--|| QUESTION : "related_to"
+    PROGRESS }o--|| CHAPTER : "related_to"
+    PROGRESS }o--|| GAME : "related_to"

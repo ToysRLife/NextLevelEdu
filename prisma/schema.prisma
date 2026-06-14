@@ -1,0 +1,264 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  PARENT
+  ADMIN
+}
+
+enum QuestionType {
+  MCQ
+  TRUE_FALSE
+  SHORT_ANSWER
+  MATCHING
+}
+
+enum GameType {
+  QUIZ
+  ADVENTURE
+  PUZZLE
+  TIMED_CHALLENGE
+}
+
+enum ProgressStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  IN_PROGRESS
+}
+
+model User {
+  id            String           @id @default(uuid())
+  role          UserRole
+  firstName     String
+  lastName      String
+  email         String           @unique
+  passwordHash  String?
+  emailVerified DateTime?
+  grade         Int?
+  avatarUrl     String?
+  dob           DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  parentLinks   ParentStudent[]  @relation("ParentLinks")
+  studentLinks  ParentStudent[]  @relation("StudentLinks")
+  accounts      Account[]
+  sessions      Session[]
+
+  progress      Progress[]
+  userAchievements UserAchievement[]
+}
+
+/// Models required by Auth.js / NextAuth Prisma Adapter
+model Account {
+  id                 Int     @id @default(autoincrement())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model ParentStudent {
+  id         String   @id @default(uuid())
+  parentId   String
+  studentId  String
+  createdAt  DateTime @default(now())
+
+  parent     User     @relation("ParentLinks", fields: [parentId], references: [id])
+  student    User     @relation("StudentLinks", fields: [studentId], references: [id])
+
+  @@unique([parentId, studentId])
+  @@index([studentId])
+}
+
+model Subject {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  grade       Int
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  chapters    Chapter[]
+  games       Game[]
+  progress    Progress[]
+
+  @@unique([name, grade])
+}
+
+model Chapter {
+  id          String    @id @default(uuid())
+  subjectId   String
+  title       String
+  description String?
+  grade       Int
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  subject     Subject   @relation(fields: [subjectId], references: [id])
+  questions   Question[]
+  progress    Progress[]
+
+  @@index([subjectId])
+  @@index([grade, subjectId])
+}
+
+model Question {
+  id           String       @id @default(uuid())
+  chapterId    String
+  text         String
+  type         QuestionType
+  difficulty   Int
+  options      Json?
+  answer       Json
+  explanation  String?
+  metadata     Json?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  chapter      Chapter      @relation(fields: [chapterId], references: [id])
+  gameQuestions GameQuestion[]
+  progress     Progress[]
+
+  @@index([chapterId])
+  @@index([difficulty])
+  @@index([type])
+  @@index([chapterId, difficulty])
+  @@index([chapterId, type])
+  @@index([chapterId, difficulty, type])
+  @@map("questions")
+}
+
+model Game {
+  id          String         @id @default(uuid())
+  name        String
+  description String?
+  subjectId   String?
+  gameType    GameType
+  grade       Int
+  config      Json?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  subject     Subject?       @relation(fields: [subjectId], references: [id])
+  gameQuestions GameQuestion[]
+  progress     Progress[]
+
+  @@index([subjectId])
+  @@index([gameType, grade])
+}
+
+model GameQuestion {
+  id         String   @id @default(uuid())
+  gameId     String
+  questionId String
+  order      Int      @default(0)
+
+  game       Game     @relation(fields: [gameId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id])
+
+  @@unique([gameId, questionId])
+  @@index([gameId])
+  @@index([questionId])
+}
+
+model Progress {
+  id          String         @id @default(uuid())
+  studentId   String
+  subjectId   String?
+  chapterId   String?
+  questionId  String?
+  gameId      String?
+  score       Float?
+  attempts    Int            @default(0)
+  durationSec Int?
+  status      ProgressStatus @default(PENDING)
+  completedAt DateTime?
+  meta        Json?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  student     User           @relation(fields: [studentId], references: [id])
+  subject     Subject?       @relation(fields: [subjectId], references: [id])
+  chapter     Chapter?       @relation(fields: [chapterId], references: [id])
+  question    Question?      @relation(fields: [questionId], references: [id])
+  game        Game?          @relation(fields: [gameId], references: [id])
+
+  @@index([studentId])
+  @@index([studentId, subjectId])
+  @@index([studentId, chapterId])
+  @@index([studentId, gameId])
+  @@index([studentId, status])
+  @@index([studentId, completedAt])
+  @@index([chapterId, status])
+  @@index([gameId, status])
+}
+
+model Achievement {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  criteria    Json
+  points      Int       @default(0)
+  icon        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  userAchievements UserAchievement[]
+
+  @@unique([name])
+}
+
+model UserAchievement {
+  id            String    @id @default(uuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime  @default(now())
+  progress      Json?
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id])
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@index([achievementId])
+}

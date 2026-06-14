@@ -1,0 +1,73 @@
+# Node
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js build output
+.next/
+out/
+build/
+
+# Next.js cache
+.next/cache/
+
+# Production
+dist/
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+
+# Env files
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Vercel
+.vercel/
+
+# Netlify
+.netlify/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Mac
+.DS_Store
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+
+# Misc
+.cache/
+.tmp/
+*.tgz
+
+# Storybook
+.storybook/
+
+# Prisma local DBs
+*.sqlite
+*.db
+
+# Keep lockfiles (pnpm-lock.yaml) committed

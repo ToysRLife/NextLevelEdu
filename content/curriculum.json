@@ -79,7 +79,12 @@
         { "id": "chem-22", "title": "Everyday Acids & Bases", "gradeBand": "4-5", "ngss": "5-PS1-4*", "summary": "Sour lemon vs slippery soap (gentle intro)." },
         { "id": "chem-23", "title": "Rusting & Tarnishing", "gradeBand": "4-5", "ngss": "5-PS1-4*", "summary": "Slow changes to metals over time." },
         { "id": "chem-24", "title": "Mixing Colors", "gradeBand": "K-2", "ngss": "2-PS1-3*", "summary": "Paints combine to make new colors." },
-        { "id": "chem-25", "title": "Recycling & Reusing Materials", "gradeBand": "2-4", "ngss": "5-ESS3-1*", "summary": "Materials can be given a second life." }
+        { "id": "chem-25", "title": "Recycling & Reusing Materials", "gradeBand": "2-4", "ngss": "5-ESS3-1*", "summary": "Materials can be given a second life." },
+        { "id": "chem-26", "title": "Atomic Structure", "gradeBand": "6-8", "ngss": "MS-PS1-1", "summary": "An atom is protons and neutrons in a nucleus with electrons around it. The proton count decides the element, neutrons set the mass, and matching electrons keep it neutral." },
+        { "id": "chem-27", "title": "Conservation of Mass", "gradeBand": "6-8", "ngss": "MS-PS1-5", "summary": "Atoms are never created or destroyed in a reaction — only rearranged. A balanced equation has the same number of each atom on both sides." },
+        { "id": "chem-28", "title": "Particle Motion & States", "gradeBand": "6-8", "ngss": "MS-PS1-4", "summary": "Heat gives particles energy: cold locks them into a solid, warmth lets them flow as a liquid, and more heat sends them flying as a gas." },
+        { "id": "chem-29", "title": "Acids, Bases & pH", "gradeBand": "6-8", "ngss": "MS-PS1-2", "summary": "pH measures how acidic or basic a solution is — below 7 acidic, 7 neutral, above 7 basic. Mixing an acid and a base neutralizes toward 7." },
+        { "id": "chem-30", "title": "Gas Behaviour (Ideal Gas Law)", "gradeBand": "6-8", "ngss": "MS-PS1-4", "summary": "Gas pressure comes from particles hitting the walls. Heating speeds them up and shrinking the volume packs the hits closer — both raise pressure (P = nRT ÷ V)." }
       ]
     },
     {

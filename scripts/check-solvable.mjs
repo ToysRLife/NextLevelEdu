@@ -303,6 +303,122 @@ try {
   fail("rockcycle", String(e));
 }
 
+// --- atombuilder (Atom Builder): every round must be buildable — the neutron
+//     count (mass − Z) must be ≥ 0 and within the slider, Z within 1–20. --------
+try {
+  const n = failures.length;
+  const src = read("src/games/atombuilder/index.ts");
+  const rounds = [...src.matchAll(/z:\s*(\d+),\s*mass:\s*(\d+)/g)].map((m) => ({ z: +m[1], mass: +m[2] }));
+  if (!rounds.length) fail("atombuilder", "could not parse ROUNDS");
+  rounds.forEach((r, i) => {
+    const neutrons = r.mass - r.z;
+    if (r.z < 1 || r.z > 20) fail("atombuilder", `round ${i + 1} proton count ${r.z} outside slider 1–20`);
+    if (neutrons < 0 || neutrons > 25) fail("atombuilder", `round ${i + 1} needs ${neutrons} neutrons, outside slider 0–25`);
+  });
+  if (rounds.length && failures.length === n) pass("atombuilder", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("atombuilder", String(e));
+}
+
+// --- balanceit (Balance It): each equation must have a balancing set of integer
+//     coefficients within the slider range 1–6. Equations mirror the game source. -
+try {
+  const n = failures.length;
+  // Mirror of ROUNDS in src/games/balanceit/index.ts (species element maps).
+  const EQUATIONS = [
+    { reactants: [{ H: 2 }, { O: 2 }], products: [{ H: 2, O: 1 }] },
+    { reactants: [{ N: 2 }, { H: 2 }], products: [{ N: 1, H: 3 }] },
+    { reactants: [{ C: 1, H: 4 }, { O: 2 }], products: [{ C: 1, O: 2 }, { H: 2, O: 1 }] },
+  ];
+  const elementsOf = (eq) => [...new Set([...eq.reactants, ...eq.products].flatMap((s) => Object.keys(s)))];
+  const isBalanced = (eq, coeffs) => {
+    const rOff = 0, pOff = eq.reactants.length;
+    return elementsOf(eq).every((el) => {
+      const l = eq.reactants.reduce((sum, s, i) => sum + coeffs[rOff + i] * (s[el] ?? 0), 0);
+      const r = eq.products.reduce((sum, s, i) => sum + coeffs[pOff + i] * (s[el] ?? 0), 0);
+      return l === r;
+    });
+  };
+  EQUATIONS.forEach((eq, idx) => {
+    const k = eq.reactants.length + eq.products.length;
+    let solvable = false;
+    const tryAll = (pos, acc) => {
+      if (solvable) return;
+      if (pos === k) { if (isBalanced(eq, acc)) solvable = true; return; }
+      for (let v = 1; v <= 6 && !solvable; v++) tryAll(pos + 1, [...acc, v]);
+    };
+    tryAll(0, []);
+    if (!solvable) fail("balanceit", `equation ${idx + 1} cannot be balanced with coefficients 1–6`);
+  });
+  if (failures.length === n) pass("balanceit", `${EQUATIONS.length} equations balanceable`);
+} catch (e) {
+  fail("balanceit", String(e));
+}
+
+// --- stateslab (States of Matter): every target state must be reachable with
+//     some temperature in the slider range −50…150°C. ----------------------------
+try {
+  const n = failures.length;
+  const src = read("src/games/stateslab/index.ts");
+  const stateFor = (t) => (t < 0 ? "Solid" : t <= 100 ? "Liquid" : "Gas");
+  const arr = src.match(/ROUNDS:\s*State\[\]\s*=\s*\[([^\]]*)\]/)?.[1] ?? "";
+  const rounds = [...arr.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  if (!rounds.length) fail("stateslab", "could not parse ROUNDS");
+  rounds.forEach((target, i) => {
+    let okR = false;
+    for (let t = -50; t <= 150 && !okR; t++) if (stateFor(t) === target) okR = true;
+    if (!okR) fail("stateslab", `round ${i + 1} (state ${target}) unreachable in −50…150°C`);
+  });
+  if (rounds.length && failures.length === n) pass("stateslab", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("stateslab", String(e));
+}
+
+// --- phmixer (pH Mixer): ∃ acidVol∈[0,100]step1 with pH within the tightest
+//     (master) tolerance of each target. ------------------------------------------
+try {
+  const n = failures.length;
+  const src = read("src/games/phmixer/index.ts");
+  const BASE_VOL = 50, CONC = 0.1;
+  const pHfor = (acidVol) => {
+    const netOH = BASE_VOL * CONC - acidVol * CONC;
+    const total = BASE_VOL + acidVol;
+    if (Math.abs(netOH) < 1e-9) return 7;
+    if (netOH > 0) return Math.max(0, Math.min(14, 14 + Math.log10(netOH / total)));
+    return Math.max(0, Math.min(14, -Math.log10(-netOH / total)));
+  };
+  const rounds = [...(src.match(/ROUNDS:\s*number\[\]\s*=\s*\[([^\]]*)\]/)?.[1] ?? "").matchAll(/\d+/g)].map((m) => +m[0]);
+  const tol = 0.3; // byTier master
+  if (!rounds.length) fail("phmixer", "could not parse ROUNDS");
+  rounds.forEach((t, i) => {
+    let okR = false;
+    for (let a = 0; a <= 100; a++) if (Math.abs(pHfor(a) - t) <= tol) { okR = true; break; }
+    if (!okR) fail("phmixer", `round ${i + 1} (target pH ${t}) unreachable with acid 0–100 mL`);
+  });
+  if (rounds.length && failures.length === n) pass("phmixer", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("phmixer", String(e));
+}
+
+// --- gaslab (Gas Lab): ∃ temp∈[0,200]step5, vol∈[1,20]step0.5 with P within the
+//     tightest (master) tolerance of each target. nRT/V, n=1, R=8.314. -----------
+try {
+  const n = failures.length;
+  const src = read("src/games/gaslab/index.ts");
+  const pressureFor = (tC, v) => (8.314 * (tC + 273)) / v;
+  const rounds = [...src.matchAll(/target:\s*(\d+)\s*\}/g)].map((m) => +m[1]);
+  const tol = 25; // byTier master
+  if (!rounds.length) fail("gaslab", "could not parse ROUNDS");
+  rounds.forEach((t, i) => {
+    let okR = false;
+    for (let temp = 0; temp <= 200 && !okR; temp += 5) for (let v = 1; v <= 20; v += 0.5) if (Math.abs(pressureFor(temp, v) - t) <= tol) { okR = true; break; }
+    if (!okR) fail("gaslab", `round ${i + 1} (target ${t} kPa) unreachable with the sliders`);
+  });
+  if (rounds.length && failures.length === n) pass("gaslab", `${rounds.length} rounds solvable`);
+} catch (e) {
+  fail("gaslab", String(e));
+}
+
 // --- report ---
 for (const line of ok) console.log(line);
 if (failures.length) {

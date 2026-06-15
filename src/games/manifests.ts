@@ -630,6 +630,66 @@ export const GAME_MANIFESTS: GameManifest[] = [
     "takeaway": "Sieving, filtering, and magnets pull mixtures apart."
   },
   {
+    "id": "atombuilder",
+    "conceptId": "chem-26",
+    "title": "Atom Builder",
+    "stream": "chemistry",
+    "gradeBand": "6-8",
+    "emoji": "⚛️",
+    "blurb": "Place protons, neutrons, and electrons to build real atoms — and discover what makes each element.",
+    "mission": "Build each target atom with the right protons, neutrons, and electrons.",
+    "estMinutes": 4,
+    "takeaway": "An atom is protons and neutrons in a nucleus with electrons around it. The proton count decides the element, neutrons set the mass, and matching electrons keep it neutral."
+  },
+  {
+    "id": "balanceit",
+    "conceptId": "chem-27",
+    "title": "Balance It",
+    "stream": "chemistry",
+    "gradeBand": "6-8",
+    "emoji": "⚖️",
+    "blurb": "Set the coefficients so every atom is accounted for — and discover conservation of mass.",
+    "mission": "Balance each chemical equation so atoms match on both sides.",
+    "estMinutes": 4,
+    "takeaway": "Atoms are never created or destroyed in a reaction — only rearranged. A balanced equation has the same number of each atom on both sides."
+  },
+  {
+    "id": "gaslab",
+    "conceptId": "chem-30",
+    "title": "Gas Lab",
+    "stream": "chemistry",
+    "gradeBand": "6-8",
+    "emoji": "⏲️",
+    "blurb": "Heat and squeeze a gas to control its pressure — and feel the ideal gas law in action.",
+    "mission": "Set temperature and volume to hit each target pressure.",
+    "estMinutes": 4,
+    "takeaway": "Gas pressure comes from particles hitting the walls. Heating speeds them up and shrinking the volume packs the hits closer — both raise pressure (P = nRT ÷ V)."
+  },
+  {
+    "id": "phmixer",
+    "conceptId": "chem-29",
+    "title": "pH Mixer",
+    "stream": "chemistry",
+    "gradeBand": "6-8",
+    "emoji": "🧪",
+    "blurb": "Pour acid into a base and watch the universal indicator change colour as you hit each target pH.",
+    "mission": "Add the right amount of acid to reach each target pH.",
+    "estMinutes": 3,
+    "takeaway": "pH measures how acidic or basic a solution is — below 7 acidic, 7 neutral, above 7 basic. Mixing an acid and a base neutralizes toward 7."
+  },
+  {
+    "id": "stateslab",
+    "conceptId": "chem-28",
+    "title": "States of Matter Lab",
+    "stream": "chemistry",
+    "gradeBand": "6-8",
+    "emoji": "🔬",
+    "blurb": "Heat and cool a substance to watch its particles lock up, flow, or fly apart — solid, liquid, gas.",
+    "mission": "Set the temperature to reach each target state of matter.",
+    "estMinutes": 3,
+    "takeaway": "Heat gives particles energy: cold locks them into a solid, warmth lets them flow as a liquid, and more heat sends them flying as a gas."
+  },
+  {
     "id": "living",
     "conceptId": "bio-01",
     "title": "Alive or Not?",

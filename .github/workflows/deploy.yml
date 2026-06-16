@@ -4,7 +4,7 @@ name: Deploy to GitHub Pages
 # deploy branch. No build output is committed to the repo.
 on:
   push:
-    branches: [unicorn, unicorn-configuration-settings]
+    branches: [unicorn]
   workflow_dispatch:
 
 # Permissions the deploy-pages action needs.

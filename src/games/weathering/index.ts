@@ -86,7 +86,7 @@ class Weathering implements GameInstance {
 
   private buildLand(): void {
     this.heights = Array.from({ length: N }, () => START_H);
-    this.target = Array.from({ length: N }, (item, index) => {
+    this.target = Array.from({ length: N }, (_item, index) => {
       const t = index / (N - 1);
       // two rounded hills with a valley between — a believable eroded profile
       return Math.round(70 + 80 * (0.5 + 0.5 * Math.cos(t * Math.PI * 4)));

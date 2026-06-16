@@ -87,6 +87,12 @@ export default [
         {
           selector: "variable",
           format: ["camelCase", "UPPER_CASE"],
+          leadingUnderscore: "allow",
+        },
+        {
+          selector: "parameter",
+          format: ["camelCase"],
+          leadingUnderscore: "allow",
         },
         {
           selector: "typeLike",

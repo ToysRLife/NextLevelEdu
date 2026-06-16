@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Balloon Pop — Educational Game</title>
+  <style>
+    :root {
+      --accent: #ff7a59;
+      --accent2: #4fb0c6;
+      --bg: #e8f4f8;
+      --card: #ffffff;
+      --text: #2b2b2b;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg), #e0f0f6);
+      line-height: 1.5;
+    }
+    .header {
+      background: linear-gradient(135deg, var(--accent2), #2a9db3);
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+    .header-info {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-weight: 600;
+    }
+    .back-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 200ms;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+    .game-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .canvas-wrapper {
+      flex: 1;
+      min-width: 320px;
+      background: linear-gradient(180deg, #a8d8f0, #c0e0f0);
+      border-radius: 12px;
+      border: 3px solid #4fb0c6;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      position: relative;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 600px;
+      background: linear-gradient(180deg, #a8d8f0, #c0e0f0);
+      cursor: pointer;
+    }
+    .control-panel {
+      width: 300px;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .stat:last-of-type {
+      border-bottom: none;
+    }
+    .stat-value {
+      color: var(--accent);
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .problem-display {
+      background: linear-gradient(135deg, #fff0e6, #ffe8d6);
+      padding: 16px;
+      border-radius: 10px;
+      border-left: 4px solid var(--accent);
+      text-align: center;
+    }
+    .problem-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+    }
+    .answer-text {
+      font-size: 1rem;
+      color: #666;
+      margin: 4px 0 0 0;
+    }
+    .control-btn {
+      padding: 14px;
+      border: 0;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 200ms;
+    }
+    .btn-start {
+      background: linear-gradient(135deg, var(--accent), #ff5f3f);
+      color: white;
+    }
+    .btn-start:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(255, 122, 89, 0.3);
+    }
+    .btn-reset {
+      background: #f0f0f0;
+      color: var(--text);
+    }
+    .btn-reset:hover {
+      background: #e0e0e0;
+    }
+    .instructions {
+      background: #fffbe6;
+      border-left: 4px solid #ffd36b;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .instructions strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .feedback {
+      min-height: 60px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+      font-weight: 600;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .feedback.correct {
+      background: #d4edda;
+      color: #155724;
+      border: 2px solid #28a745;
+      display: block;
+    }
+    .feedback.incorrect {
+      background: #f8d7da;
+      color: #721c24;
+      border: 2px solid #f5c6cb;
+      display: block;
+    }
+    /* Operation selector styles */
+    .op-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .op-btn {
+      padding: 8px 10px;
+      border: 1px solid #e0e0e0;
+      background: #fafafa;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .op-btn.active {
+      background: linear-gradient(135deg, var(--accent), #ff5f3f);
+      color: white;
+      border-color: rgba(0,0,0,0.08);
+      box-shadow: 0 6px 12px rgba(255,122,89,0.15);
+    }
+    @media (max-width: 1000px) {
+      .game-container {
+        flex-direction: column;
+      }
+      .control-panel {
+        width: 100%;
+      }
+      .canvas-wrapper {
+        min-width: 100%;
+      }
+      canvas {
+        height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎈 Balloon Pop</h1>
+    <div class="header-info">
+      <div>Score: <span id="scoreDisplay">0</span></div>
+      <a href="indexMaths.html" class="back-btn">← Back</a>
+    </div>
+  </div>
+
+  <div class="game-container">
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div class="control-panel">
+      <div class="problem-display">
+        <p class="problem-text" id="problemText">9 + 2</p>
+        <p class="answer-text" id="answerText">Find: 11</p>
+      </div>
+
+      <div class="stat">
+        <span>Correct Clicks:</span>
+        <span class="stat-value" id="correctDisplay">0</span>
+      </div>
+      <div class="stat">
+        <span>Wrong Clicks:</span>
+        <span class="stat-value" id="incorrectDisplay">0</span>
+      </div>
+
+      <button id="startBtn" class="control-btn btn-start">🎮 Start Game</button>
+      <button id="nextBtn" class="control-btn btn-start" style="display:none;">➡️ Next Problem</button>
+      <button id="resetBtn" class="control-btn btn-reset">Reset</button>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="instructions">
+        <strong>🎯 How to Play:</strong>
+        Click on the balloon with the correct answer!<br>
+        <br>
+        4 balloons will float across the screen.
+      </div>
+
+      <div style="margin-top:12px;">
+        <strong style="display:block;margin-bottom:6px;">Select Operation:</strong>
+        <div class="op-nav">
+          <button class="op-btn active" data-op="+">Addition</button>
+          <button class="op-btn" data-op="-">Subtraction</button>
+          <button class="op-btn" data-op="*">Multiplication</button>
+          <button class="op-btn" data-op="/">Division</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size
+    function resizeCanvas() {
+      const wrapper = canvas.parentElement;
+      canvas.width = wrapper.clientWidth;
+      canvas.height = 600;
+    }
+    window.addEventListener('resize', () => resizeCanvas());
+    resizeCanvas();
+
+    // Elements
+    const startBtn = document.getElementById('startBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const correctDisplay = document.getElementById('correctDisplay');
+    const incorrectDisplay = document.getElementById('incorrectDisplay');
+    const problemText = document.getElementById('problemText');
+    const answerText = document.getElementById('answerText');
+    const feedback = document.getElementById('feedback');
+
+    // Game state
+    let gameRunning = false;
+    let problemActive = false;
+    let currentOperation = '+';
+    let score = 0;
+    let correctClicks = 0;
+    let incorrectClicks = 0;
+
+    // Balloons array
+    let balloons = [];
+    let particles = [];
+
+    // Balloon colors palette
+    const balloonColors = [
+      '#ff6b6b', // Red
+      '#4fb0c6', // Blue
+      '#ffd93d', // Yellow
+      '#6bcf7f'  // Green
+    ];
+
+    // Confetti Particle class
+    class ConfettiParticle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 12;
+        this.vy = (Math.random() - 0.5) * 12 - 3;
+        this.gravity = 0.3;
+        this.life = 1;
+        this.decay = Math.random() * 0.02 + 0.01;
+        this.size = Math.random() * 8 + 4;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.25;
+        this.color = color;
+      }
+
+      update() {
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.rotation += this.rotationSpeed;
+        this.life -= this.decay;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+        ctx.restore();
+      }
+
+      isDead() {
+        return this.life <= 0;
+      }
+    }
+
+    // Sad Particle class (for wrong answers)
+    class SadParticle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 4;
+        this.vy = Math.random() * 3 + 2;
+        this.gravity = 0.2;
+        this.life = 1;
+        this.decay = 0.02;
+        this.size = Math.random() * 6 + 3;
+        this.color = color;
+        this.wobble = Math.random() * Math.PI * 2;
+      }
+
+      update() {
+        this.vy += this.gravity;
+        this.x += this.vx + Math.sin(this.wobble) * 1;
+        this.y += this.vy;
+        this.wobble += 0.1;
+        this.life -= this.decay;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.translate(this.x, this.y);
+        ctx.fillStyle = this.color;
+        // Draw a tear-like drop
+        ctx.beginPath();
+        ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      isDead() {
+        return this.life <= 0;
+      }
+    }
+
+    // Balloon class
+    class Balloon {
+      constructor(x, y, answer, isCorrect, color) {
+        this.x = x;
+        this.y = y;
+        this.radius = 35;
+        this.answer = answer;
+        this.isCorrect = isCorrect;
+        this.color = color;
+        this.vy = -2; // upward velocity
+        this.vx = (Math.random() - 0.5) * 1.5; // slight horizontal drift
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+        this.popping = false;
+        this.popTime = 0;
+        this.popDuration = 0.3; // seconds
+      }
+
+      update() {
+        if (this.popping) {
+          this.popTime += 0.016; // ~60fps
+          return;
+        }
+        this.y += this.vy;
+        this.x += this.vx;
+        this.rotation += this.rotationSpeed;
+
+        // Keep in horizontal bounds (wrap around)
+        if (this.x < -this.radius) this.x = canvas.width + this.radius;
+        if (this.x > canvas.width + this.radius) this.x = -this.radius;
+      }
+
+      draw() {
+        if (this.popping) {
+          // Draw pop animation (shrink and burst)
+          const progress = this.popTime / this.popDuration;
+          const shrinkRadius = this.radius * (1 - progress);
+
+          ctx.save();
+          ctx.translate(this.x, this.y);
+
+          ctx.fillStyle = this.color;
+          ctx.globalAlpha = 1 - progress;
+          ctx.beginPath();
+          ctx.arc(0, 0, shrinkRadius, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Draw burst lines
+          const burstLines = 8;
+          ctx.strokeStyle = this.color;
+          ctx.lineWidth = 2;
+          ctx.globalAlpha = (1 - progress) * 0.5;
+          for (let i = 0; i < burstLines; i++) {
+            const angle = (i / burstLines) * Math.PI * 2;
+            const length = this.radius * (1 + progress * 0.5);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(Math.cos(angle) * length, Math.sin(angle) * length);
+            ctx.stroke();
+          }
+
+          ctx.restore();
+          return;
+        }
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+
+        // Balloon body
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Balloon shadow/shine
+        ctx.fillStyle = this.color + '4D'; // Add transparency
+        ctx.beginPath();
+        ctx.arc(-10, -15, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        // String
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, this.radius);
+        ctx.lineTo(0, this.radius + 20);
+        ctx.stroke();
+
+        // Answer number on balloon
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 24px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.answer, 0, 0);
+
+        ctx.restore();
+      }
+
+      isClicked(mouseX, mouseY) {
+        const dx = mouseX - this.x;
+        const dy = mouseY - this.y;
+        return Math.sqrt(dx * dx + dy * dy) <= this.radius;
+      }
+
+      isOffScreen() {
+        return this.y < -100;
+      }
+    }
+
+    // Generate new problem
+    function generateProblem() {
+      feedback.className = 'feedback';
+      feedback.textContent = '';
+
+      // Random problem based on currentOperation
+      let a, b, correctAnswer, displayText;
+      if (currentOperation === '+') {
+        a = Math.floor(Math.random() * 8) + 1;
+        b = Math.floor(Math.random() * 8) + 1;
+        correctAnswer = a + b;
+        displayText = `${a} + ${b}`;
+      } else if (currentOperation === '-') {
+        a = Math.floor(Math.random() * 12) + 1;
+        b = Math.floor(Math.random() * a) + 0;
+        correctAnswer = a - b;
+        displayText = `${a} - ${b}`;
+      } else if (currentOperation === '*') {
+        a = Math.floor(Math.random() * 9) + 1;
+        b = Math.floor(Math.random() * 9) + 1;
+        correctAnswer = a * b;
+        displayText = `${a} × ${b}`;
+      } else if (currentOperation === '/') {
+        b = Math.floor(Math.random() * 8) + 1;
+        correctAnswer = Math.floor(Math.random() * 9) + 1;
+        a = correctAnswer * b;
+        displayText = `${a} ÷ ${b}`;
+      }
+
+      problemText.textContent = displayText;
+      answerText.textContent = `Find: ${correctAnswer}`;
+
+      // Generate 4 balloons with random answers
+      balloons = [];
+      const answers = [correctAnswer];
+
+      // Generate 3 wrong answers
+      while (answers.length < 4) {
+        let wrongAnswer = Math.floor(Math.random() * 20) + 1;
+        if (!answers.includes(wrongAnswer) && wrongAnswer !== correctAnswer) {
+          answers.push(wrongAnswer);
+        }
+      }
+
+      // Shuffle answers
+      for (let i = answers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [answers[i], answers[j]] = [answers[j], answers[i]];
+      }
+
+      // Create balloons at different x positions
+      const positions = [
+        canvas.width * 0.2,
+        canvas.width * 0.4,
+        canvas.width * 0.6,
+        canvas.width * 0.8
+      ];
+
+      // Shuffle colors for this round
+      const colors = [...balloonColors];
+      for (let i = colors.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [colors[i], colors[j]] = [colors[j], colors[i]];
+      }
+
+      answers.forEach((ans, idx) => {
+        const balloon = new Balloon(
+          positions[idx],
+          canvas.height + 50,
+          ans,
+          ans === correctAnswer,
+          colors[idx]
+        );
+        balloons.push(balloon);
+      });
+
+      problemActive = true;
+      nextBtn.style.display = 'none';
+      if (gameRunning) startBtn.style.display = 'none';
+    }
+
+    // Update game state
+    function updateGame() {
+      if (!problemActive) return;
+
+      // Update and draw balloons
+      for (let i = balloons.length - 1; i >= 0; i--) {
+        balloons[i].update();
+        balloons[i].draw();
+
+        // Check if balloon is done popping
+        if (balloons[i].popping && balloons[i].popTime >= balloons[i].popDuration) {
+          balloons.splice(i, 1);
+          continue;
+        }
+
+        // Check if balloon went off screen
+        if (!balloons[i].popping && balloons[i].isOffScreen()) {
+          // If it's the correct answer that went off screen, it's a missed opportunity
+          if (balloons[i].isCorrect) {
+            incorrectClicks++;
+            feedback.className = 'feedback incorrect';
+            feedback.textContent = `Missed! Balloon escaped.`;
+          }
+
+          incorrectDisplay.textContent = incorrectClicks;
+          balloons.splice(i, 1);
+          problemActive = false;
+          nextBtn.style.display = 'block';
+          return;
+        }
+      }
+    }
+
+    // Mouse click handler
+    canvas.addEventListener('click', (e) => {
+      if (!problemActive || !gameRunning) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      // Check if any balloon was clicked
+      for (let i = balloons.length - 1; i >= 0; i--) {
+        if (balloons[i].isClicked(mouseX, mouseY)) {
+          const clickedBalloon = balloons[i];
+
+          if (clickedBalloon.isCorrect) {
+            // Correct click! Create celebration particles
+            score += 10;
+            correctClicks++;
+            feedback.className = 'feedback correct';
+            feedback.textContent = `✓ Correct! +10 Points`;
+
+            // Create confetti particles
+            const confettiAmount = 15;
+            for (let j = 0; j < confettiAmount; j++) {
+              const randomColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+              particles.push(new ConfettiParticle(clickedBalloon.x, clickedBalloon.y, randomColor));
+            }
+          } else {
+            // Wrong click - create sad particles
+            incorrectClicks++;
+            feedback.className = 'feedback incorrect';
+            feedback.textContent = `✗ Wrong! Try again.`;
+
+            // Create sad falling particles
+            const sadAmount = 8;
+            for (let j = 0; j < sadAmount; j++) {
+              particles.push(new SadParticle(clickedBalloon.x, clickedBalloon.y, clickedBalloon.color));
+            }
+          }
+
+          scoreDisplay.textContent = score;
+          correctDisplay.textContent = correctClicks;
+          incorrectDisplay.textContent = incorrectClicks;
+
+          // Mark balloon as popping
+          clickedBalloon.popping = true;
+          problemActive = false;
+          nextBtn.style.display = 'block';
+          return;
+        }
+      }
+    });
+
+    // Main game loop
+    function gameLoop() {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw background with clouds
+      ctx.fillStyle = 'rgba(168, 216, 240, 0.3)';
+      for (let i = 0; i < 3; i++) {
+        const cloudX = (Date.now() / 200 + i * 250) % (canvas.width + 100);
+        ctx.beginPath();
+        ctx.ellipse(cloudX, 50 + i * 100, 70, 25, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (gameRunning) {
+        updateGame();
+      } else {
+        // Game not started
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 32px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Press "Start Game" to Begin', canvas.width / 2, canvas.height / 2);
+      }
+
+      // Always update and draw remaining particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update();
+        particles[i].draw();
+
+        if (particles[i].isDead()) {
+          particles.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Event listeners
+    startBtn.addEventListener('click', () => {
+      gameRunning = true;
+      startBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+      generateProblem();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      generateProblem();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      gameRunning = false;
+      problemActive = false;
+      score = 0;
+      correctClicks = 0;
+      incorrectClicks = 0;
+      balloons = [];
+      particles = [];
+
+      scoreDisplay.textContent = score;
+      correctDisplay.textContent = correctClicks;
+      incorrectDisplay.textContent = incorrectClicks;
+      feedback.className = 'feedback';
+      feedback.textContent = '';
+
+      problemText.textContent = '9 + 2';
+      answerText.textContent = 'Find: 11';
+
+      startBtn.style.display = 'block';
+      nextBtn.style.display = 'none';
+
+      currentOperation = '+';
+      setActiveOpButton();
+    });
+
+    // Operation selector logic
+    const opButtons = document.querySelectorAll('.op-btn');
+    function setActiveOpButton() {
+      opButtons.forEach(b => {
+        b.classList.toggle('active', b.dataset.op === currentOperation);
+      });
+    }
+
+    opButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const op = btn.dataset.op;
+        currentOperation = op;
+        setActiveOpButton();
+
+        // If the game is running, generate a fresh problem immediately
+        if (gameRunning) {
+          balloons = [];
+          generateProblem();
+        } else {
+          // Preview a sample problem for the selected operation without starting the game
+          let a, b, correctAnswer, displayText;
+          if (currentOperation === '+') {
+            a = 9; b = 2; correctAnswer = 11; displayText = `${a} + ${b}`;
+          } else if (currentOperation === '-') {
+            a = 12; b = 5; correctAnswer = 7; displayText = `${a} - ${b}`;
+          } else if (currentOperation === '*') {
+            a = 6; b = 7; correctAnswer = 42; displayText = `${a} × ${b}`;
+          } else if (currentOperation === '/') {
+            a = 24; b = 6; correctAnswer = 4; displayText = `${a} ÷ ${b}`;
+          }
+          problemText.textContent = displayText;
+          answerText.textContent = `Find: ${correctAnswer}`;
+        }
+      });
+    });
+
+    // Start the game loop
+    gameLoop();
+  </script>
+</body>
+</html>
+

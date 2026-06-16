@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fun Addition — Game for Kids (Grade 1)</title>
+  <style>
+	:root{--accent:#ff7a59;--accent2:#4fb0c6;--bg:#fff7ea;--card:#ffffff;--text:#2b2b2b}
+	html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;font-size:18px;background:linear-gradient(180deg,var(--bg),#fff);color:var(--text)}
+	.app{max-width:900px;margin:18px auto;padding:18px}
+	header{display:flex;align-items:center;gap:12px}
+	h1{font-size:1.6rem;margin:0}
+	.controls{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+	.btn{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+	.btn.secondary{background:var(--accent2)}
+	.game-area{display:grid;grid-template-columns:1fr 340px;gap:18px;margin-top:18px}
+	.panel{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(20,20,20,0.06)}
+	.visual{padding:12px;min-height:220px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center}
+	.groups{display:flex;gap:18px;align-items:flex-end}
+	.group{min-width:110px;min-height:120px;border-radius:10px;background:linear-gradient(180deg,#fff,#f6f6f6);padding:10px;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:8px;border:2px dashed transparent}
+	.group.special{border-color:rgba(75,160,200,0.18)}
+	.item{font-size:34px;cursor:grab;user-select:none}
+	.hud{display:flex;align-items:center;justify-content:space-between;padding:8px 4px}
+	.big-number{font-size:2.6rem;font-weight:700;color:var(--accent)}
+	.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+	.num{background:#f3f3f3;border-radius:8px;padding:10px 6px;text-align:center;font-weight:700;cursor:pointer}
+	.feedback{min-height:36px;margin-top:8px}
+	.hint{background:#fffbe6;border-left:6px solid #ffd36b;padding:8px;border-radius:8px}
+	.footer{margin-top:12px;font-size:0.95rem;color:#666}
+	/* celebration */
+	.celebrate{position:fixed;left:50%;top:20%;transform:translateX(-50%);pointer-events:none}
+	@media (max-width:900px){.game-area{grid-template-columns:1fr;}.panel{width:100%}}
+  </style>
+</head>
+<body>
+  <div class="app" aria-live="polite">
+    <header>
+      <h1>Fun Addition — Learn + Play</h1>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <div aria-hidden style="font-size:0.9rem;color:#666">For Grade 1</div>
+        <a href="index.html" style="margin-left:12px;background:#4fb0c6;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.9rem;transition:all 200ms" onmouseover="this.style.background='#2a9db3'" onmouseout="this.style.background='#4fb0c6'">← Back</a>
+      </div>
+    </header>
+
+	<div class="controls">
+	  <button id="learnBtn" class="btn secondary">Learn Mode</button>
+	  <button id="playBtn" class="btn">Play Mode</button>
+	  <button id="newProblem" class="btn">New Problem</button>
+	  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+		<div id="score">Score: 0</div>
+	  </div>
+	</div>
+
+	<div class="game-area">
+	  <section class="panel" id="leftPanel">
+		<div class="hud">
+		  <div style="display:flex;flex-direction:column">
+			<div style="font-weight:700">Problem</div>
+			<div id="problemText" style="color:#444;">Tap "New Problem" to start</div>
+		  </div>
+		  <div>
+			<div style="text-align:right">Result</div>
+			<div class="big-number" id="resultDisplay">—</div>
+		  </div>
+		</div>
+
+		<div class="visual" id="visualArea">
+		  <div class="groups" aria-hidden>
+			<div class="group" id="groupA" aria-label="Group A"></div>
+			<div class="group special" id="groupB" aria-label="Group B"></div>
+			<div class="group" id="groupC" aria-label="Combined (drop here)">Drop here</div>
+		  </div>
+
+		  <div id="learnControls" style="width:100%;display:none;flex-direction:column;align-items:center">
+			<label style="font-weight:700;margin-top:8px">Try a demonstration</label>
+			<div style="display:flex;gap:8px;margin-top:8px">
+			  <input type="range" id="sliderA" min="0" max="9" value="2"> A
+			  <input type="range" id="sliderB" min="0" max="9" value="3"> B
+			</div>
+			<button id="demoBtn" class="btn secondary" style="margin-top:8px">Show</button>
+		  </div>
+		</div>
+
+		<div id="feedback" class="feedback" aria-live="polite"></div>
+	  </section>
+
+	  <aside class="panel" id="rightPanel">
+		<div style="display:flex;justify-content:space-between;align-items:center">
+		  <div style="font-weight:700">Answer</div>
+		  <div style="font-size:0.9rem;color:#666">Choose or drag items</div>
+		</div>
+
+		<div id="controls" style="margin-top:10px">
+		  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+			<button id="checkBtn" class="btn">Check</button>
+			<button id="hintBtn" class="btn secondary">Hint</button>
+			<button id="resetBtn" class="btn" title="Reset the current arrangement">Reset</button>
+		  </div>
+
+		  <div class="pad" id="numpad" style="margin-top:12px">
+			<!-- numbers 0-12 will be inserted by JS for a big touch target -->
+		  </div>
+		</div>
+
+		<div style="margin-top:12px">
+		  <div class="hint" id="hintBox" style="display:none"></div>
+		</div>
+
+		<div class="footer">Tip: You can click an object to move it into the combined area, or drag it.</div>
+	  </aside>
+	</div>
+
+	<div id="celebrate" class="celebrate"></div>
+  </div>
+
+  <script>
+	// Simple interactive addition game for Grade 1
+	// - Uses emoji items as draggable objects
+	// - Two groups A and B are created; child combines by clicking/dragging into Combined area
+	// - Support Learn (demo with slider) and Play (random problems)
+
+	const groupA = document.getElementById('groupA');
+	const groupB = document.getElementById('groupB');
+	const groupC = document.getElementById('groupC');
+	const problemText = document.getElementById('problemText');
+	const resultDisplay = document.getElementById('resultDisplay');
+	const feedback = document.getElementById('feedback');
+	const scoreEl = document.getElementById('score');
+	const learnBtn = document.getElementById('learnBtn');
+	const playBtn = document.getElementById('playBtn');
+	const newProblem = document.getElementById('newProblem');
+	const demoBtn = document.getElementById('demoBtn');
+	const sliderA = document.getElementById('sliderA');
+	const sliderB = document.getElementById('sliderB');
+	const learnControls = document.getElementById('learnControls');
+	const checkBtn = document.getElementById('checkBtn');
+	const hintBtn = document.getElementById('hintBtn');
+	const resetBtn = document.getElementById('resetBtn');
+	const hintBox = document.getElementById('hintBox');
+	const numpad = document.getElementById('numpad');
+	const celebrate = document.getElementById('celebrate');
+
+	let mode = 'play';
+	let a=0,b=0; // current problem
+	let placed = 0; // number of items currently in combined
+	let score = 0;
+	const MAX_SUM = 12;
+
+	function setMode(m){ mode = m; if(m==='learn'){ learnControls.style.display='flex'; problemText.textContent='Demonstration: move sliders then press Show'; } else { learnControls.style.display='none'; newProblemClick(); }}
+
+	learnBtn.addEventListener('click', ()=>setMode('learn'));
+	playBtn.addEventListener('click', ()=>setMode('play'));
+	newProblem.addEventListener('click', newProblemClick);
+
+	demoBtn.addEventListener('click', ()=>{
+	  a = parseInt(sliderA.value,10); b = parseInt(sliderB.value,10);
+	  renderProblem(a,b);
+	  animateDemonstration();
+	});
+
+	function newProblemClick(){
+	  // simple difficulty ramp: random between 0..9 but keep sum <= MAX_SUM
+	  a = Math.floor(Math.random()*8)+1; // 1..8
+	  b = Math.floor(Math.random()*(Math.min(9, MAX_SUM-a)+1));
+	  renderProblem(a,b);
+	  feedback.textContent=''; resultDisplay.textContent='—'; hintBox.style.display='none'; placed = 0;
+	}
+
+	function renderProblem(A,B){
+	  clearGroups();
+	  placeItems(groupA,A,'🍎');
+	  placeItems(groupB,B,'⭐');
+	  problemText.textContent = `${A} + ${B} = ?`;
+	  resultDisplay.textContent = placed;
+	}
+
+	function clearGroups(){ groupA.innerHTML=''; groupB.innerHTML=''; groupC.innerHTML='Drop here'; }
+
+	function placeItems(container,count,emoji){
+	  for(let i=0;i<count;i++){
+		const el = document.createElement('div');
+		el.className='item'; el.textContent = emoji; el.draggable = true;
+		el.tabIndex = 0;
+		el.setAttribute('role','button');
+		// click to move
+		el.addEventListener('click', ()=>moveToCombined(el));
+		// keyboard support
+		el.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); moveToCombined(el); } });
+		// drag handlers
+		el.addEventListener('dragstart', (ev)=>{ ev.dataTransfer.setData('text/plain',''); ev.target.classList.add('dragging'); });
+		el.addEventListener('dragend', (ev)=>{ ev.target.classList.remove('dragging'); });
+		container.appendChild(el);
+	  }
+	}
+
+	function moveToCombined(el){
+	  // append to combined area
+	  groupC.appendChild(el);
+	  placed = groupC.querySelectorAll('.item').length;
+	  resultDisplay.textContent = placed;
+	}
+
+	// dragover and drop on combined
+	groupC.addEventListener('dragover', (e)=>{ e.preventDefault(); groupC.style.background = '#fff8f2'; });
+	groupC.addEventListener('dragleave', ()=>{ groupC.style.background=''; });
+	groupC.addEventListener('drop', (e)=>{ e.preventDefault(); groupC.style.background=''; const dragging = document.querySelector('.dragging'); if(dragging) moveToCombined(dragging); });
+
+	// numpad creation
+	for(let i=0;i<=MAX_SUM;i++){
+	  const b = document.createElement('div'); b.className='num'; b.textContent = i; b.dataset.value = i;
+	  b.addEventListener('click', ()=>{ resultDisplay.textContent = b.dataset.value; placed = Number(b.dataset.value); });
+	  numpad.appendChild(b);
+	}
+
+	// check answer
+	checkBtn.addEventListener('click', ()=>{
+	  const answer = placed; const correct = a+b;
+	  if(answer === correct){
+		feedback.innerHTML = `<strong style="color:green">Great! ${a} + ${b} = ${correct}</strong>`;
+		score += 10; scoreEl.textContent = `Score: ${score}`; celebrateSuccess();
+	  } else {
+		feedback.innerHTML = `<strong style="color:#d35454">Try again — that is ${answer}. </strong>`;
+		score = Math.max(0, score-2); scoreEl.textContent = `Score: ${score}`;
+	  }
+	});
+
+	// hint
+	hintBtn.addEventListener('click', ()=>{
+	  hintBox.style.display = 'block';
+	  hintBox.textContent = `Think: ${a} plus ${b}. You can count all objects in the blue box or use the number pad.`;
+	});
+
+	resetBtn.addEventListener('click', ()=>{ // move all items back to original groups
+	  // simple heuristic: move apples to A (🍎) and stars to B (⭐)
+	  const items = Array.from(groupC.querySelectorAll('.item'));
+	  items.forEach(it=>{
+		if(it.textContent==='🍎') groupA.appendChild(it); else if(it.textContent==='⭐') groupB.appendChild(it);
+	  });
+	  placed = 0; resultDisplay.textContent = placed; feedback.textContent='';
+	});
+
+	function animateDemonstration(){
+	  // Move items one by one with a short delay into combined
+	  const items = Array.from(groupA.querySelectorAll('.item')).concat(Array.from(groupB.querySelectorAll('.item')));
+	  let i=0; function step(){ if(i<items.length){ moveToCombined(items[i]); i++; setTimeout(step,350);} else { resultDisplay.textContent = a+b; feedback.innerHTML = `<strong style="color:green">${a} + ${b} = ${a+b}</strong>`;} }
+	  step();
+	}
+
+	function celebrateSuccess(){
+	  // small confetti by creating emoji burst
+	  celebrate.innerHTML='';
+	  for(let i=0;i<12;i++){ const s=document.createElement('div'); s.textContent = ['🎉','✨','🎈'][i%3]; s.style.fontSize='28px'; s.style.opacity='0'; s.style.display='inline-block'; s.style.transform='translateY(0)'; s.style.margin='2px'; celebrate.appendChild(s);
+		setTimeout(()=>{ s.style.transition='all 700ms cubic-bezier(.2,.9,.2,1)'; s.style.opacity='1'; s.style.transform=`translateY(${ - (60 + Math.random()*80)}px) translateX(${ (Math.random()-0.5)*160 }px) rotate(${ (Math.random()-0.5)*360 }deg)`; }, 20);
+	  }
+	  setTimeout(()=>{ celebrate.innerHTML=''; },1200);
+	}
+
+	// initialize
+	setMode('play');
+
+	// Accessibility: keyboard support to drop items by moving focus and pressing 'd'
+	document.addEventListener('keydown', (e)=>{
+	  if(e.key.toLowerCase()==='d'){
+		const focused = document.activeElement; if(focused && focused.classList.contains('item')) moveToCombined(focused);
+	  }
+	});
+
+	// minimal local-storage of score
+	try{ const s = localStorage.getItem('add-score'); if(s) { score = Number(s); scoreEl.textContent = `Score: ${score}`; }}catch(e){}
+	window.addEventListener('beforeunload', ()=>{ try{ localStorage.setItem('add-score', String(score)); }catch(e){} });
+  </script>
+</body>
+</html>
+

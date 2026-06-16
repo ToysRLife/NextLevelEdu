@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Airplane Shooter — Educational Game</title>
+  <style>
+    :root {
+      --accent: #ff7a59;
+      --accent2: #4fb0c6;
+      --bg: #e8f4f8;
+      --card: #ffffff;
+      --text: #2b2b2b;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg), #e0f0f6);
+      line-height: 1.5;
+    }
+    .header {
+      background: linear-gradient(135deg, var(--accent2), #2a9db3);
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+    .header-info {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-weight: 600;
+    }
+    .back-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 200ms;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+    .game-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .canvas-wrapper {
+      flex: 1;
+      min-width: 320px;
+      background: linear-gradient(180deg, #a8d8f0, #c0e0f0);
+      border-radius: 12px;
+      border: 3px solid #4fb0c6;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      position: relative;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 600px;
+      background: linear-gradient(180deg, #a8d8f0, #c0e0f0);
+    }
+    .control-panel {
+      width: 300px;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .stat:last-of-type {
+      border-bottom: none;
+    }
+    .stat-value {
+      color: var(--accent);
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .problem-display {
+      background: linear-gradient(135deg, #fff0e6, #ffe8d6);
+      padding: 16px;
+      border-radius: 10px;
+      border-left: 4px solid var(--accent);
+      text-align: center;
+    }
+    .problem-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+    }
+    .answer-text {
+      font-size: 1rem;
+      color: #666;
+      margin: 4px 0 0 0;
+    }
+    .control-btn {
+      padding: 14px;
+      border: 0;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 200ms;
+    }
+    .btn-start {
+      background: linear-gradient(135deg, var(--accent), #ff5f3f);
+      color: white;
+    }
+    .btn-start:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(255, 122, 89, 0.3);
+    }
+    .btn-reset {
+      background: #f0f0f0;
+      color: var(--text);
+    }
+    .btn-reset:hover {
+      background: #e0e0e0;
+    }
+    .instructions {
+      background: #fffbe6;
+      border-left: 4px solid #ffd36b;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .instructions strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .key-hint {
+      background: #f0f0f0;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      font-family: monospace;
+    }
+    .feedback {
+      min-height: 60px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+      font-weight: 600;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .feedback.correct {
+      background: #d4edda;
+      color: #155724;
+      border: 2px solid #28a745;
+      display: block;
+    }
+    .feedback.incorrect {
+      background: #f8d7da;
+      color: #721c24;
+      border: 2px solid #f5c6cb;
+      display: block;
+    }
+    /* Operation selector styles */
+    .op-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .op-btn {
+      padding: 8px 10px;
+      border: 1px solid #e0e0e0;
+      background: #fafafa;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .op-btn.active {
+      background: linear-gradient(135deg, var(--accent), #ff5f3f);
+      color: white;
+      border-color: rgba(0,0,0,0.08);
+      box-shadow: 0 6px 12px rgba(255,122,89,0.15);
+    }
+    @media (max-width: 1000px) {
+      .game-container {
+        flex-direction: column;
+      }
+      .control-panel {
+        width: 100%;
+      }
+      .canvas-wrapper {
+        min-width: 100%;
+      }
+      canvas {
+        height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>✈️ Airplane Shooter</h1>
+    <div class="header-info">
+      <div>Score: <span id="scoreDisplay">0</span></div>
+      <a href="indexMaths.html" class="back-btn">← Back</a>
+    </div>
+  </div>
+
+  <div class="game-container">
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div class="control-panel">
+      <div class="problem-display">
+        <p class="problem-text" id="problemText">9 + 2</p>
+
+      </div>
+
+      <div class="stat">
+        <span>Consecutive Hits:</span>
+        <span class="stat-value" id="hitsDisplay">0</span>
+      </div>
+      <div class="stat">
+        <span>Wrong Shots:</span>
+        <span class="stat-value" id="missedDisplay">0</span>
+      </div>
+
+      <button id="startBtn" class="control-btn btn-start">🎮 Start Game</button>
+      <button id="nextBtn" class="control-btn btn-start" style="display:none;">➡️ Next Problem</button>
+      <button id="resetBtn" class="control-btn btn-reset">Reset</button>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="instructions">
+        <strong>🎯 How to Play:</strong>
+        ⬅️ LEFT arrow = Move gun left<br>
+        ➡️ RIGHT arrow = Move gun right<br>
+        ⬆️ UP arrow = SHOOT<br>
+        <br>Shoot the plane with the correct answer!
+      </div>
+
+      <div class="key-hint">
+        <strong>Keyboard:</strong><br>
+        Arrow Keys to move & shoot
+      </div>
+
+      <!-- Operation selection (addition, subtraction, multiplication, division) -->
+      <div style="margin-top:12px;">
+        <strong style="display:block;margin-bottom:6px;">Select Operation:</strong>
+        <div class="op-nav">
+          <button class="op-btn active" data-op="+">Addition</button>
+          <button class="op-btn" data-op="-">Subtraction</button>
+          <button class="op-btn" data-op="*">Multiplication</button>
+          <button class="op-btn" data-op="/">Division</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size
+    function resizeCanvas() {
+      const wrapper = canvas.parentElement;
+      canvas.width = wrapper.clientWidth;
+      canvas.height = 600;
+    }
+    window.addEventListener('resize', () => resizeCanvas());
+    resizeCanvas();
+
+    // Elements
+    const startBtn = document.getElementById('startBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const hitsDisplay = document.getElementById('hitsDisplay');
+    const missedDisplay = document.getElementById('missedDisplay');
+    const problemText = document.getElementById('problemText');
+    const answerText = document.getElementById('answerText');
+    const feedback = document.getElementById('feedback');
+
+    // Game state
+    let gameRunning = false;
+    let problemActive = false;
+    // Current selected operation: +, -, *, /
+    let currentOperation = '+';
+    let score = 0;
+    let consecutiveHits = 0;
+    let wrongShots = 0;
+
+    // Gun object
+    const gun = {
+      x: canvas.width / 2,
+      y: canvas.height - 60,
+      width: 40,
+      height: 60,
+      speed: 8,
+      bullets: []
+    };
+
+    // Airplanes array
+    let airplanes = [];
+
+    // Airplane colors palette (for correct answer planes)
+    const airplaneColors = [
+      '#00aacc', // Cyan
+      '#ff6b6b', // Red
+      '#ffd93d', // Yellow
+      '#6bcf7f', // Green
+      '#a78bfa', // Purple
+      '#ff8c42'  // Orange
+    ];
+
+    // Keyboard tracking
+    const keys = {};
+    window.addEventListener('keydown', (e) => {
+      keys[e.key] = true;
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (problemActive) fireGun();
+      }
+    });
+    window.addEventListener('keyup', (e) => {
+      keys[e.key] = false;
+    });
+
+    // Airplane class
+    class Airplane {
+      constructor(x, y, answer, isCorrect, color) {
+        this.x = x;
+        this.y = y;
+        this.width = 50;
+        this.height = 40;
+        this.speed = 2;
+        this.answer = answer;
+        this.isCorrect = isCorrect;
+        this.color = color; // Color for the airplane
+        this.vx = (Math.random() - 0.5) * 1; // slight horizontal drift
+      }
+
+      update() {
+        this.y += this.speed;
+        this.x += this.vx;
+
+        // Keep in bounds
+        if (this.x < 20) this.x = 20;
+        if (this.x > canvas.width - 50) this.x = canvas.width - 50;
+      }
+
+      draw() {
+        ctx.save();
+
+        // Airplane body - use the assigned color
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        // Wings - use the same color
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x - 8, this.y + 12, 8, 10);
+        ctx.fillRect(this.x + this.width, this.y + 12, 8, 10);
+
+        // Cockpit
+        ctx.fillStyle = '#333';
+        ctx.fillRect(this.x + 8, this.y + 6, 8, 8);
+
+        // Answer number on airplane
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 20px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.answer, this.x + this.width / 2, this.y + this.height / 2);
+
+        ctx.restore();
+      }
+
+      isHit(bullet) {
+        return (
+          bullet.x >= this.x &&
+          bullet.x <= this.x + this.width &&
+          bullet.y >= this.y &&
+          bullet.y <= this.y + this.height
+        );
+      }
+
+      isOffScreen() {
+        return this.y > canvas.height;
+      }
+    }
+
+    // Bullet class
+    class Bullet {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.width = 6;
+        this.height = 15;
+        this.speed = 8;
+      }
+
+      update() {
+        this.y -= this.speed;
+      }
+
+      draw() {
+        ctx.fillStyle = '#ff7a59';
+        ctx.fillRect(this.x - this.width / 2, this.y, this.width, this.height);
+      }
+
+      isOffScreen() {
+        return this.y < 0;
+      }
+    }
+
+    // Draw gun
+    function drawGun() {
+      ctx.save();
+
+      // Gun body
+      ctx.fillStyle = '#333';
+      ctx.fillRect(gun.x - 10, gun.y, 20, 40);
+
+      // Gun barrel
+      ctx.fillStyle = '#444';
+      ctx.fillRect(gun.x - 3, gun.y - 25, 6, 25);
+
+      // Gun wheels
+      ctx.fillStyle = '#555';
+      ctx.beginPath();
+      ctx.arc(gun.x - 8, gun.y + 30, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(gun.x + 8, gun.y + 30, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // Fire gun
+    function fireGun() {
+      const bullet = new Bullet(gun.x, gun.y - 25);
+      gun.bullets.push(bullet);
+    }
+
+    // Update gun position
+    function updateGun() {
+      if (keys['ArrowLeft']) {
+        gun.x -= gun.speed;
+      }
+      if (keys['ArrowRight']) {
+        gun.x += gun.speed;
+      }
+
+      // Keep gun in bounds
+      if (gun.x < 20) gun.x = 20;
+      if (gun.x > canvas.width - 20) gun.x = canvas.width - 20;
+    }
+
+    // Generate new problem
+    function generateProblem() {
+      feedback.className = 'feedback';
+      feedback.textContent = '';
+
+      // Random problem based on currentOperation
+      let a, b, correctAnswer, displayText;
+      if (currentOperation === '+') {
+        a = Math.floor(Math.random() * 8) + 1;
+        b = Math.floor(Math.random() * 8) + 1;
+        correctAnswer = a + b;
+        displayText = `${a} + ${b}`;
+      } else if (currentOperation === '-') {
+        // Ensure a >= b to avoid negative results
+        a = Math.floor(Math.random() * 12) + 1;
+        b = Math.floor(Math.random() * a) + 0;
+        correctAnswer = a - b;
+        displayText = `${a} - ${b}`;
+      } else if (currentOperation === '*') {
+        a = Math.floor(Math.random() * 9) + 1;
+        b = Math.floor(Math.random() * 9) + 1;
+        correctAnswer = a * b;
+        displayText = `${a} × ${b}`;
+      } else if (currentOperation === '/') {
+        // Ensure integer division: pick b then multiply
+        b = Math.floor(Math.random() * 8) + 1;
+        correctAnswer = Math.floor(Math.random() * 9) + 1;
+        a = correctAnswer * b;
+        displayText = `${a} ÷ ${b}`;
+      }
+
+      problemText.textContent = displayText;
+
+      // Generate 4 airplanes with random answers
+      airplanes = [];
+      const answers = [correctAnswer];
+
+      // Generate 3 wrong answers
+      while (answers.length < 4) {
+        let wrongAnswer = Math.floor(Math.random() * 16) + 1;
+        if (!answers.includes(wrongAnswer) && wrongAnswer !== correctAnswer) {
+          answers.push(wrongAnswer);
+        }
+      }
+
+      // Shuffle answers
+      for (let i = answers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [answers[i], answers[j]] = [answers[j], answers[i]];
+      }
+
+      // Create airplanes at different x positions
+      const positions = [
+        canvas.width * 0.2,
+        canvas.width * 0.4,
+        canvas.width * 0.6,
+        canvas.width * 0.8
+      ];
+
+      // Shuffle colors for all 4 airplanes
+      const colors = [...airplaneColors];
+      for (let i = colors.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [colors[i], colors[j]] = [colors[j], colors[i]];
+      }
+
+      answers.forEach((ans, idx) => {
+        const plane = new Airplane(
+          positions[idx],
+          -50,
+          ans,
+          ans === correctAnswer,
+          colors[idx] // Each airplane gets a different color
+        );
+        airplanes.push(plane);
+      });
+
+      problemActive = true;
+      nextBtn.style.display = 'none';
+      if (gameRunning) startBtn.style.display = 'none';
+    }
+
+    // Update game state
+    function updateGame() {
+      if (!problemActive) return;
+
+      updateGun();
+
+      // Update and draw bullets
+      for (let i = gun.bullets.length - 1; i >= 0; i--) {
+        gun.bullets[i].update();
+        gun.bullets[i].draw();
+
+        if (gun.bullets[i].isOffScreen()) {
+          gun.bullets.splice(i, 1);
+        }
+      }
+
+      // Update and draw airplanes
+      for (let i = airplanes.length - 1; i >= 0; i--) {
+        airplanes[i].update();
+        airplanes[i].draw();
+
+        // Check bullet collisions
+        for (let j = gun.bullets.length - 1; j >= 0; j--) {
+          if (airplanes[i].isHit(gun.bullets[j])) {
+            gun.bullets.splice(j, 1);
+
+            if (airplanes[i].isCorrect) {
+              // Correct shot!
+              score += 10;
+              consecutiveHits++;
+              feedback.className = 'feedback correct';
+              feedback.textContent = `✓ Correct! +10 Points`;
+            } else {
+              // Wrong shot
+              wrongShots++;
+              consecutiveHits = 0;
+              feedback.className = 'feedback incorrect';
+              feedback.textContent = `✗ Wrong! Try again.`;
+            }
+
+            scoreDisplay.textContent = score;
+            hitsDisplay.textContent = consecutiveHits;
+            missedDisplay.textContent = wrongShots;
+
+            airplanes.splice(i, 1);
+            problemActive = false;
+            nextBtn.style.display = 'block';
+            return;
+          }
+        }
+
+        // Airplane went off screen without being hit
+        if (airplanes[i].isOffScreen()) {
+          wrongShots++;
+          consecutiveHits = 0;
+          feedback.className = 'feedback incorrect';
+          feedback.textContent = `Missed! Plane escaped.`;
+
+          scoreDisplay.textContent = score;
+          hitsDisplay.textContent = consecutiveHits;
+          missedDisplay.textContent = wrongShots;
+
+          airplanes.splice(i, 1);
+          problemActive = false;
+          nextBtn.style.display = 'block';
+          return;
+        }
+      }
+    }
+
+    // Main game loop
+    function gameLoop() {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw background
+      ctx.fillStyle = 'rgba(168, 216, 240, 0.3)';
+      for (let i = 0; i < 3; i++) {
+        const cloudX = (Date.now() / 150 + i * 250) % (canvas.width + 100);
+        ctx.beginPath();
+        ctx.ellipse(cloudX, 50 + i * 100, 70, 25, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Draw grid lines (optional)
+      ctx.strokeStyle = 'rgba(200, 220, 240, 0.2)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= canvas.width; i += 60) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, canvas.height);
+        ctx.stroke();
+      }
+
+      if (gameRunning) {
+        updateGame();
+        drawGun();
+
+        // If no problem active and not playing
+        if (!problemActive && airplanes.length === 0) {
+          // Show next button
+        }
+      } else {
+        // Game not started
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 32px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Press "Start Game" to Begin', canvas.width / 2, canvas.height / 2);
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Event listeners
+    startBtn.addEventListener('click', () => {
+      gameRunning = true;
+      startBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+      generateProblem();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      generateProblem();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      gameRunning = false;
+      problemActive = false;
+      score = 0;
+      consecutiveHits = 0;
+      wrongShots = 0;
+      airplanes = [];
+      gun.bullets = [];
+
+      scoreDisplay.textContent = score;
+      hitsDisplay.textContent = consecutiveHits;
+      missedDisplay.textContent = wrongShots;
+      feedback.className = 'feedback';
+      feedback.textContent = '';
+
+      // Reset operation to default and show a sample problem for addition
+      currentOperation = '+';
+      setActiveOpButton && setActiveOpButton();
+      // show sample problem for '+' without starting the game
+      problemText.textContent = '9 + 2';
+
+      startBtn.style.display = 'block';
+      nextBtn.style.display = 'none';
+    });
+
+    // Operation selector logic
+    const opButtons = document.querySelectorAll('.op-btn');
+    function setActiveOpButton() {
+      opButtons.forEach(b => {
+        b.classList.toggle('active', b.dataset.op === currentOperation);
+      });
+    }
+
+    opButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const op = btn.dataset.op;
+        currentOperation = op;
+        setActiveOpButton();
+
+        // If the game is running, generate a fresh problem immediately
+        if (gameRunning) {
+          // clear any existing objects and spawn new problem
+          airplanes = [];
+          gun.bullets = [];
+          generateProblem();
+        } else {
+          // Preview a sample problem for the selected operation without starting the game
+          let a, b, correctAnswer, displayText;
+          if (currentOperation === '+') {
+            a = 9; b = 2; correctAnswer = 11; displayText = `${a} + ${b}`;
+          } else if (currentOperation === '-') {
+            a = 12; b = 5; correctAnswer = 7; displayText = `${a} - ${b}`;
+          } else if (currentOperation === '*') {
+            a = 6; b = 7; correctAnswer = 42; displayText = `${a} × ${b}`;
+          } else if (currentOperation === '/') {
+            a = 24; b = 6; correctAnswer = 4; displayText = `${a} ÷ ${b}`;
+          }
+          problemText.textContent = displayText;
+
+        }
+      });
+    });
+
+    // Start the game loop
+    gameLoop();
+  </script>
+</body>
+</html>
+

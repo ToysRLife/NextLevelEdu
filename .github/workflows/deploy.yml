@@ -34,28 +34,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Install pnpm
-        run: |
-          npm install -g pnpm@8.8.0
-          pnpm --version
+          cache: yarn
+          cache-dependency-path: package.json
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: yarn install
 
       - name: Run ESLint
-        run: pnpm lint
+        run: yarn lint
 
       - name: Check Prettier formatting
-        run: pnpm format:check
+        run: yarn format:check
 
       - name: Run TypeScript type check
-        run: pnpm typecheck
+        run: yarn typecheck
 
       - name: Build production bundle
-        run: pnpm run build
+        run: yarn build
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

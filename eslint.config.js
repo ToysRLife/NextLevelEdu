@@ -10,7 +10,6 @@ export default [
       "build",
       ".git",
       "coverage",
-      "pnpm-lock.yaml",
       "src/games/manifests.ts",
       "src/platform/**",
     ],

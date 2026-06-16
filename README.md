@@ -17,20 +17,20 @@ K-12 science learning through interactive games. Students complete missions, ear
 
 ### Prerequisites
 
-- **Node.js** 18+ and **pnpm** 8+
+- **Node.js** 18+ and **Yarn** 1.22+
 
 Check your versions:
 
 ```bash
 node --version
-pnpm --version
+yarn --version
 ```
 
 ### Installation
 
 ```bash
 cd NextLevelEdu
-pnpm install
+yarn install
 ```
 
 ### Development
@@ -38,7 +38,7 @@ pnpm install
 Start the dev server with hot reload:
 
 ```bash
-pnpm dev
+yarn dev
 ```
 
 Then open `http://localhost:5173`.
@@ -46,7 +46,7 @@ Then open `http://localhost:5173`.
 ### Building for production
 
 ```bash
-pnpm build
+yarn build
 ```
 
 The bundled app goes into `dist/`.
@@ -54,7 +54,7 @@ The bundled app goes into `dist/`.
 ### Preview production build locally
 
 ```bash
-pnpm preview
+yarn preview
 ```
 
 ## Development workflow
@@ -64,7 +64,7 @@ pnpm preview
 Before you can see a new game in the dashboard, regenerate the manifest catalog:
 
 ```bash
-pnpm run gen:manifests
+yarn run gen:manifests
 ```
 
 This reads each game's `meta` and writes `src/games/manifests.ts` (auto-generated — don't edit by hand).
@@ -77,7 +77,7 @@ Run this after:
 ### Type checking
 
 ```bash
-pnpm typecheck
+yarn typecheck
 ```
 
 Runs TypeScript in check-only mode without building.
@@ -85,7 +85,7 @@ Runs TypeScript in check-only mode without building.
 ### Check solvability
 
 ```bash
-pnpm run check:solvable
+yarn run check:solvable
 ```
 
 Verifies that all games are registered and have valid metadata.
@@ -99,13 +99,13 @@ We use **ESLint** for code quality and **Prettier** for consistent formatting.
 Check for code quality issues:
 
 ```bash
-pnpm lint
+yarn lint
 ```
 
 Auto-fix fixable issues:
 
 ```bash
-pnpm lint:fix
+yarn lint:fix
 ```
 
 ESLint is configured in [eslint.config.js](./eslint.config.js) and checks:
@@ -120,13 +120,13 @@ ESLint is configured in [eslint.config.js](./eslint.config.js) and checks:
 Format code with Prettier:
 
 ```bash
-pnpm format
+yarn format
 ```
 
 Check if code is formatted correctly:
 
 ```bash
-pnpm format:check
+yarn format:check
 ```
 
 Prettier configuration is in [.prettierrc](./.prettierrc). We use:
@@ -141,7 +141,7 @@ Prettier configuration is in [.prettierrc](./.prettierrc). We use:
 Before committing, run:
 
 ```bash
-pnpm lint:fix && pnpm format && pnpm typecheck
+yarn lint:fix && yarn format && yarn typecheck
 ```
 
 This ensures consistent code style and catches type errors early.
@@ -215,12 +215,12 @@ export const myGame: GameModule = {
 6. Regenerate manifests:
 
    ```bash
-   pnpm run gen:manifests
+   yarn run gen:manifests
    ```
 
 7. Test in dev mode:
    ```bash
-   pnpm dev
+   yarn dev
    ```
 
 ## Architecture
@@ -319,7 +319,7 @@ ctx.services.audio.tone(440, 200); // A4, 200ms
 The app is a static client-side build. Deploy to any static host:
 
 ```bash
-pnpm build
+yarn build
 # dist/ is ready to deploy
 ```
 
@@ -344,9 +344,7 @@ Recommended hosts:
 ├── eslint.config.js           # ESLint config (flat config format)
 ├── .prettierrc                # Prettier config
 ├── .prettierignore            # Files to skip formatting
-├── pnpm-lock.yaml             # Locked dependencies (pnpm)
-├── pnpm-workspace.yaml        # Workspace config
-├── .npmrc                      # npm/pnpm config (prefer pnpm)
+├── yarn.lock             # Locked dependencies
 ├── index.html                 # HTML entry point
 ├── src/
 │   ├── main.ts               # Bootstrap
@@ -370,12 +368,12 @@ Recommended hosts:
 1. See [DEVELOPMENT.md](./DEVELOPMENT.md) for setup, workflow, and best practices
 2. Fork the repository
 3. Create a feature branch
-4. Make your changes and test locally (`pnpm dev`)
+4. Make your changes and test locally (`yarn dev`)
 5. Ensure code standards:
-   - `pnpm lint:fix` — fix linting issues
-   - `pnpm format` — format code
-   - `pnpm typecheck` — check types
-6. If adding a game, run `pnpm run gen:manifests`
+   - `yarn lint:fix` — fix linting issues
+   - `yarn format` — format code
+   - `yarn typecheck` — check types
+6. If adding a game, run `yarn run gen:manifests`
 7. Submit a pull request with a clear description
 
 ## License

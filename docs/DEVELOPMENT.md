@@ -5,7 +5,7 @@ This guide covers development workflow, code standards, and best practices for N
 ## Prerequisites
 
 - **Node.js** 18+
-- **pnpm** 8.8.0+ (enforced via `.npmrc`)
+- **Yarn** 1.22+ (Classic)
 - **Visual Studio Code** (recommended) with:
   - ESLint extension (`dbaeumer.vscode-eslint`)
   - Prettier extension (`esbenp.prettier-vscode`)
@@ -16,13 +16,13 @@ This guide covers development workflow, code standards, and best practices for N
 
 ```bash
 cd NextLevelEdu
-pnpm install
+yarn install
 ```
 
 ### Start dev server
 
 ```bash
-pnpm dev
+yarn dev
 ```
 
 Opens at `http://localhost:3000` with hot module reload (HMR).
@@ -41,7 +41,7 @@ Opens at `http://localhost:3000` with hot module reload (HMR).
 Run before committing:
 
 ```bash
-pnpm lint:fix
+yarn lint:fix
 ```
 
 Configuration: [eslint.config.js](./eslint.config.js) (ESLint 9 flat config format)
@@ -58,7 +58,7 @@ Key rules:
 Format all code:
 
 ```bash
-pnpm format
+yarn format
 ```
 
 Settings:
@@ -95,16 +95,16 @@ Each module should:
 
 ```bash
 # Lint and auto-fix
-pnpm lint:fix
+yarn lint:fix
 
 # Format code
-pnpm format
+yarn format
 
 # Type check
-pnpm typecheck
+yarn typecheck
 
 # Run checks
-pnpm run check:solvable
+yarn run check:solvable
 ```
 
 ### Commit message format
@@ -208,8 +208,8 @@ Games receive `ctx.services`:
 After creating/modifying a game:
 
 ```bash
-pnpm run gen:manifests
-pnpm lint:fix src/games/manifests.ts  # Auto-fix formatting
+yarn run gen:manifests
+yarn lint:fix src/games/manifests.ts  # Auto-fix formatting
 ```
 
 **Note**: `src/games/manifests.ts` is auto-generated. Never edit by hand.
@@ -219,14 +219,14 @@ pnpm lint:fix src/games/manifests.ts  # Auto-fix formatting
 ### Local preview
 
 ```bash
-pnpm build
-pnpm preview
+yarn build
+yarn preview
 ```
 
 ### Production build
 
 ```bash
-pnpm build
+yarn build
 ```
 
 Output: `dist/` — ready for GitHub Pages, Cloudflare Pages, or any static host.
@@ -284,19 +284,19 @@ Then press `F5` to debug.
 
 **Game doesn't appear in dashboard**
 
-- Did you run `pnpm run gen:manifests`?
+- Did you run `yarn run gen:manifests`?
 - Check console for import errors
 - Verify `GameModule` export name
 
 **Type errors**
 
-- Run `pnpm typecheck` for full report
+- Run `yarn typecheck` for full report
 - Check `tsconfig.json` path aliases
 - Verify imports use `import type` for types
 
 **Lint errors**
 
-- Run `pnpm lint:fix` to auto-fix
+- Run `yarn lint:fix` to auto-fix
 - Some rules require manual fixes (check output)
 - Suppress with `/* eslint-disable rule-name */` if necessary (document why)
 
@@ -309,7 +309,7 @@ Games are code-split automatically via `import.meta.glob()` in `registry.ts`. Ea
 ### Bundle analysis
 
 ```bash
-pnpm build
+yarn build
 # Check dist/ folder size
 # Use https://webpack.github.io/analyse/ to analyze (if using Vite analysis plugin)
 ```
@@ -335,7 +335,7 @@ pnpm build
 2. Follow code standards (lint, format, typecheck)
 3. Add/update games in `src/games/`
 4. Regenerate manifests
-5. Test locally: `pnpm dev`
+5. Test locally: `yarn dev`
 6. Submit pull request with clear description
 
 ## License

@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -80,7 +80,12 @@ class ColorMix implements GameInstance {
     return Math.max(0, 1 - dist / 160);
   }
 
-  private slider(label: string, accent: string, get: () => number, set: (v: number) => void): HTMLElement {
+  private slider(
+    label: string,
+    accent: string,
+    get: () => number,
+    set: (v: number) => void
+  ): HTMLElement {
     const input = el("input", {
       type: "range",
       min: "0",
@@ -100,7 +105,7 @@ class ColorMix implements GameInstance {
     const checkBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-pink)" }, onclick: () => this.check() },
-      "🎨 Check color",
+      "🎨 Check color"
     );
 
     this.matchEl = el("span", { style: { color: "var(--accent-green)" } }, "0%");
@@ -117,15 +122,30 @@ class ColorMix implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Make"),
-        el("span", {}, this.target().name),
+        el("span", {}, this.target().name)
       ),
-      this.slider("🔴 Red paint", "#ef4444", () => this.r, (v) => (this.r = v)),
-      this.slider("🟡 Yellow paint", "#eab308", () => this.y, (v) => (this.y = v)),
-      this.slider("🔵 Blue paint", "#3b82f6", () => this.b, (v) => (this.b = v)),
+      this.slider(
+        "🔴 Red paint",
+        "#ef4444",
+        () => this.r,
+        (v) => (this.r = v)
+      ),
+      this.slider(
+        "🟡 Yellow paint",
+        "#eab308",
+        () => this.y,
+        (v) => (this.y = v)
+      ),
+      this.slider(
+        "🔵 Blue paint",
+        "#3b82f6",
+        () => this.b,
+        (v) => (this.b = v)
+      ),
       checkBtn,
       el("div", { class: "metric" }, el("span", {}, "🎯 Match"), this.matchEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Done"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -133,7 +153,8 @@ class ColorMix implements GameInstance {
   private updateReadout(): void {
     const pct = Math.round(this.matchPct() * 100);
     this.matchEl.textContent = `${pct}%`;
-    this.matchEl.style.color = pct > 90 ? "var(--accent-green)" : pct > 60 ? "var(--accent-orange)" : "var(--accent-red)";
+    this.matchEl.style.color =
+      pct > 90 ? "var(--accent-green)" : pct > 60 ? "var(--accent-orange)" : "var(--accent-red)";
   }
 
   private check(): void {
@@ -153,7 +174,8 @@ class ColorMix implements GameInstance {
     } else {
       this.mistakes += 1;
       this.ctx.services.audio.play("fail");
-      this.coachEl.textContent = "Not quite that shade yet — adjust the two primary colors that make it.";
+      this.coachEl.textContent =
+        "Not quite that shade yet — adjust the two primary colors that make it.";
     }
   }
 
@@ -235,7 +257,14 @@ class ColorMix implements GameInstance {
     c.fill();
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (w <= 0) return;
     c.beginPath();

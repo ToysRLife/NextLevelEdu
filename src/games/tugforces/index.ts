@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { byTier } from "@core/difficulty";
 
 // Net force (MS-PS2-1/2): when two teams pull, only the NET force moves the
@@ -86,20 +86,41 @@ class TugForces implements GameInstance {
       },
     });
     this.netRead = readout("↔️ Net force (you − them)");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
+    });
     this.coachEl.textContent = "Set your pull so the net force lands the flag on the marker.";
-    this.goBtn = el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.pull() }, "🪢 Pull!") as HTMLButtonElement;
+    this.goBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.pull() },
+      "🪢 Pull!"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Target net"), el("span", {}, `${this.round().targetNet} N`)),
-      el("div", { class: "metric" }, el("span", {}, "🟥 Their pull"), el("span", {}, `${this.round().enemy} N`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Target net"),
+        el("span", {}, `${this.round().targetNet} N`)
+      ),
+      el(
+        "div",
+        { class: "metric" },
+        el("span", {}, "🟥 Their pull"),
+        el("span", {}, `${this.round().enemy} N`)
+      ),
       this.youCtl.el,
       this.netRead.el,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Rounds won"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -153,7 +174,8 @@ class TugForces implements GameInstance {
       else {
         this.idx += 1;
         this.flagX = CX;
-        this.coachEl.textContent = "🪢 Spot on! Their pull changed for the next round — recompute the net.";
+        this.coachEl.textContent =
+          "🪢 Spot on! Their pull changed for the next round — recompute the net.";
         this.buildPanel();
       }
     } else {
@@ -244,7 +266,11 @@ class TugForces implements GameInstance {
     c.textAlign = "center";
     c.fillText("Set your pull so the net force lands the flag on the marker 🪢", W / 2, 44);
     c.font = "14px Nunito, sans-serif";
-    c.fillText(`their pull ${this.round().enemy} N   ·   your pull ${this.you} N   ·   net ${this.net()} N`, W / 2, 70);
+    c.fillText(
+      `their pull ${this.round().enemy} N   ·   your pull ${this.you} N   ·   net ${this.net()} N`,
+      W / 2,
+      70
+    );
   }
 
   start(): void {

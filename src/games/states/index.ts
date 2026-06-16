@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -104,13 +104,13 @@ class States implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Target"),
-        el("span", {}, `${info.emoji} ${info.label}`),
+        el("span", {}, `${info.emoji} ${info.label}`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "❄️ Cool  ←→  Heat 🔥"),
       slider,
       el("div", { class: "metric" }, el("span", {}, "🌡️ Temp"), this.tempEl),
       el("div", { class: "metric" }, el("span", {}, "🔬 State"), this.stateEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -219,9 +219,9 @@ class States implements GameInstance {
     // thermometer-style band hint on the right edge
     const bandX = W - m - 14;
     c.fillStyle = "rgba(96,165,250,0.25)";
-    c.fillRect(bandX, H - m - ((MELT / 100) * (H - 2 * m)), 10, (MELT / 100) * (H - 2 * m));
+    c.fillRect(bandX, H - m - (MELT / 100) * (H - 2 * m), 10, (MELT / 100) * (H - 2 * m));
     c.fillStyle = "rgba(56,189,248,0.25)";
-    c.fillRect(bandX, H - m - ((BOIL / 100) * (H - 2 * m)), 10, ((BOIL - MELT) / 100) * (H - 2 * m));
+    c.fillRect(bandX, H - m - (BOIL / 100) * (H - 2 * m), 10, ((BOIL - MELT) / 100) * (H - 2 * m));
 
     const info = STATE_INFO[st];
     c.fillStyle = info.color;
@@ -280,7 +280,8 @@ export const statesGame: GameModule = {
     gradeBand: "2",
     emoji: "🧊",
     blurb: "Heat it up or cool it down to turn matter into a solid, liquid, or gas.",
-    mission: "Control the temperature to change the matter into the target state — then hold it steady.",
+    mission:
+      "Control the temperature to change the matter into the target state — then hold it steady.",
     estMinutes: 3,
   },
   create: (ctx) => new States(ctx),

@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -13,14 +13,49 @@ interface Thing {
 }
 
 const THINGS: Thing[] = [
-  { name: "Dog", emoji: "🐶", living: true, why: "A dog grows, eats, and has puppies — it's living." },
-  { name: "Tree", emoji: "🌳", living: true, why: "A tree grows, needs water and sunlight, and makes seeds — living." },
-  { name: "Fish", emoji: "🐟", living: true, why: "A fish breathes, eats, and grows — it's living." },
+  {
+    name: "Dog",
+    emoji: "🐶",
+    living: true,
+    why: "A dog grows, eats, and has puppies — it's living.",
+  },
+  {
+    name: "Tree",
+    emoji: "🌳",
+    living: true,
+    why: "A tree grows, needs water and sunlight, and makes seeds — living.",
+  },
+  {
+    name: "Fish",
+    emoji: "🐟",
+    living: true,
+    why: "A fish breathes, eats, and grows — it's living.",
+  },
   { name: "Bee", emoji: "🐝", living: true, why: "A bee moves, eats, and breeds — it's living." },
-  { name: "Rock", emoji: "🪨", living: false, why: "A rock doesn't grow, eat, or reproduce — it's non-living." },
-  { name: "Car", emoji: "🚗", living: false, why: "A car moves, but it doesn't grow or eat — it's non-living." },
-  { name: "Cloud", emoji: "☁️", living: false, why: "A cloud changes shape but doesn't eat or grow — non-living." },
-  { name: "Robot", emoji: "🤖", living: false, why: "A robot can move, but it doesn't grow, eat, or have babies — non-living." },
+  {
+    name: "Rock",
+    emoji: "🪨",
+    living: false,
+    why: "A rock doesn't grow, eat, or reproduce — it's non-living.",
+  },
+  {
+    name: "Car",
+    emoji: "🚗",
+    living: false,
+    why: "A car moves, but it doesn't grow or eat — it's non-living.",
+  },
+  {
+    name: "Cloud",
+    emoji: "☁️",
+    living: false,
+    why: "A cloud changes shape but doesn't eat or grow — non-living.",
+  },
+  {
+    name: "Robot",
+    emoji: "🤖",
+    living: false,
+    why: "A robot can move, but it doesn't grow, eat, or have babies — non-living.",
+  },
 ];
 
 class Living implements GameInstance {
@@ -57,11 +92,23 @@ class Living implements GameInstance {
     const choices = el(
       "div",
       { class: "chip-row" },
-      el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.choose(true) }, "🌱 Living"),
-      el("button", { class: "btn secondary", onclick: () => this.choose(false) }, "🪨 Non-living"),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-green)" },
+          onclick: () => this.choose(true),
+        },
+        "🌱 Living"
+      ),
+      el("button", { class: "btn secondary", onclick: () => this.choose(false) }, "🪨 Non-living")
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${THINGS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.idx + 1} / ${THINGS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
@@ -74,12 +121,12 @@ class Living implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Sort all 8"),
+        el("span", {}, "Sort all 8")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Living or non-living?"),
       choices,
       el("div", { class: "metric" }, el("span", {}, "🔎 Thing"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -170,7 +217,14 @@ class Living implements GameInstance {
     c.fillText("Living 🌱 or non-living 🪨?", W / 2, 60);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

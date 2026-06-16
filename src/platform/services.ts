@@ -1,9 +1,9 @@
 import type {
-  PlatformServices,
-  OutcomeDetail,
-  ScoreService,
   HintService,
+  OutcomeDetail,
+  PlatformServices,
   ProgressService,
+  ScoreService,
   TelemetryService,
 } from "@sdk/types";
 import { read, write } from "./storage";
@@ -58,7 +58,8 @@ function createHints(gameId: string, telemetry: TelemetryService): HintService {
 
 function createProgress(gameId: string): ProgressService {
   const key = `progress:${gameId}`;
-  const load = () => read<ProgressRecord>(key, { bestScore: 0, attempts: 0, wins: 0, bestStars: 0 });
+  const load = () =>
+    read<ProgressRecord>(key, { bestScore: 0, attempts: 0, wins: 0, bestStars: 0 });
   return {
     save(state) {
       const rec = load();
@@ -97,7 +98,11 @@ export function createServices(gameId: string, hooks: OutcomeHooks): PlatformSer
   const audio = createAudioService();
 
   const finish = (kind: "success" | "fail", detail: OutcomeDetail = {}) => {
-    const resolved: OutcomeDetail = { score: score.get(), stars: kind === "success" ? 3 : 0, ...detail };
+    const resolved: OutcomeDetail = {
+      score: score.get(),
+      stars: kind === "success" ? 3 : 0,
+      ...detail,
+    };
     progress.recordResult({
       success: kind === "success",
       score: resolved.score ?? 0,

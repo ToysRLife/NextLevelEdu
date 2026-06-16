@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -16,14 +16,62 @@ interface Item {
 // Eight everyday changes. Reversible = the same stuff comes back if you undo
 // the heat/cold. Irreversible = a brand-new substance forms, so you can't go back.
 const ITEMS: Item[] = [
-  { key: "ice", label: "Ice melting", emoji: "🧊", reversible: true, why: "Melted ice is still water — freeze it and you get ice back." },
-  { key: "freeze", label: "Water freezing", emoji: "❄️", reversible: true, why: "Frozen water is still water — warm it and it melts back." },
-  { key: "choc", label: "Melting chocolate", emoji: "🍫", reversible: true, why: "Melted chocolate is still chocolate — cool it and it sets again." },
-  { key: "boil", label: "Boiling water", emoji: "💨", reversible: true, why: "Steam is still water — cool it and it turns back to liquid." },
-  { key: "egg", label: "Frying an egg", emoji: "🍳", reversible: false, why: "Cooking changes the egg into a new substance — you can't un-cook it." },
-  { key: "paper", label: "Burning paper", emoji: "🔥", reversible: false, why: "Burning makes ash and smoke — brand-new stuff that won't become paper." },
-  { key: "cake", label: "Baking a cake", emoji: "🎂", reversible: false, why: "Baking mixes ingredients into a new food — you can't get the batter back." },
-  { key: "rust", label: "A rusting nail", emoji: "🔩", reversible: false, why: "Rust is a new material made from iron and air — the shiny nail is gone." },
+  {
+    key: "ice",
+    label: "Ice melting",
+    emoji: "🧊",
+    reversible: true,
+    why: "Melted ice is still water — freeze it and you get ice back.",
+  },
+  {
+    key: "freeze",
+    label: "Water freezing",
+    emoji: "❄️",
+    reversible: true,
+    why: "Frozen water is still water — warm it and it melts back.",
+  },
+  {
+    key: "choc",
+    label: "Melting chocolate",
+    emoji: "🍫",
+    reversible: true,
+    why: "Melted chocolate is still chocolate — cool it and it sets again.",
+  },
+  {
+    key: "boil",
+    label: "Boiling water",
+    emoji: "💨",
+    reversible: true,
+    why: "Steam is still water — cool it and it turns back to liquid.",
+  },
+  {
+    key: "egg",
+    label: "Frying an egg",
+    emoji: "🍳",
+    reversible: false,
+    why: "Cooking changes the egg into a new substance — you can't un-cook it.",
+  },
+  {
+    key: "paper",
+    label: "Burning paper",
+    emoji: "🔥",
+    reversible: false,
+    why: "Burning makes ash and smoke — brand-new stuff that won't become paper.",
+  },
+  {
+    key: "cake",
+    label: "Baking a cake",
+    emoji: "🎂",
+    reversible: false,
+    why: "Baking mixes ingredients into a new food — you can't get the batter back.",
+  },
+  {
+    key: "rust",
+    label: "A rusting nail",
+    emoji: "🔩",
+    reversible: false,
+    why: "Rust is a new material made from iron and air — the shiny nail is gone.",
+  },
 ];
 
 class Irreversible implements GameInstance {
@@ -68,14 +116,22 @@ class Irreversible implements GameInstance {
       { class: "chip-row" },
       el(
         "button",
-        { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.choose(true) },
-        "♻️ Reversible",
+        {
+          class: "btn",
+          style: { background: "var(--accent-blue)" },
+          onclick: () => this.choose(true),
+        },
+        "♻️ Reversible"
       ),
       el(
         "button",
-        { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.choose(false) },
-        "🔥 Irreversible",
-      ),
+        {
+          class: "btn",
+          style: { background: "var(--accent-red)" },
+          onclick: () => this.choose(false),
+        },
+        "🔥 Irreversible"
+      )
     );
 
     clear(this.ctx.panel);
@@ -84,12 +140,16 @@ class Irreversible implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Sort all 8 changes"),
+        el("span", {}, "Sort all 8 changes")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Is this change reversible?"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Is this change reversible?"
+      ),
       choiceRow,
       el("div", { class: "metric" }, el("span", {}, "🧩 Item"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -199,7 +259,14 @@ class Irreversible implements GameInstance {
     c.fillText("Reversible, or not?", W / 2, 80);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

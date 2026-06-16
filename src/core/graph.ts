@@ -24,7 +24,7 @@ export function drawLineGraph(
   y: number,
   w: number,
   h: number,
-  o: LineGraphOpts,
+  o: LineGraphOpts
 ): void {
   const padL = 34;
   const padB = 22;
@@ -120,7 +120,7 @@ export function drawBars(
   h: number,
   bars: Bar[],
   max: number,
-  title?: string,
+  title?: string
 ): void {
   c.fillStyle = "rgba(255,255,255,0.85)";
   c.fillRect(x, y, w, h);

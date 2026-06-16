@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -69,11 +69,15 @@ class SoundTravel implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...MEDIA.map((m) =>
-        el("button", { class: "chip", onclick: () => this.test(m) }, `${m.emoji} ${m.label}`),
-      ),
+        el("button", { class: "chip", onclick: () => this.test(m) }, `${m.emoji} ${m.label}`)
+      )
     );
 
-    this.statusEl = el("span", { style: { color: "var(--accent-orange)" } }, `0 / ${ROUNDS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-orange)" } },
+      `0 / ${ROUNDS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
@@ -86,12 +90,12 @@ class SoundTravel implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Task"),
-        el("span", {}, this.round().label),
+        el("span", {}, this.round().label)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Fill the space with…"),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🔔 Tasks"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 

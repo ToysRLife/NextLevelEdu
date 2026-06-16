@@ -22,7 +22,8 @@ export interface SliderHandle {
   setEnabled(enabled: boolean): void;
 }
 
-const fmt = (v: number, unit?: string) => `${Number.isInteger(v) ? v : v.toFixed(1)}${unit ? ` ${unit}` : ""}`;
+const fmt = (v: number, unit?: string) =>
+  `${Number.isInteger(v) ? v : v.toFixed(1)}${unit ? ` ${unit}` : ""}`;
 
 export function slider(opts: SliderOpts): SliderHandle {
   const valEl = el("span", { class: "ctrl-val" }, fmt(opts.value, opts.unit));
@@ -39,13 +40,13 @@ export function slider(opts: SliderOpts): SliderHandle {
       valEl.textContent = fmt(v, opts.unit);
       opts.onInput?.(v);
     },
-  }) as HTMLInputElement;
+  });
 
   const wrap = el(
     "div",
     { class: "ctrl" },
     el("div", { class: "ctrl-head" }, el("span", { class: "ctrl-label" }, opts.label), valEl),
-    input,
+    input
   );
 
   return {

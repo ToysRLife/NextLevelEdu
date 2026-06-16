@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -61,11 +61,31 @@ class Inherited implements GameInstance {
     const choices = el(
       "div",
       { class: "chip-row" },
-      el("button", { class: "btn", style: { background: "var(--accent-pink)" }, onclick: () => this.choose("mom") }, "👩 From Mum"),
-      el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.choose("dad") }, "👨 From Dad"),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-pink)" },
+          onclick: () => this.choose("mom"),
+        },
+        "👩 From Mum"
+      ),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-blue)" },
+          onclick: () => this.choose("dad"),
+        },
+        "👨 From Dad"
+      )
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-purple)" } }, `${this.idx + 1} / ${TRAITS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-purple)" } },
+      `${this.idx + 1} / ${TRAITS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },
@@ -78,12 +98,16 @@ class Inherited implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🧬 Trait"),
-        el("span", {}, `${this.current().emoji} ${this.current().label}`),
+        el("span", {}, `${this.current().emoji} ${this.current().label}`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Which parent gave this trait?"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Which parent gave this trait?"
+      ),
       choices,
       el("div", { class: "metric" }, el("span", {}, "🐱 Trait"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -139,7 +163,16 @@ class Inherited implements GameInstance {
     return furValue === "orange" ? "#fb923c" : "#94a3b8";
   }
 
-  private drawCat(c: CanvasRenderingContext2D, x: number, y: number, fur: string, ears: string, tail: string, label: string, highlight: string | null): void {
+  private drawCat(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    fur: string,
+    ears: string,
+    tail: string,
+    label: string,
+    highlight: string | null
+  ): void {
     // body
     c.fillStyle = this.catColor(fur);
     c.beginPath();
@@ -185,9 +218,15 @@ class Inherited implements GameInstance {
     if (highlight) {
       c.strokeStyle = `rgba(155,107,255,${0.6 + Math.sin(this.anim * 3) * 0.3})`;
       c.lineWidth = 4;
-      if (highlight === "fur") { c.beginPath(); c.arc(x, y, 54, 0, Math.PI * 2); c.stroke(); }
-      else if (highlight === "ears") { c.strokeRect(x - 46, y - 70, 92, 46); }
-      else { c.strokeRect(x + 40, y - 64, 56, 90); }
+      if (highlight === "fur") {
+        c.beginPath();
+        c.arc(x, y, 54, 0, Math.PI * 2);
+        c.stroke();
+      } else if (highlight === "ears") {
+        c.strokeRect(x - 46, y - 70, 92, 46);
+      } else {
+        c.strokeRect(x + 40, y - 64, 56, 90);
+      }
     }
 
     c.fillStyle = "#4c1d95";
@@ -229,13 +268,17 @@ class Inherited implements GameInstance {
       this.babyValue(TRAITS[1]),
       this.babyValue(TRAITS[2]),
       "👶 Baby",
-      hl,
+      hl
     );
 
     c.fillStyle = "#581c87";
     c.font = "bold 18px Nunito, sans-serif";
     c.textAlign = "center";
-    c.fillText(`Where did the baby get its ${this.current().emoji} ${this.current().label}?`, W / 2, 60);
+    c.fillText(
+      `Where did the baby get its ${this.current().emoji} ${this.current().label}?`,
+      W / 2,
+      60
+    );
   }
 
   start(): void {}

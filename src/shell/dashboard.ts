@@ -1,19 +1,19 @@
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { read } from "@platform/storage";
 import type { GameManifest } from "@sdk/types";
 import { GAME_MANIFESTS } from "../registry";
-import { getFavorites, isFavorite, toggleFavorite, getRecent } from "./profile";
+import { getFavorites, getRecent, isFavorite, toggleFavorite } from "./profile";
 import {
-  difficultyOf,
+  type Difficulty,
   DIFFICULTY_META,
+  difficultyOf,
   hasWon,
   isUnlocked,
-  unlockHint,
-  streamGames,
   nextUpFor,
+  streamGames,
   streamProgress,
   STREAMS,
-  type Difficulty,
+  unlockHint,
 } from "./progression";
 
 // The home screen, designed like a world-class app: a difficulty filter on top
@@ -31,7 +31,8 @@ const DIFF_FILTERS: { key: Difficulty | "all"; label: string }[] = [
 ];
 
 export function renderDashboard(root: HTMLElement): void {
-  const matchDiff = (m: GameManifest) => activeDifficulty === "all" || difficultyOf(m) === activeDifficulty;
+  const matchDiff = (m: GameManifest) =>
+    activeDifficulty === "all" || difficultyOf(m) === activeDifficulty;
   const byId = (id: string) => GAME_MANIFESTS.find((m) => m.id === id);
 
   const rerender = () => renderDashboard(root);
@@ -55,14 +56,18 @@ export function renderDashboard(root: HTMLElement): void {
           rerender();
         },
       },
-      fav ? "❤️" : "🤍",
+      fav ? "❤️" : "🤍"
     );
 
     const badges = el(
       "div",
       { class: "sc-badges" },
-      el("span", { class: `diff-badge ${diff}` }, `${DIFFICULTY_META[diff].dot} ${DIFFICULTY_META[diff].label}`),
-      won ? el("span", { class: "done-badge" }, `✓ ${"⭐".repeat(stars)}`) : null,
+      el(
+        "span",
+        { class: `diff-badge ${diff}` },
+        `${DIFFICULTY_META[diff].dot} ${DIFFICULTY_META[diff].label}`
+      ),
+      won ? el("span", { class: "done-badge" }, `✓ ${"⭐".repeat(stars)}`) : null
     );
 
     return el(
@@ -76,7 +81,7 @@ export function renderDashboard(root: HTMLElement): void {
       unlocked ? heart : el("div", { class: "sc-locktag" }, "🔒"),
       el("div", { class: "sc-emoji" }, meta.emoji),
       el("div", { class: "sc-title" }, meta.title),
-      unlocked ? badges : el("div", { class: "sc-lock" }, unlockHint(meta)),
+      unlocked ? badges : el("div", { class: "sc-lock" }, unlockHint(meta))
     );
   }
 
@@ -90,9 +95,9 @@ export function renderDashboard(root: HTMLElement): void {
         "div",
         { class: "shelf-head" },
         el("h3", { class: "shelf-title" }, title),
-        caption ? el("span", { class: "shelf-caption" }, caption) : null,
+        caption ? el("span", { class: "shelf-caption" }, caption) : null
       ),
-      el("div", { class: "shelf-row" }, ...list.map(card)),
+      el("div", { class: "shelf-row" }, ...list.map(card))
     );
   }
 
@@ -137,15 +142,21 @@ export function renderDashboard(root: HTMLElement): void {
             rerender();
           },
         },
-        f.label,
-      ),
-    ),
+        f.label
+      )
+    )
   );
 
   const live = shelves.filter((s): s is HTMLElement => s !== null);
   const body = live.length
     ? live
-    : [el("p", { class: "admin-note" }, "No games match this difficulty yet — try another filter.")];
+    : [
+        el(
+          "p",
+          { class: "admin-note" },
+          "No games match this difficulty yet — try another filter."
+        ),
+      ];
 
   clear(root);
   root.append(
@@ -154,7 +165,7 @@ export function renderDashboard(root: HTMLElement): void {
       { class: "container home" },
       el("h2", { class: "section-title" }, "Pick a Mission"),
       filterBar,
-      ...body,
-    ),
+      ...body
+    )
   );
 }

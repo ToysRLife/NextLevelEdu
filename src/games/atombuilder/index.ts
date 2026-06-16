@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 
 // Atoms (MS-PS1-1): an atom is protons + neutrons in a nucleus, with electrons
 // around it. The PROTON count decides which element it is; neutrons set the mass
@@ -11,7 +11,29 @@ const W = 800;
 const H = 600;
 
 // First 20 elements — proton count → symbol.
-const ELEMENTS = ["", "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca"];
+const ELEMENTS = [
+  "",
+  "H",
+  "He",
+  "Li",
+  "Be",
+  "B",
+  "C",
+  "N",
+  "O",
+  "F",
+  "Ne",
+  "Na",
+  "Mg",
+  "Al",
+  "Si",
+  "P",
+  "S",
+  "Cl",
+  "Ar",
+  "K",
+  "Ca",
+];
 const symbolFor = (z: number) => (z >= 1 && z < ELEMENTS.length ? ELEMENTS[z] : "?");
 
 interface Round {
@@ -71,7 +93,10 @@ class AtomBuilder implements GameInstance {
       value: this.protons,
       step: 1,
       color: "var(--accent-red)",
-      onInput: (v) => { this.protons = v; this.updateReadout(); },
+      onInput: (v) => {
+        this.protons = v;
+        this.updateReadout();
+      },
     });
     this.nCtl = slider({
       label: "⚪ Neutrons",
@@ -80,7 +105,10 @@ class AtomBuilder implements GameInstance {
       value: this.neutrons,
       step: 1,
       color: "var(--accent-blue)",
-      onInput: (v) => { this.neutrons = v; this.updateReadout(); },
+      onInput: (v) => {
+        this.neutrons = v;
+        this.updateReadout();
+      },
     });
     this.eCtl = slider({
       label: "🟡 Electrons",
@@ -89,23 +117,46 @@ class AtomBuilder implements GameInstance {
       value: this.electrons,
       step: 1,
       color: "var(--accent-yellow)",
-      onInput: (v) => { this.electrons = v; this.updateReadout(); },
+      onInput: (v) => {
+        this.electrons = v;
+        this.updateReadout();
+      },
     });
     this.elRead = readout("🔬 You built");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-purple)", background: "#f5f3ff" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-purple)", background: "#f5f3ff" },
+    });
     this.coachEl.textContent = "Set protons, neutrons, and electrons to build the target atom.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Build"), el("span", {}, `${this.round().name} (${symbolFor(this.round().z)})`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Build"),
+        el("span", {}, `${this.round().name} (${symbolFor(this.round().z)})`)
+      ),
       this.pCtl.el,
       this.nCtl.el,
       this.eCtl.el,
       this.elRead.el,
-      el("button", { class: "btn", style: { background: "var(--accent-purple)" }, onclick: () => this.check() }, "✅ Check atom"),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-purple)" },
+          onclick: () => this.check(),
+        },
+        "✅ Check atom"
+      ),
       el("div", { class: "metric" }, el("span", {}, "✅ Atoms built"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -248,7 +299,8 @@ export const atomBuilderGame: GameModule = {
     stream: "chemistry",
     gradeBand: "6-8",
     emoji: "⚛️",
-    blurb: "Place protons, neutrons, and electrons to build real atoms — and discover what makes each element.",
+    blurb:
+      "Place protons, neutrons, and electrons to build real atoms — and discover what makes each element.",
     mission: "Build each target atom with the right protons, neutrons, and electrons.",
     estMinutes: 4,
   },

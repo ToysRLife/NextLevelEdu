@@ -1,4 +1,4 @@
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { getBadges } from "./badges";
 import { getStreak } from "./profile";
 
@@ -15,8 +15,8 @@ export function renderBadges(root: HTMLElement): void {
         { class: `badge-card ${b.unlocked ? "earned" : "locked"}` },
         el("div", { class: "badge-emoji" }, b.unlocked ? b.emoji : "🔒"),
         el("div", { class: "badge-title" }, b.title),
-        el("div", { class: "badge-desc" }, b.desc),
-      ),
+        el("div", { class: "badge-desc" }, b.desc)
+      )
     );
   }
 
@@ -31,9 +31,9 @@ export function renderBadges(root: HTMLElement): void {
         { class: "trophy-stats" },
         el("span", { class: "tag" }, `🏅 ${earned} / ${badges.length} badges`),
         el("span", { class: "tag" }, `🔥 ${streak.current}-day streak`),
-        el("span", { class: "tag" }, `🏆 Best streak: ${streak.longest}`),
+        el("span", { class: "tag" }, `🏆 Best streak: ${streak.longest}`)
       ),
-      grid,
-    ),
+      grid
+    )
   );
 }

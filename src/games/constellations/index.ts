@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -84,7 +84,11 @@ class Constellations implements GameInstance {
   }
 
   private buildPanel(): void {
-    this.statusEl = el("span", { style: { color: "var(--accent-purple)" } }, `0 / ${CONSTELLATIONS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-purple)" } },
+      `0 / ${CONSTELLATIONS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },
@@ -97,11 +101,15 @@ class Constellations implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Trace"),
-        el("span", {}, `${this.current().emoji} ${this.current().name}`),
+        el("span", {}, `${this.current().emoji} ${this.current().name}`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Tap the pulsing star next"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Tap the pulsing star next"
+      ),
       el("div", { class: "metric" }, el("span", {}, "✨ Constellations"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 

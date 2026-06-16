@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -20,9 +20,33 @@ interface Need {
 }
 
 const NEEDS: Need[] = [
-  { key: "water", label: "Water", emoji: "💧", low: 45, high: 75, tooLow: "The soil is dry — give it more water.", tooHigh: "Too much water! The roots are drowning." },
-  { key: "sun", label: "Sunlight", emoji: "☀️", low: 50, high: 80, tooLow: "It's too dark — give it more sunlight.", tooHigh: "Too much sun! The leaves are scorching." },
-  { key: "air", label: "Fresh air", emoji: "🌬️", low: 40, high: 70, tooLow: "It needs more fresh air to breathe.", tooHigh: "Too much wind is drying it out." },
+  {
+    key: "water",
+    label: "Water",
+    emoji: "💧",
+    low: 45,
+    high: 75,
+    tooLow: "The soil is dry — give it more water.",
+    tooHigh: "Too much water! The roots are drowning.",
+  },
+  {
+    key: "sun",
+    label: "Sunlight",
+    emoji: "☀️",
+    low: 50,
+    high: 80,
+    tooLow: "It's too dark — give it more sunlight.",
+    tooHigh: "Too much sun! The leaves are scorching.",
+  },
+  {
+    key: "air",
+    label: "Fresh air",
+    emoji: "🌬️",
+    low: 40,
+    high: 70,
+    tooLow: "It needs more fresh air to breathe.",
+    tooHigh: "Too much wind is drying it out.",
+  },
 ];
 
 class PlantNeeds implements GameInstance {
@@ -64,7 +88,12 @@ class PlantNeeds implements GameInstance {
           this.vals[nd.key] = Number((e.target as HTMLInputElement).value);
         },
       });
-      return el("div", {}, el("div", { class: "control-label" }, `${nd.emoji} ${nd.label}`), slider);
+      return el(
+        "div",
+        {},
+        el("div", { class: "control-label" }, `${nd.emoji} ${nd.label}`),
+        slider
+      );
     });
 
     this.growthEl = el("span", { style: { color: "var(--accent-green)" } }, "0%");
@@ -80,11 +109,11 @@ class PlantNeeds implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Grow the plant tall"),
+        el("span", {}, "Grow the plant tall")
       ),
       ...sliders,
       el("div", { class: "metric" }, el("span", {}, "🌱 Growth"), this.growthEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -100,15 +129,16 @@ class PlantNeeds implements GameInstance {
       const v = this.vals[nd.key];
       if (v >= nd.low && v <= nd.high) {
         happy += 1;
-      } else if (!worst) {
-        worst = { msg: v < nd.low ? nd.tooLow : nd.tooHigh };
+      } else {
+        worst ??= { msg: v < nd.low ? nd.tooLow : nd.tooHigh };
       }
     }
 
     if (happy === NEEDS.length) {
       this.growth = Math.min(1, this.growth + 0.0025 * f);
       this.health = Math.min(1, this.health + 0.01 * f);
-      this.coachEl.textContent = "🌱 Perfect! Everything is just right — keep it steady and watch it grow.";
+      this.coachEl.textContent =
+        "🌱 Perfect! Everything is just right — keep it steady and watch it grow.";
     } else {
       // missing needs stall growth and slowly wilt
       this.health = Math.max(0, this.health - 0.004 * (NEEDS.length - happy) * f);
@@ -192,7 +222,15 @@ class PlantNeeds implements GameInstance {
       for (let p = 0; p < 6; p++) {
         const a = (p / 6) * Math.PI * 2 + this.anim * 0.2;
         c.beginPath();
-        c.ellipse(px + bend * 0.5 + Math.cos(a) * 18, fy + Math.sin(a) * 18, 12, 12, 0, 0, Math.PI * 2);
+        c.ellipse(
+          px + bend * 0.5 + Math.cos(a) * 18,
+          fy + Math.sin(a) * 18,
+          12,
+          12,
+          0,
+          0,
+          Math.PI * 2
+        );
         c.fill();
       }
       c.fillStyle = "#ffd23f";

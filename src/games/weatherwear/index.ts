@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -28,10 +28,25 @@ interface Weather {
 
 const WEATHERS: Weather[] = [
   { name: "Rainy", emoji: "🌧️", gear: "umbrella", why: "An umbrella keeps the rain off you." },
-  { name: "Sunny & bright", emoji: "☀️", gear: "sunglasses", why: "Sunglasses protect your eyes from the bright Sun." },
-  { name: "Snowy & cold", emoji: "❄️", gear: "coat", why: "A warm coat keeps you cosy in the snow." },
+  {
+    name: "Sunny & bright",
+    emoji: "☀️",
+    gear: "sunglasses",
+    why: "Sunglasses protect your eyes from the bright Sun.",
+  },
+  {
+    name: "Snowy & cold",
+    emoji: "❄️",
+    gear: "coat",
+    why: "A warm coat keeps you cosy in the snow.",
+  },
   { name: "Windy", emoji: "💨", gear: "scarf", why: "A scarf keeps the cold wind off your neck." },
-  { name: "Hot summer day", emoji: "🥵", gear: "sandals", why: "Sandals keep your feet cool on a hot day." },
+  {
+    name: "Hot summer day",
+    emoji: "🥵",
+    gear: "sandals",
+    why: "Sandals keep your feet cool on a hot day.",
+  },
 ];
 
 class WeatherWear implements GameInstance {
@@ -68,10 +83,16 @@ class WeatherWear implements GameInstance {
     const chips = el(
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
-      ...GEAR.map((g) => el("button", { class: "chip", onclick: () => this.choose(g.key) }, `${g.emoji} ${g.label}`)),
+      ...GEAR.map((g) =>
+        el("button", { class: "chip", onclick: () => this.choose(g.key) }, `${g.emoji} ${g.label}`)
+      )
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.idx + 1} / ${WEATHERS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-blue)" } },
+      `${this.idx + 1} / ${WEATHERS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
@@ -84,12 +105,12 @@ class WeatherWear implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🌦️ Weather"),
-        el("span", {}, this.current().name),
+        el("span", {}, this.current().name)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick the right gear"),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🌈 Day"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -180,7 +201,14 @@ class WeatherWear implements GameInstance {
     c.fillText("Dress for the weather! 🌦️", W / 2, 60);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

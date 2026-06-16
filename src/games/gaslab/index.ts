@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { byTier } from "@core/difficulty";
 
 // Gas behaviour (MS-PS1-4): gas pressure comes from particles hitting the walls.
@@ -21,7 +21,12 @@ interface Round {
 }
 const ROUNDS: Round[] = [{ target: 200 }, { target: 500 }, { target: 1000 }];
 
-interface P { x: number; y: number; vx: number; vy: number }
+interface P {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+}
 
 class GasLab implements GameInstance {
   private readonly ctx2d: CanvasRenderingContext2D;
@@ -45,7 +50,13 @@ class GasLab implements GameInstance {
   constructor(private readonly ctx: GameContext) {
     this.ctx2d = fitCanvas(ctx.canvas, W, H);
     this.tol = byTier(ctx.tier, 60, 40, 25);
-    for (let i = 0; i < 28; i++) this.parts.push({ x: 300 + (i % 7) * 25, y: 200 + Math.floor(i / 7) * 25, vx: ((i % 5) - 2) || 1, vy: ((i % 3) - 1) || 1 });
+    for (let i = 0; i < 28; i++)
+      this.parts.push({
+        x: 300 + (i % 7) * 25,
+        y: 200 + Math.floor(i / 7) * 25,
+        vx: (i % 5) - 2 || 1,
+        vy: (i % 3) - 1 || 1,
+      });
     this.buildPanel();
     ctx.services.hints.setHints([
       "A gas pushes on its container because its particles are constantly bouncing off the walls.",
@@ -71,7 +82,10 @@ class GasLab implements GameInstance {
       step: 5,
       unit: "°C",
       color: "var(--accent-orange)",
-      onInput: (v) => { this.temp = v; this.updateReadout(); },
+      onInput: (v) => {
+        this.temp = v;
+        this.updateReadout();
+      },
     });
     this.volCtl = slider({
       label: "📦 Volume",
@@ -81,22 +95,41 @@ class GasLab implements GameInstance {
       step: 0.5,
       unit: "L",
       color: "var(--accent-blue)",
-      onInput: (v) => { this.vol = v; this.updateReadout(); },
+      onInput: (v) => {
+        this.vol = v;
+        this.updateReadout();
+      },
     });
     this.pRead = readout("⏲️ Pressure (nRT ÷ V)");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
+    });
     this.coachEl.textContent = "Set temperature and volume to reach the target pressure.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Target pressure"), el("span", {}, `${this.round().target} kPa`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Target pressure"),
+        el("span", {}, `${this.round().target} kPa`)
+      ),
       this.tempCtl.el,
       this.volCtl.el,
       this.pRead.el,
-      el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.check() }, "⏲️ Read the gauge"),
+      el(
+        "button",
+        { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.check() },
+        "⏲️ Read the gauge"
+      ),
       el("div", { class: "metric" }, el("span", {}, "✅ Pressures hit"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -122,7 +155,9 @@ class GasLab implements GameInstance {
       this.misses += 1;
       this.ctx.services.audio.play("fail");
       this.coachEl.textContent =
-        p < this.round().target ? `${p.toFixed(0)} kPa is too low — heat it up or shrink the volume.` : `${p.toFixed(0)} kPa is too high — cool it down or expand the volume.`;
+        p < this.round().target
+          ? `${p.toFixed(0)} kPa is too low — heat it up or shrink the volume.`
+          : `${p.toFixed(0)} kPa is too high — cool it down or expand the volume.`;
     }
   }
 
@@ -162,10 +197,22 @@ class GasLab implements GameInstance {
       p.vy = (p.vy / sp) * speed;
       p.x += p.vx;
       p.y += p.vy;
-      if (p.x < b.x + 7) { p.x = b.x + 7; p.vx = Math.abs(p.vx); }
-      if (p.x > b.x + b.w - 7) { p.x = b.x + b.w - 7; p.vx = -Math.abs(p.vx); }
-      if (p.y < b.y + 7) { p.y = b.y + 7; p.vy = Math.abs(p.vy); }
-      if (p.y > b.y + b.h - 7) { p.y = b.y + b.h - 7; p.vy = -Math.abs(p.vy); }
+      if (p.x < b.x + 7) {
+        p.x = b.x + 7;
+        p.vx = Math.abs(p.vx);
+      }
+      if (p.x > b.x + b.w - 7) {
+        p.x = b.x + b.w - 7;
+        p.vx = -Math.abs(p.vx);
+      }
+      if (p.y < b.y + 7) {
+        p.y = b.y + 7;
+        p.vy = Math.abs(p.vy);
+      }
+      if (p.y > b.y + b.h - 7) {
+        p.y = b.y + b.h - 7;
+        p.vy = -Math.abs(p.vy);
+      }
     }
   }
 

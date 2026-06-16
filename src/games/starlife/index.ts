@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 
 // Star life cycle (MS-ESS1): a star's mass decides its fate. Small stars fade to
 // white dwarfs; heavy stars explode as supernovae, leaving neutron stars or
@@ -76,19 +76,36 @@ class StarLife implements GameInstance {
       },
     });
     this.fateRead = readout("🔭 This star will become");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-purple)", background: "#f5f3ff" } });
-    this.coachEl.textContent = "Pick a mass so the star ends as the target — then let it live its life.";
-    this.goBtn = el("button", { class: "btn", style: { background: "var(--accent-purple)" }, onclick: () => this.evolve() }, "⏩ Evolve the star") as HTMLButtonElement;
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-purple)", background: "#f5f3ff" },
+    });
+    this.coachEl.textContent =
+      "Pick a mass so the star ends as the target — then let it live its life.";
+    this.goBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-purple)" }, onclick: () => this.evolve() },
+      "⏩ Evolve the star"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Target ending"), el("span", {}, `${FATE_EMOJI[this.target()]} ${this.target()}`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Target ending"),
+        el("span", {}, `${FATE_EMOJI[this.target()]} ${this.target()}`)
+      ),
       this.massCtl.el,
       this.fateRead.el,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Stars built"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -143,9 +160,7 @@ class StarLife implements GameInstance {
     } else {
       this.misses += 1;
       this.ctx.services.audio.play("fail");
-      this.coachEl.textContent = `That star became a ${f}, not a ${this.target()}. ${
-        this.massForTargetHint()
-      }`;
+      this.coachEl.textContent = `That star became a ${f}, not a ${this.target()}. ${this.massForTargetHint()}`;
     }
   }
 
@@ -204,11 +219,25 @@ class StarLife implements GameInstance {
         label = "red giant…";
       } else {
         const p2 = (this.prog - 0.5) * 2;
-        if (f === "White Dwarf") { r = baseR * (1.6 - p2 * 1.4); color = "#e0f2fe"; label = "shedding into a white dwarf"; }
-        else if (f === "Red Dwarf") { r = baseR; color = "#ef4444"; label = "tiny, long-lived red dwarf"; }
-        else { // supernova → remnant
-          if (p2 < 0.5) { r = baseR * (2 + p2 * 4); color = "#fff"; label = "💥 SUPERNOVA"; }
-          else { r = f === "Black Hole" ? 18 : 26; color = f === "Black Hole" ? "#000" : "#a5f3fc"; label = f; }
+        if (f === "White Dwarf") {
+          r = baseR * (1.6 - p2 * 1.4);
+          color = "#e0f2fe";
+          label = "shedding into a white dwarf";
+        } else if (f === "Red Dwarf") {
+          r = baseR;
+          color = "#ef4444";
+          label = "tiny, long-lived red dwarf";
+        } else {
+          // supernova → remnant
+          if (p2 < 0.5) {
+            r = baseR * (2 + p2 * 4);
+            color = "#fff";
+            label = "💥 SUPERNOVA";
+          } else {
+            r = f === "Black Hole" ? 18 : 26;
+            color = f === "Black Hole" ? "#000" : "#a5f3fc";
+            label = f;
+          }
         }
       }
     }
@@ -269,7 +298,8 @@ export const starLifeGame: GameModule = {
     stream: "earth-space",
     gradeBand: "6-8",
     emoji: "⭐",
-    blurb: "Set a star's mass and watch its life unfold — from giant to white dwarf, neutron star, or black hole.",
+    blurb:
+      "Set a star's mass and watch its life unfold — from giant to white dwarf, neutron star, or black hole.",
     mission: "Choose a mass so each star ends as the target type.",
     estMinutes: 3,
   },

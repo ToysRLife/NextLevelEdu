@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance, DifficultyTier } from "@sdk/types";
+import type { DifficultyTier, GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { ParticleSystem } from "@core/particles";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -86,21 +86,21 @@ class Forces implements GameInstance {
         el(
           "button",
           {
-            class: "chip" + (s.key === this.surface.key ? " active" : ""),
+            class: `chip${s.key === this.surface.key ? " active" : ""}`,
             "data-s": s.key,
             onclick: () => {
               if (this.phase !== "setup") return;
               this.surface = s;
-              this.chips.querySelectorAll("button").forEach((b) =>
-                b.classList.toggle("active", b.getAttribute("data-s") === s.key),
-              );
+              this.chips
+                .querySelectorAll("button")
+                .forEach((b) => b.classList.toggle("active", b.getAttribute("data-s") === s.key));
               this.updateReadout();
               this.render();
             },
           },
-          s.label,
-        ),
-      ),
+          s.label
+        )
+      )
     );
 
     this.pushEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.push} N`);
@@ -108,7 +108,7 @@ class Forces implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
     });
-    this.goBtn = el("button", { class: "btn", onclick: () => this.go() }, "👋 Push!") as HTMLButtonElement;
+    this.goBtn = el("button", { class: "btn", onclick: () => this.go() }, "👋 Push!");
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -118,7 +118,7 @@ class Forces implements GameInstance {
       slider,
       el("div", { class: "metric" }, el("span", {}, "👋 Force"), this.pushEl),
       this.goBtn,
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -129,7 +129,11 @@ class Forces implements GameInstance {
       this.phase === "sliding"
         ? "📦 Sliding… friction is slowing it down."
         : `On ${this.surface.label.split(" ")[1].toLowerCase()}, the box will coast ${
-            this.surface.friction < 0.03 ? "a long way" : this.surface.friction > 0.08 ? "only a little" : "a fair bit"
+            this.surface.friction < 0.03
+              ? "a long way"
+              : this.surface.friction > 0.08
+                ? "only a little"
+                : "a fair bit"
           }. Aim for the green zone!`;
   }
 
@@ -301,7 +305,8 @@ export const forcesGame: GameModule = {
     gradeBand: "K-2",
     emoji: "📦",
     blurb: "Give the box just the right push so friction stops it on the target.",
-    mission: "Push the box so it slides to a stop right inside the green zone — balance your force against friction.",
+    mission:
+      "Push the box so it slides to a stop right inside the green zone — balance your force against friction.",
     estMinutes: 3,
   },
   create: (ctx) => new Forces(ctx),

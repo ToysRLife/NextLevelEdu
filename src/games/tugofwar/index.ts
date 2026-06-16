@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -12,9 +12,21 @@ const MARK = 200; // distance to win to a side
 type Goal = "balance" | "right" | "left";
 
 const PROMPTS: { goal: Goal; label: string; hint: string }[] = [
-  { goal: "balance", label: "Balance it (no winner)", hint: "Balanced forces — equal pulls — keep the flag still in the middle." },
-  { goal: "right", label: "Let the 🔴 Red team win", hint: "Unbalanced forces — make Red pull harder so the flag moves their way." },
-  { goal: "left", label: "Let the 🔵 Blue team win", hint: "Unbalanced forces — make Blue pull harder to drag the flag over." },
+  {
+    goal: "balance",
+    label: "Balance it (no winner)",
+    hint: "Balanced forces — equal pulls — keep the flag still in the middle.",
+  },
+  {
+    goal: "right",
+    label: "Let the 🔴 Red team win",
+    hint: "Unbalanced forces — make Red pull harder so the flag moves their way.",
+  },
+  {
+    goal: "left",
+    label: "Let the 🔵 Blue team win",
+    hint: "Unbalanced forces — make Blue pull harder to drag the flag over.",
+  },
 ];
 
 class TugOfWar implements GameInstance {
@@ -80,7 +92,11 @@ class TugOfWar implements GameInstance {
     });
 
     this.netEl = el("span", {}, "");
-    this.statusEl = el("span", { style: { color: "var(--accent-purple)" } }, `0 / ${PROMPTS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-purple)" } },
+      `0 / ${PROMPTS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },
@@ -92,7 +108,7 @@ class TugOfWar implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, this.goal().label),
+        el("span", {}, this.goal().label)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🔵 Blue pullers"),
       blue,
@@ -100,14 +116,19 @@ class TugOfWar implements GameInstance {
       red,
       el("div", { class: "metric" }, el("span", {}, "⚖️ Forces"), this.netEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Done"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
 
   private updateReadout(): void {
     const net = this.right - this.left;
-    this.netEl.textContent = net === 0 ? `balanced (${this.left}=${this.right})` : net > 0 ? `Red +${net}` : `Blue +${-net}`;
+    this.netEl.textContent =
+      net === 0
+        ? `balanced (${this.left}=${this.right})`
+        : net > 0
+          ? `Red +${net}`
+          : `Blue +${-net}`;
     this.coachEl.textContent = this.goal().hint;
   }
 
@@ -177,11 +198,20 @@ class TugOfWar implements GameInstance {
     // centre line + side markers
     c.strokeStyle = "#cbd5e1";
     c.lineWidth = 2;
-    c.beginPath(); c.moveTo(CX, 120); c.lineTo(CX, ROPE_Y + 60); c.stroke();
+    c.beginPath();
+    c.moveTo(CX, 120);
+    c.lineTo(CX, ROPE_Y + 60);
+    c.stroke();
     c.strokeStyle = "#fca5a5";
-    c.beginPath(); c.moveTo(CX + MARK, 120); c.lineTo(CX + MARK, ROPE_Y + 60); c.stroke();
+    c.beginPath();
+    c.moveTo(CX + MARK, 120);
+    c.lineTo(CX + MARK, ROPE_Y + 60);
+    c.stroke();
     c.strokeStyle = "#93c5fd";
-    c.beginPath(); c.moveTo(CX - MARK, 120); c.lineTo(CX - MARK, ROPE_Y + 60); c.stroke();
+    c.beginPath();
+    c.moveTo(CX - MARK, 120);
+    c.lineTo(CX - MARK, ROPE_Y + 60);
+    c.stroke();
 
     // rope
     c.strokeStyle = "#a16207";

@@ -1,7 +1,14 @@
-import type { GameManifest, GameInstance, OutcomeDetail, DifficultyTier } from "@sdk/types";
-import { el, clear } from "@core/dom";
+import type { DifficultyTier, GameInstance, GameManifest, OutcomeDetail } from "@sdk/types";
+import { clear, el } from "@core/dom";
 import { createServices } from "@platform/services";
-import { addJoules, addResources, getLevel, recordPlayToday, recordPerformance, recordRecent } from "./profile";
+import {
+  addJoules,
+  addResources,
+  getLevel,
+  recordPerformance,
+  recordPlayToday,
+  recordRecent,
+} from "./profile";
 import { getWorldReward } from "./worlds";
 import { checkBadges } from "./badges";
 import { loadGame } from "../registry";
@@ -17,7 +24,7 @@ function makeFeedbackBlock(gameId: string, title = "How was this game?"): HTMLEl
     rows: "2",
     maxlength: "300",
     placeholder: "Tell us more (optional)",
-  }) as HTMLTextAreaElement;
+  });
   const sendRow = el(
     "div",
     { class: "wf-send", style: { display: "none" } },
@@ -39,8 +46,8 @@ function makeFeedbackBlock(gameId: string, title = "How was this game?"): HTMLEl
           wrap.append(el("div", { class: "wf-thanks" }, "💜 Thanks for your feedback!"));
         },
       },
-      "Send",
-    ),
+      "Send"
+    )
   );
   const faces: [number, string][] = [
     [1, "😕"],
@@ -62,9 +69,9 @@ function makeFeedbackBlock(gameId: string, title = "How was this game?"): HTMLEl
             sendRow.style.display = "flex";
           },
         },
-        emoji,
-      ),
-    ),
+        emoji
+      )
+    )
   );
   wrap.append(el("div", { class: "wf-title" }, title), facesRow, sendRow);
   return wrap;
@@ -75,7 +82,6 @@ function makeFeedbackBlock(gameId: string, title = "How was this game?"): HTMLEl
 // code is loaded lazily (code-split), so we show a loading state until it's
 // ready. Returns a cleanup function the router calls before navigating away.
 export function renderGameHost(root: HTMLElement, meta: GameManifest): () => void {
-
   const canvas = el("canvas", {});
   // The game reads canvas.parentElement for its backdrop, so the wrap is required.
   const canvasWrap = el("div", { class: "canvas-wrap" }, canvas);
@@ -106,7 +112,7 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
         }
       },
     },
-    "💡 Hint",
+    "💡 Hint"
   );
 
   const restartBtn = el(
@@ -121,7 +127,7 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
         instance?.reset();
       },
     },
-    "↻ Restart",
+    "↻ Restart"
   );
 
   const backBtn = el(
@@ -132,7 +138,7 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
         location.hash = "#/";
       },
     },
-    "← Missions",
+    "← Missions"
   );
 
   // Feedback any time — not just on the win screen — so a learner can report a
@@ -140,7 +146,7 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
   const feedbackBtn = el(
     "button",
     { class: "btn secondary", onclick: () => openFeedback() },
-    "💬 Feedback",
+    "💬 Feedback"
   );
 
   const actions = el("div", { class: "host-actions" }, hintBtn, feedbackBtn, restartBtn, backBtn);
@@ -149,7 +155,7 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
     "div",
     { class: "mission-banner" },
     el("span", { class: "label" }, "Mission"),
-    el("span", {}, meta.mission),
+    el("span", {}, meta.mission)
   );
 
   const stage = el("div", { class: "host-stage" }, missionBanner, canvasWrap, actions, hintPanel);
@@ -177,8 +183,8 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
       el(
         "div",
         { class: "outcome-actions" },
-        el("button", { class: "btn secondary", onclick: () => clearOverlay() }, "Close"),
-      ),
+        el("button", { class: "btn secondary", onclick: () => clearOverlay() }, "Close")
+      )
     );
     canvasWrap.append(el("div", { class: "overlay" }, card));
   }
@@ -208,8 +214,8 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
             "div",
             { class: "rewards" },
             ...Object.entries(detail.resources).map(([name, amount]) =>
-              el("div", { class: "reward-pill" }, `+${amount} ${name}`),
-            ),
+              el("div", { class: "reward-pill" }, `+${amount} ${name}`)
+            )
           )
         : null;
 
@@ -219,7 +225,11 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
     const reward = success ? getWorldReward(meta.stream) : null;
     if (reward) {
       if (reward.complete) {
-        worldBlock = el("div", { class: "win-world done" }, `${reward.emoji} ${reward.name} is complete! 🎉`);
+        worldBlock = el(
+          "div",
+          { class: "win-world done" },
+          `${reward.emoji} ${reward.name} is complete! 🎉`
+        );
       } else if (reward.next) {
         const n = reward.next;
         const bars = Object.entries(n.cost).map(([name, amt]) => {
@@ -229,16 +239,27 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
             "div",
             { class: "res-row" },
             el("span", { class: "res-name" }, name),
-            el("div", { class: "res-bar" }, el("div", { class: `res-fill ${cur >= amt ? "full" : ""}`, style: { width: `${p}%` } })),
-            el("span", { class: "res-num" }, `${cur}/${amt}`),
+            el(
+              "div",
+              { class: "res-bar" },
+              el("div", {
+                class: `res-fill ${cur >= amt ? "full" : ""}`,
+                style: { width: `${p}%` },
+              })
+            ),
+            el("span", { class: "res-num" }, `${cur}/${amt}`)
           );
         });
         worldBlock = el(
           "div",
           { class: `win-world ${n.affordable ? "ready" : ""}` },
           el("div", { class: "win-world-head" }, `${reward.emoji} ${reward.name}`),
-          el("div", { class: "win-world-next" }, n.affordable ? `Ready to build: ${n.emoji} ${n.name}!` : `Next: ${n.emoji} ${n.name}`),
-          ...bars,
+          el(
+            "div",
+            { class: "win-world-next" },
+            n.affordable ? `Ready to build: ${n.emoji} ${n.name}!` : `Next: ${n.emoji} ${n.name}`
+          ),
+          ...bars
         );
       }
     }
@@ -246,7 +267,12 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
     // 1-card concept recap — what the learner just discovered.
     const recapBlock =
       success && meta.takeaway
-        ? el("div", { class: "win-recap" }, el("span", { class: "recap-label" }, "💡 You discovered"), el("span", {}, meta.takeaway))
+        ? el(
+            "div",
+            { class: "win-recap" },
+            el("span", { class: "recap-label" }, "💡 You discovered"),
+            el("span", {}, meta.takeaway)
+          )
         : null;
 
     // Newly unlocked badges.
@@ -254,12 +280,23 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
       ? el(
           "div",
           { class: "win-badges" },
-          el("div", { class: "wb-title" }, newBadges.length > 1 ? "🏅 New badges!" : "🏅 New badge!"),
+          el(
+            "div",
+            { class: "wb-title" },
+            newBadges.length > 1 ? "🏅 New badges!" : "🏅 New badge!"
+          ),
           el(
             "div",
             { class: "wb-row" },
-            ...newBadges.map((b) => el("div", { class: "wb-badge", title: b.desc }, el("span", { class: "wb-emoji" }, b.emoji), el("span", {}, b.title))),
-          ),
+            ...newBadges.map((b) =>
+              el(
+                "div",
+                { class: "wb-badge", title: b.desc },
+                el("span", { class: "wb-emoji" }, b.emoji),
+                el("span", {}, b.title)
+              )
+            )
+          )
         )
       : null;
 
@@ -269,7 +306,11 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
       el("div", { class: "outcome-emoji" }, success ? "🎉" : "💪"),
       el("h2", {}, success ? "Mission Complete!" : "Not quite — try again!"),
       success ? el("div", { class: "stars" }, "⭐".repeat(stars) + "☆".repeat(3 - stars)) : null,
-      el("p", {}, detail.message ?? (success ? "Brilliant work!" : "Every scientist learns by trying again.")),
+      el(
+        "p",
+        {},
+        detail.message ?? (success ? "Brilliant work!" : "Every scientist learns by trying again.")
+      ),
       recapBlock,
       rewardPills,
       worldBlock,
@@ -289,7 +330,7 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
               instance?.reset();
             },
           },
-          success ? "Play Again" : "Retry",
+          success ? "Play Again" : "Retry"
         ),
         success
           ? el(
@@ -300,7 +341,7 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
                   location.hash = `#/world/${meta.stream}`;
                 },
               },
-              reward?.next?.affordable ? `🔨 Build the ${reward.next.name}!` : "🏗️ Build your world",
+              reward?.next?.affordable ? `🔨 Build the ${reward.next.name}!` : "🏗️ Build your world"
             )
           : null,
         el(
@@ -311,9 +352,9 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
               location.hash = "#/";
             },
           },
-          "Missions",
-        ),
-      ),
+          "Missions"
+        )
+      )
     );
 
     canvasWrap.append(el("div", { class: "overlay" }, card));
@@ -324,7 +365,12 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
   const loadingOverlay = el(
     "div",
     { class: "overlay" },
-    el("div", { class: "outcome-card" }, el("div", { class: "outcome-emoji" }, "⏳"), el("p", {}, "Loading…")),
+    el(
+      "div",
+      { class: "outcome-card" },
+      el("div", { class: "outcome-emoji" }, "⏳"),
+      el("p", {}, "Loading…")
+    )
   );
   canvasWrap.append(loadingOverlay);
 
@@ -341,7 +387,8 @@ export function renderGameHost(root: HTMLElement, meta: GameManifest): () => voi
     })
     .catch(() => {
       if (cancelled) return;
-      loadingOverlay.querySelector("p")!.textContent = "Couldn't load this game. Go back and try again.";
+      loadingOverlay.querySelector("p")!.textContent =
+        "Couldn't load this game. Go back and try again.";
     });
 
   return () => {

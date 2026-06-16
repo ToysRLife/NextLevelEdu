@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -84,13 +84,17 @@ class Heat implements GameInstance {
     const checkBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.check() },
-      "🌡️ Pour & check",
+      "🌡️ Pour & check"
     );
 
     this.resultEl = el("span", {}, "");
     // Reflect accumulated progress — buildPanel() runs between rounds, so this
     // must show how many are already matched, not a hardcoded 0.
-    this.statusEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.matched} / ${TARGETS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-orange)" } },
+      `${this.matched} / ${TARGETS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
@@ -102,7 +106,7 @@ class Heat implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Make"),
-        el("span", {}, `${this.target().temp}° — ${this.target().label}`),
+        el("span", {}, `${this.target().temp}° — ${this.target().label}`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🔥 Hot water cups (90°)"),
       hotSlider,
@@ -111,7 +115,7 @@ class Heat implements GameInstance {
       checkBtn,
       el("div", { class: "metric" }, el("span", {}, "🌡️ Mix temp"), this.resultEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Matched"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -241,7 +245,14 @@ class Heat implements GameInstance {
     c.fillText(`Mix water to ${this.target().temp}° for ${this.target().label}`, W / 2, 40);
   }
 
-  private drawJug(c: CanvasRenderingContext2D, x: number, emoji: string, color: string, cups: number, label: string): void {
+  private drawJug(
+    c: CanvasRenderingContext2D,
+    x: number,
+    emoji: string,
+    color: string,
+    cups: number,
+    label: string
+  ): void {
     c.fillStyle = "rgba(255,255,255,0.5)";
     c.fillRect(x - 45, 300, 90, 160);
     const fillH = Math.min(150, cups * 18);
@@ -259,7 +270,14 @@ class Heat implements GameInstance {
     c.fillText(`${cups} cups`, x, 500);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (h <= 0) return;
     c.beginPath();

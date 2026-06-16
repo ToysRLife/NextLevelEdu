@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -18,7 +18,14 @@ interface Bone {
 
 const BONES: Bone[] = [
   { key: "skull", name: "Skull", emoji: "💀", job: "protects the brain", x: 470, y: 130 },
-  { key: "ribcage", name: "Ribcage", emoji: "🫁", job: "guards the heart and lungs", x: 470, y: 250 },
+  {
+    key: "ribcage",
+    name: "Ribcage",
+    emoji: "🫁",
+    job: "guards the heart and lungs",
+    x: 470,
+    y: 250,
+  },
   { key: "spine", name: "Spine", emoji: "🦴", job: "holds you upright and bends", x: 470, y: 350 },
   { key: "arm", name: "Arm bone", emoji: "💪", job: "lets you reach and lift", x: 340, y: 250 },
   { key: "leg", name: "Leg bone", emoji: "🦵", job: "carries your weight to walk", x: 470, y: 470 },
@@ -49,10 +56,16 @@ class Skeleton implements GameInstance {
         if (Math.hypot(p.x - this.tok.x, p.y - this.tok.y) < 44) this.dragging = true;
       },
       move: (p) => {
-        if (this.dragging) { this.tok.x = p.x; this.tok.y = p.y; }
+        if (this.dragging) {
+          this.tok.x = p.x;
+          this.tok.y = p.y;
+        }
       },
       up: (p) => {
-        if (this.dragging) { this.dragging = false; this.drop(p); }
+        if (this.dragging) {
+          this.dragging = false;
+          this.drop(p);
+        }
       },
     });
     this.buildPanel();
@@ -69,7 +82,11 @@ class Skeleton implements GameInstance {
   }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-purple)" } }, `${this.idx + 1} / ${BONES.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-purple)" } },
+      `${this.idx + 1} / ${BONES.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },
@@ -82,11 +99,15 @@ class Skeleton implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🦴 Place the"),
-        el("span", {}, this.current().name),
+        el("span", {}, this.current().name)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Drag it to the glowing spot"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Drag it to the glowing spot"
+      ),
       el("div", { class: "metric" }, el("span", {}, "🦴 Bones placed"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -169,7 +190,9 @@ class Skeleton implements GameInstance {
         c.textAlign = "center";
         c.fillText(b.emoji, b.x, b.y + 12);
       } else {
-        c.strokeStyle = isCurrent ? `rgba(155,107,255,${0.6 + Math.sin(this.anim * 3) * 0.3})` : "rgba(255,255,255,0.25)";
+        c.strokeStyle = isCurrent
+          ? `rgba(155,107,255,${0.6 + Math.sin(this.anim * 3) * 0.3})`
+          : "rgba(255,255,255,0.25)";
         c.lineWidth = isCurrent ? 4 : 2;
         c.setLineDash([6, 6]);
         c.beginPath();

@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -36,9 +36,18 @@ class Germs implements GameInstance {
     this.ctx2d = fitCanvas(ctx.canvas, W, H);
     this.spawn();
     this.detach = onPointer(ctx.canvas, W, H, {
-      down: (p) => { this.dragging = true; this.brush = p; this.scrub(p); },
-      move: (p) => { this.brush = p; if (this.dragging) this.scrub(p); },
-      up: () => { this.dragging = false; },
+      down: (p) => {
+        this.dragging = true;
+        this.brush = p;
+        this.scrub(p);
+      },
+      move: (p) => {
+        this.brush = p;
+        if (this.dragging) this.scrub(p);
+      },
+      up: () => {
+        this.dragging = false;
+      },
     });
     this.buildPanel();
     ctx.services.hints.setHints([
@@ -54,7 +63,12 @@ class Germs implements GameInstance {
     for (let i = 0; i < 15; i++) {
       const a = Math.random() * Math.PI * 2;
       const r = Math.random() * 130;
-      this.germs.push({ x: CX + Math.cos(a) * r, y: CY + Math.sin(a) * r * 0.8, removed: false, wob: Math.random() * 6 });
+      this.germs.push({
+        x: CX + Math.cos(a) * r,
+        y: CY + Math.sin(a) * r * 0.8,
+        removed: false,
+        wob: Math.random() * 6,
+      });
     }
   }
 
@@ -72,11 +86,15 @@ class Germs implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Wash away the germs"),
+        el("span", {}, "Wash away the germs")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Drag the sponge over the hands"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Drag the sponge over the hands"
+      ),
       el("div", { class: "metric" }, el("span", {}, "🧼 Germs gone"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -87,7 +105,8 @@ class Germs implements GameInstance {
       if (Math.hypot(p.x - g.x, p.y - g.y) < 46) {
         g.removed = true;
         this.removed += 1;
-        for (let i = 0; i < 4; i++) this.bubbles.push({ x: g.x + (Math.random() - 0.5) * 20, y: g.y, life: 1 });
+        for (let i = 0; i < 4; i++)
+          this.bubbles.push({ x: g.x + (Math.random() - 0.5) * 20, y: g.y, life: 1 });
         this.ctx.services.audio.play("tick");
         this.statusEl.textContent = `${this.removed} / 15`;
         if (this.removed >= 15) this.win();
@@ -112,7 +131,10 @@ class Germs implements GameInstance {
     const draw = () => {
       this.anim += 0.08;
       if (!this.ended) this.frames++;
-      for (const b of this.bubbles) { b.y -= 1.5; b.life -= 0.04; }
+      for (const b of this.bubbles) {
+        b.y -= 1.5;
+        b.life -= 0.04;
+      }
       this.bubbles = this.bubbles.filter((b) => b.life > 0);
       this.render();
       this.raf = requestAnimationFrame(draw);
@@ -192,7 +214,14 @@ class Germs implements GameInstance {
     c.fillText("Scrub away the germs with soap 🧼", W / 2, 50);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

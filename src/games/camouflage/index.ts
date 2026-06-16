@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -100,7 +100,8 @@ class Camouflage implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },
     });
-    this.coachEl.textContent = "Match your skin to the habitat before the predator finishes scanning!";
+    this.coachEl.textContent =
+      "Match your skin to the habitat before the predator finishes scanning!";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -108,7 +109,7 @@ class Camouflage implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Hide from ${NEED} predators`),
+        el("span", {}, `Hide from ${NEED} predators`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🎨 Colour"),
       hueSlider,
@@ -116,7 +117,7 @@ class Camouflage implements GameInstance {
       lightSlider,
       el("div", { class: "metric" }, el("span", {}, "🫥 Blend"), this.matchEl),
       el("div", { class: "metric" }, el("span", {}, "🏆 Survived"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -124,7 +125,8 @@ class Camouflage implements GameInstance {
   private updateReadout(): void {
     const pct = Math.round(this.matchPct() * 100);
     this.matchEl.textContent = `${pct}%`;
-    this.matchEl.style.color = pct > 80 ? "var(--accent-green)" : pct > 50 ? "var(--accent-orange)" : "var(--accent-red)";
+    this.matchEl.style.color =
+      pct > 80 ? "var(--accent-green)" : pct > 50 ? "var(--accent-orange)" : "var(--accent-red)";
   }
 
   private tick(dtMs: number): void {
@@ -258,7 +260,14 @@ class Camouflage implements GameInstance {
     c.fillText(`Blend ${pct}%`, cx, cy + 90);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);
@@ -305,7 +314,8 @@ export const camouflageGame: GameModule = {
     stream: "biology",
     gradeBand: "3-5",
     emoji: "🦎",
-    blurb: "Tune your colour and brightness to blend into each habitat before a predator spots you.",
+    blurb:
+      "Tune your colour and brightness to blend into each habitat before a predator spots you.",
     mission: "Match the habitat closely enough to hide from three hunting predators.",
     estMinutes: 3,
   },

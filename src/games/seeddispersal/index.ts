@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -55,7 +55,7 @@ class SeedDispersal implements GameInstance {
         style: { background: "var(--accent-green)" },
         onclick: () => this.release(),
       },
-      "🌬️ Release Seed",
+      "🌬️ Release Seed"
     );
 
     this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `0 / ${NEED}`);
@@ -64,7 +64,8 @@ class SeedDispersal implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
     });
-    this.coachEl.textContent = "Wait for a strong gust, then release a seed to ride the wind to the far soil.";
+    this.coachEl.textContent =
+      "Wait for a strong gust, then release a seed to ride the wind to the far soil.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -72,13 +73,17 @@ class SeedDispersal implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Land ${NEED} in the meadow`),
+        el("span", {}, `Land ${NEED} in the meadow`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Time your release with the wind"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Time your release with the wind"
+      ),
       releaseBtn,
       el("div", { class: "metric" }, el("span", {}, "🌬️ Wind"), this.windEl),
       el("div", { class: "metric" }, el("span", {}, "🌱 Landed in meadow"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -127,7 +132,8 @@ class SeedDispersal implements GameInstance {
         if (inMeadow) {
           this.reached += 1;
           this.ctx.services.audio.play("tick");
-          this.coachEl.textContent = "🌱 It took root in the meadow! The wind carried it to fresh soil.";
+          this.coachEl.textContent =
+            "🌱 It took root in the meadow! The wind carried it to fresh soil.";
         } else {
           this.missed += 1;
           this.ctx.services.audio.play("fail");
@@ -141,7 +147,8 @@ class SeedDispersal implements GameInstance {
       }
     }
 
-    this.windEl.textContent = this.wind > 0.66 ? "💨 strong" : this.wind > 0.33 ? "🍃 medium" : "· calm";
+    this.windEl.textContent =
+      this.wind > 0.66 ? "💨 strong" : this.wind > 0.33 ? "🍃 medium" : "· calm";
     this.render();
   }
 
@@ -150,7 +157,10 @@ class SeedDispersal implements GameInstance {
     this.loop.stop();
     // Fewer wasted seeds = better timing = more stars.
     const stars = this.missed === 0 ? 3 : this.missed <= 2 ? 2 : 1;
-    this.ctx.services.score.event("seeddispersal_done", { launched: this.launched, missed: this.missed });
+    this.ctx.services.score.event("seeddispersal_done", {
+      launched: this.launched,
+      missed: this.missed,
+    });
     this.ctx.services.outcome.succeed({
       message:
         "New plants will grow! Plants can't walk, so they let the wind scatter light, fluffy seeds far away to find fresh soil and sunlight.",
@@ -249,7 +259,14 @@ class SeedDispersal implements GameInstance {
     }
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

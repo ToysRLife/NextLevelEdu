@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -18,14 +18,70 @@ interface Planet {
 
 // In order from the Sun outward.
 const PLANETS: Planet[] = [
-  { key: "mercury", name: "Mercury", chip: "⚪", color: "#9ca3af", size: 7, fact: "Closest to the Sun and the smallest planet." },
-  { key: "venus", name: "Venus", chip: "🟡", color: "#eab308", size: 11, fact: "The hottest planet, wrapped in thick clouds." },
-  { key: "earth", name: "Earth", chip: "🌍", color: "#3b82f6", size: 12, fact: "Our home — the only planet known to have life." },
-  { key: "mars", name: "Mars", chip: "🔴", color: "#ef4444", size: 9, fact: "The red planet, with rusty iron dust." },
-  { key: "jupiter", name: "Jupiter", chip: "🟠", color: "#f59e0b", size: 26, fact: "The biggest planet — a giant ball of gas." },
-  { key: "saturn", name: "Saturn", chip: "🪐", color: "#fbbf24", size: 22, fact: "Famous for its beautiful rings of ice and rock." },
-  { key: "uranus", name: "Uranus", chip: "🔵", color: "#67e8f9", size: 17, fact: "An icy giant that spins on its side." },
-  { key: "neptune", name: "Neptune", chip: "🔵", color: "#3b82f6", size: 16, fact: "The farthest planet — windy, cold, and deep blue." },
+  {
+    key: "mercury",
+    name: "Mercury",
+    chip: "⚪",
+    color: "#9ca3af",
+    size: 7,
+    fact: "Closest to the Sun and the smallest planet.",
+  },
+  {
+    key: "venus",
+    name: "Venus",
+    chip: "🟡",
+    color: "#eab308",
+    size: 11,
+    fact: "The hottest planet, wrapped in thick clouds.",
+  },
+  {
+    key: "earth",
+    name: "Earth",
+    chip: "🌍",
+    color: "#3b82f6",
+    size: 12,
+    fact: "Our home — the only planet known to have life.",
+  },
+  {
+    key: "mars",
+    name: "Mars",
+    chip: "🔴",
+    color: "#ef4444",
+    size: 9,
+    fact: "The red planet, with rusty iron dust.",
+  },
+  {
+    key: "jupiter",
+    name: "Jupiter",
+    chip: "🟠",
+    color: "#f59e0b",
+    size: 26,
+    fact: "The biggest planet — a giant ball of gas.",
+  },
+  {
+    key: "saturn",
+    name: "Saturn",
+    chip: "🪐",
+    color: "#fbbf24",
+    size: 22,
+    fact: "Famous for its beautiful rings of ice and rock.",
+  },
+  {
+    key: "uranus",
+    name: "Uranus",
+    chip: "🔵",
+    color: "#67e8f9",
+    size: 17,
+    fact: "An icy giant that spins on its side.",
+  },
+  {
+    key: "neptune",
+    name: "Neptune",
+    chip: "🔵",
+    color: "#3b82f6",
+    size: 16,
+    fact: "The farthest planet — windy, cold, and deep blue.",
+  },
 ];
 
 class SolarSystem implements GameInstance {
@@ -63,12 +119,8 @@ class SolarSystem implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...this.tray.map((p) =>
-        el(
-          "button",
-          { class: "chip", onclick: () => this.pick(p.key) },
-          `${p.chip} ${p.name}`,
-        ),
-      ),
+        el("button", { class: "chip", onclick: () => this.pick(p.key) }, `${p.chip} ${p.name}`)
+      )
     );
 
     this.statusEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.placed} / 8`);
@@ -86,12 +138,16 @@ class SolarSystem implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Order all 8 planets"),
+        el("span", {}, "Order all 8 planets")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, `Place orbit #${Math.min(this.placed + 1, 8)} (from the Sun)`),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        `Place orbit #${Math.min(this.placed + 1, 8)} (from the Sun)`
+      ),
       trayChips,
       el("div", { class: "metric" }, el("span", {}, "🪐 Placed"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 

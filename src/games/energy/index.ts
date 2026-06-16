@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -71,8 +71,8 @@ class Energy implements GameInstance {
     this.launchBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.launch() },
-      "🚀 Release!",
-    ) as HTMLButtonElement;
+      "🚀 Release!"
+    );
 
     this.chargeEl = el("span", {}, "40%");
     this.statusEl = el("span", { style: { color: "var(--accent-orange)" } }, `0 / ${NEED}`);
@@ -80,7 +80,8 @@ class Energy implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
     });
-    this.coachEl.textContent = "Pull back to store energy, then release to fling the rock at the target.";
+    this.coachEl.textContent =
+      "Pull back to store energy, then release to fling the rock at the target.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -88,14 +89,18 @@ class Energy implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Hit ${NEED} targets`),
+        el("span", {}, `Hit ${NEED} targets`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "💪 Pull back (stored energy)"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "💪 Pull back (stored energy)"
+      ),
       chargeSlider,
       this.launchBtn,
       el("div", { class: "metric" }, el("span", {}, "🔋 Stored"), this.chargeEl),
       el("div", { class: "metric" }, el("span", {}, "🎯 Hits"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -220,7 +225,13 @@ class Energy implements GameInstance {
     // projectile
     c.fillStyle = "#57534e";
     c.beginPath();
-    c.arc(this.flying ? this.px : X0 + Math.cos(armAngle) * 50, this.flying ? this.py : GROUND + Math.sin(armAngle) * 50 - 8, 12, 0, Math.PI * 2);
+    c.arc(
+      this.flying ? this.px : X0 + Math.cos(armAngle) * 50,
+      this.flying ? this.py : GROUND + Math.sin(armAngle) * 50 - 8,
+      12,
+      0,
+      Math.PI * 2
+    );
     c.fill();
 
     // energy bars: KE (motion) and PE (height)
@@ -240,7 +251,9 @@ class Energy implements GameInstance {
       ke = 0;
       pe = (this.charge / 100) * this.launchE;
     }
-    const total = this.flying ? this.launchE : Math.max(0.001, (this.charge / 100) * this.launchE || 1);
+    const total = this.flying
+      ? this.launchE
+      : Math.max(0.001, (this.charge / 100) * this.launchE || 1);
     const keFrac = this.flying ? Math.min(1, ke / this.launchE) : 0;
     const peFrac = this.flying ? Math.min(1, pe / this.launchE) : 1;
 
@@ -279,7 +292,14 @@ class Energy implements GameInstance {
     void ke;
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (w <= 0) return;
     c.beginPath();

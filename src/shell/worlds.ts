@@ -1,6 +1,6 @@
-import { el, clear } from "@core/dom";
-import type { Stream, ResourceGrant } from "@sdk/types";
-import { getResources, getBuilt, spendResources, markBuilt } from "./profile";
+import { clear, el } from "@core/dom";
+import type { ResourceGrant, Stream } from "@sdk/types";
+import { getBuilt, getResources, markBuilt, spendResources } from "./profile";
 
 // Each science stream feeds a builder world (see content/curriculum.json and
 // the rewards meta-game). Resources are minted only by learning, then spent to
@@ -32,11 +32,41 @@ const WORLDS: World[] = [
     tagline: "Power and forces build a home among the stars.",
     resources: ["Power", "Fuel", "Alloy", "Oxygen"],
     structures: [
-      { id: "pad", name: "Landing Pad", emoji: "🛬", blurb: "Where your rockets touch down.", cost: { Power: 60 } },
-      { id: "solar", name: "Solar Array", emoji: "🔆", blurb: "Panels that drink sunlight for electricity.", cost: { Power: 130 } },
-      { id: "dome", name: "Habitat Dome", emoji: "🏟️", blurb: "A sealed home full of breathable air.", cost: { Alloy: 80, Oxygen: 60 } },
-      { id: "rail", name: "Mag-Rail", emoji: "🛤️", blurb: "A frictionless track that flings cargo to orbit.", cost: { Alloy: 150, Power: 120 } },
-      { id: "fusion", name: "Fusion Reactor", emoji: "⚛️", blurb: "The colony's beating heart.", cost: { Power: 250, Fuel: 120 } },
+      {
+        id: "pad",
+        name: "Landing Pad",
+        emoji: "🛬",
+        blurb: "Where your rockets touch down.",
+        cost: { Power: 60 },
+      },
+      {
+        id: "solar",
+        name: "Solar Array",
+        emoji: "🔆",
+        blurb: "Panels that drink sunlight for electricity.",
+        cost: { Power: 130 },
+      },
+      {
+        id: "dome",
+        name: "Habitat Dome",
+        emoji: "🏟️",
+        blurb: "A sealed home full of breathable air.",
+        cost: { Alloy: 80, Oxygen: 60 },
+      },
+      {
+        id: "rail",
+        name: "Mag-Rail",
+        emoji: "🛤️",
+        blurb: "A frictionless track that flings cargo to orbit.",
+        cost: { Alloy: 150, Power: 120 },
+      },
+      {
+        id: "fusion",
+        name: "Fusion Reactor",
+        emoji: "⚛️",
+        blurb: "The colony's beating heart.",
+        cost: { Power: 250, Fuel: 120 },
+      },
     ],
   },
   {
@@ -46,11 +76,41 @@ const WORLDS: World[] = [
     tagline: "Forge raw matter into the building blocks of everything.",
     resources: ["Elements", "Compounds", "Materials", "Energy"],
     structures: [
-      { id: "sorter", name: "Sorting Bay", emoji: "🧺", blurb: "Sort raw matter by its properties.", cost: { Materials: 60 } },
-      { id: "forge", name: "Melting Forge", emoji: "🔥", blurb: "Heat turns solids to liquids to gases.", cost: { Materials: 150 } },
-      { id: "lab", name: "Compound Lab", emoji: "🧪", blurb: "Combine elements into brand-new compounds.", cost: { Materials: 120, Compounds: 80 } },
-      { id: "crystal", name: "Crystal Garden", emoji: "💎", blurb: "Grow repeating crystal shapes.", cost: { Elements: 100, Materials: 100 } },
-      { id: "reactor", name: "Reaction Reactor", emoji: "🌋", blurb: "Spark powerful chemical reactions.", cost: { Compounds: 200, Energy: 150 } },
+      {
+        id: "sorter",
+        name: "Sorting Bay",
+        emoji: "🧺",
+        blurb: "Sort raw matter by its properties.",
+        cost: { Materials: 60 },
+      },
+      {
+        id: "forge",
+        name: "Melting Forge",
+        emoji: "🔥",
+        blurb: "Heat turns solids to liquids to gases.",
+        cost: { Materials: 150 },
+      },
+      {
+        id: "lab",
+        name: "Compound Lab",
+        emoji: "🧪",
+        blurb: "Combine elements into brand-new compounds.",
+        cost: { Materials: 120, Compounds: 80 },
+      },
+      {
+        id: "crystal",
+        name: "Crystal Garden",
+        emoji: "💎",
+        blurb: "Grow repeating crystal shapes.",
+        cost: { Elements: 100, Materials: 100 },
+      },
+      {
+        id: "reactor",
+        name: "Reaction Reactor",
+        emoji: "🌋",
+        blurb: "Spark powerful chemical reactions.",
+        cost: { Compounds: 200, Energy: 150 },
+      },
     ],
   },
   {
@@ -60,11 +120,41 @@ const WORLDS: World[] = [
     tagline: "Grow a world bursting with life, from seed to ecosystem.",
     resources: ["Biomass", "Water", "Seeds", "Species"],
     structures: [
-      { id: "vault", name: "Seed Vault", emoji: "🌰", blurb: "Store the seeds of every plant.", cost: { Biomass: 60 } },
-      { id: "greenhouse", name: "Greenhouse", emoji: "🪴", blurb: "Grow plants that make food from sunlight.", cost: { Biomass: 150 } },
-      { id: "pond", name: "Pond Habitat", emoji: "🪷", blurb: "A wetland teeming with life.", cost: { Biomass: 100, Water: 80 } },
-      { id: "meadow", name: "Pollinator Meadow", emoji: "🌻", blurb: "Flowers and the creatures that spread them.", cost: { Seeds: 120, Biomass: 100 } },
-      { id: "reserve", name: "Wildlife Reserve", emoji: "🦌", blurb: "A balanced ecosystem of many species.", cost: { Species: 200, Biomass: 150 } },
+      {
+        id: "vault",
+        name: "Seed Vault",
+        emoji: "🌰",
+        blurb: "Store the seeds of every plant.",
+        cost: { Biomass: 60 },
+      },
+      {
+        id: "greenhouse",
+        name: "Greenhouse",
+        emoji: "🪴",
+        blurb: "Grow plants that make food from sunlight.",
+        cost: { Biomass: 150 },
+      },
+      {
+        id: "pond",
+        name: "Pond Habitat",
+        emoji: "🪷",
+        blurb: "A wetland teeming with life.",
+        cost: { Biomass: 100, Water: 80 },
+      },
+      {
+        id: "meadow",
+        name: "Pollinator Meadow",
+        emoji: "🌻",
+        blurb: "Flowers and the creatures that spread them.",
+        cost: { Seeds: 120, Biomass: 100 },
+      },
+      {
+        id: "reserve",
+        name: "Wildlife Reserve",
+        emoji: "🦌",
+        blurb: "A balanced ecosystem of many species.",
+        cost: { Species: 200, Biomass: 150 },
+      },
     ],
   },
   {
@@ -74,11 +164,41 @@ const WORLDS: World[] = [
     tagline: "Shape rock, water, and climate into a living planet.",
     resources: ["Rock", "Water", "Minerals", "Climate"],
     structures: [
-      { id: "quarry", name: "Quarry", emoji: "⛏️", blurb: "Dig up rock and minerals from the crust.", cost: { Minerals: 60 } },
-      { id: "reservoir", name: "Reservoir", emoji: "💧", blurb: "Store water for the whole world.", cost: { Water: 120 } },
-      { id: "mountains", name: "Mountain Range", emoji: "⛰️", blurb: "Raise peaks from the bedrock.", cost: { Rock: 100, Minerals: 80 } },
-      { id: "rivers", name: "River Network", emoji: "🏞️", blurb: "Carve rivers that shape the land.", cost: { Water: 150, Minerals: 100 } },
-      { id: "climate", name: "Climate Engine", emoji: "🌦️", blurb: "Balance the planet's weather and seasons.", cost: { Climate: 200, Water: 150 } },
+      {
+        id: "quarry",
+        name: "Quarry",
+        emoji: "⛏️",
+        blurb: "Dig up rock and minerals from the crust.",
+        cost: { Minerals: 60 },
+      },
+      {
+        id: "reservoir",
+        name: "Reservoir",
+        emoji: "💧",
+        blurb: "Store water for the whole world.",
+        cost: { Water: 120 },
+      },
+      {
+        id: "mountains",
+        name: "Mountain Range",
+        emoji: "⛰️",
+        blurb: "Raise peaks from the bedrock.",
+        cost: { Rock: 100, Minerals: 80 },
+      },
+      {
+        id: "rivers",
+        name: "River Network",
+        emoji: "🏞️",
+        blurb: "Carve rivers that shape the land.",
+        cost: { Water: 150, Minerals: 100 },
+      },
+      {
+        id: "climate",
+        name: "Climate Engine",
+        emoji: "🌦️",
+        blurb: "Balance the planet's weather and seasons.",
+        cost: { Climate: 200, Water: 150 },
+      },
     ],
   },
 ];
@@ -108,7 +228,14 @@ export interface WorldReward {
   name: string;
   emoji: string;
   complete: boolean;
-  next: { id: string; name: string; emoji: string; cost: ResourceGrant; have: Record<string, number>; affordable: boolean } | null;
+  next: {
+    id: string;
+    name: string;
+    emoji: string;
+    cost: ResourceGrant;
+    have: Record<string, number>;
+    affordable: boolean;
+  } | null;
 }
 
 /** Snapshot of a world's build progress — used to show the reward on the win screen. */
@@ -124,11 +251,17 @@ export function getWorldReward(stream: string): WorldReward | null {
     emoji: w.emoji,
     complete: !next,
     next: next
-      ? { id: next.id, name: next.name, emoji: next.emoji, cost: next.cost, have, affordable: canAfford(w.stream, next.cost) }
+      ? {
+          id: next.id,
+          name: next.name,
+          emoji: next.emoji,
+          cost: next.cost,
+          have,
+          affordable: canAfford(w.stream, next.cost),
+        }
       : null,
   };
 }
-
 
 // --- Worlds overview: all four reward worlds at a glance. ---
 export function renderWorlds(root: HTMLElement): void {
@@ -158,20 +291,30 @@ export function renderWorlds(root: HTMLElement): void {
         el(
           "div",
           { class: "world-scene" },
-          ...(builtScene.length ? builtScene : [el("span", { class: "scene-empty" }, "Nothing built yet — go earn resources!")]),
+          ...(builtScene.length
+            ? builtScene
+            : [el("span", { class: "scene-empty" }, "Nothing built yet — go earn resources!")])
         ),
         el(
           "div",
           { class: "card-meter" },
-          el("div", { class: "meter-track" }, el("div", { class: "meter-fill", style: { width: `${pct}%` } })),
+          el(
+            "div",
+            { class: "meter-track" },
+            el("div", { class: "meter-fill", style: { width: `${pct}%` } })
+          )
         ),
         el(
           "div",
           { class: "world-progress" },
-          el("span", { class: "tag" }, next ? `⏭️ Next: ${next.emoji} ${next.name}` : "🎉 Complete!"),
-          el("span", { class: "tag" }, `📦 ${totalEarned}`),
-        ),
-      ),
+          el(
+            "span",
+            { class: "tag" },
+            next ? `⏭️ Next: ${next.emoji} ${next.name}` : "🎉 Complete!"
+          ),
+          el("span", { class: "tag" }, `📦 ${totalEarned}`)
+        )
+      )
     );
   }
 
@@ -181,9 +324,13 @@ export function renderWorlds(root: HTMLElement): void {
       "div",
       { class: "container" },
       el("h2", { class: "section-title" }, "Your Reward Worlds"),
-      el("p", { class: "section-sub" }, "Every concept you master mints resources. Spend them here to build a world of your own."),
-      grid,
-    ),
+      el(
+        "p",
+        { class: "section-sub" },
+        "Every concept you master mints resources. Spend them here to build a world of your own."
+      ),
+      grid
+    )
   );
 }
 
@@ -210,11 +357,21 @@ export function renderWorld(root: HTMLElement, stream: string): void {
   for (const s of w.structures) {
     if (built.includes(s.id)) {
       stageRow.append(
-        el("div", { class: "stage-structure", title: s.name }, el("div", { class: "st-emoji" }, s.emoji), el("div", { class: "st-label" }, s.name)),
+        el(
+          "div",
+          { class: "stage-structure", title: s.name },
+          el("div", { class: "st-emoji" }, s.emoji),
+          el("div", { class: "st-label" }, s.name)
+        )
       );
     } else if (s === next) {
       stageRow.append(
-        el("div", { class: "stage-structure ghost", title: `Next: ${s.name}` }, el("div", { class: "st-emoji" }, s.emoji), el("div", { class: "st-label" }, "next")),
+        el(
+          "div",
+          { class: "stage-structure ghost", title: `Next: ${s.name}` },
+          el("div", { class: "st-emoji" }, s.emoji),
+          el("div", { class: "st-label" }, "next")
+        )
       );
       break; // don't reveal locked structures past the next one
     }
@@ -225,7 +382,7 @@ export function renderWorld(root: HTMLElement, stream: string): void {
     el("div", { class: "stage-sky" }),
     el("div", { class: "stage-ground" }),
     stageRow,
-    complete ? el("div", { class: "stage-banner" }, "🎉 World complete!") : null,
+    complete ? el("div", { class: "stage-banner" }, "🎉 World complete!") : null
   );
 
   // Completion meter — the big-picture progress toward finishing the world.
@@ -233,8 +390,12 @@ export function renderWorld(root: HTMLElement, stream: string): void {
   const meter = el(
     "div",
     { class: "world-meter" },
-    el("div", { class: "meter-track" }, el("div", { class: "meter-fill", style: { width: `${pct}%` } })),
-    el("div", { class: "meter-label" }, `${builtCount} / ${total} built · ${pct}%`),
+    el(
+      "div",
+      { class: "meter-track" },
+      el("div", { class: "meter-fill", style: { width: `${pct}%` } })
+    ),
+    el("div", { class: "meter-label" }, `${builtCount} / ${total} built · ${pct}%`)
   );
 
   // Next-build focus: per-resource progress bars (goal gradient) + a one-tap
@@ -249,8 +410,12 @@ export function renderWorld(root: HTMLElement, stream: string): void {
         "div",
         { class: "res-row" },
         el("span", { class: "res-name" }, name),
-        el("div", { class: "res-bar" }, el("div", { class: `res-fill ${cur >= amt ? "full" : ""}`, style: { width: `${p}%` } })),
-        el("span", { class: "res-num" }, `${cur}/${amt}`),
+        el(
+          "div",
+          { class: "res-bar" },
+          el("div", { class: `res-fill ${cur >= amt ? "full" : ""}`, style: { width: `${p}%` } })
+        ),
+        el("span", { class: "res-num" }, `${cur}/${amt}`)
       );
     });
     const action = affordable
@@ -265,9 +430,13 @@ export function renderWorld(root: HTMLElement, stream: string): void {
               }
             },
           },
-          `🔨 Build the ${next.name}`,
+          `🔨 Build the ${next.name}`
         )
-      : el("button", { class: "btn", onclick: () => (location.hash = "#/") }, "▶ Play a mission to earn more");
+      : el(
+          "button",
+          { class: "btn", onclick: () => (location.hash = "#/") },
+          "▶ Play a mission to earn more"
+        );
     focus = el(
       "div",
       { class: `next-build ${affordable ? "ready" : ""}` },
@@ -275,11 +444,15 @@ export function renderWorld(root: HTMLElement, stream: string): void {
       el(
         "div",
         { class: "nb-info" },
-        el("div", { class: "nb-title" }, affordable ? `Ready to build: ${next.name}!` : `Next up: ${next.name}`),
+        el(
+          "div",
+          { class: "nb-title" },
+          affordable ? `Ready to build: ${next.name}!` : `Next up: ${next.name}`
+        ),
         el("div", { class: "nb-blurb" }, next.blurb),
         ...resRows,
-        action,
-      ),
+        action
+      )
     );
   }
 
@@ -292,9 +465,9 @@ export function renderWorld(root: HTMLElement, stream: string): void {
         "div",
         { class: "resource-chip" },
         el("strong", {}, String(have[name] ?? 0)),
-        el("span", {}, name),
-      ),
-    ),
+        el("span", {}, name)
+      )
+    )
   );
 
   // Build list: sequential unlock.
@@ -326,7 +499,7 @@ export function renderWorld(root: HTMLElement, stream: string): void {
                   }
                 },
               },
-              "🔨 Build",
+              "🔨 Build"
             )
           : el("span", { class: "build-state" }, "Need more resources");
 
@@ -340,10 +513,10 @@ export function renderWorld(root: HTMLElement, stream: string): void {
           { class: "build-info" },
           el("h4", {}, s.name),
           el("div", { class: "build-blurb" }, s.blurb),
-          el("div", { class: "build-cost" }, costLabel(s.cost)),
+          el("div", { class: "build-cost" }, costLabel(s.cost))
         ),
-        action,
-      ),
+        action
+      )
     );
 
     prevBuilt = isBuilt;
@@ -357,8 +530,17 @@ export function renderWorld(root: HTMLElement, stream: string): void {
       el(
         "div",
         { class: "world-header" },
-        el("button", { class: "btn secondary", onclick: () => (location.hash = "#/worlds") }, "← Worlds"),
-        el("div", { class: "world-title" }, el("span", { class: "world-emoji" }, w.emoji), el("h2", {}, w.name)),
+        el(
+          "button",
+          { class: "btn secondary", onclick: () => (location.hash = "#/worlds") },
+          "← Worlds"
+        ),
+        el(
+          "div",
+          { class: "world-title" },
+          el("span", { class: "world-emoji" }, w.emoji),
+          el("h2", {}, w.name)
+        )
       ),
       el("p", { class: "section-sub" }, w.tagline),
       stage,
@@ -366,7 +548,7 @@ export function renderWorld(root: HTMLElement, stream: string): void {
       focus,
       resourceBar,
       el("h3", { class: "build-roadmap-title" }, "🏗️ Build roadmap"),
-      list,
-    ),
+      list
+    )
   );
 }

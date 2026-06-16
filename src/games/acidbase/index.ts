@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -13,12 +13,42 @@ interface Liquid {
 }
 
 const LIQUIDS: Liquid[] = [
-  { name: "Lemon juice", emoji: "🍋", acid: true, why: "Lemon juice is sour — a sign of an acid. Indicator turns red." },
-  { name: "Vinegar", emoji: "🧴", acid: true, why: "Vinegar is a weak acid (that sour smell). Indicator turns red." },
-  { name: "Orange juice", emoji: "🍊", acid: true, why: "Citrus juices are mild acids. Indicator turns red." },
-  { name: "Soap water", emoji: "🧼", acid: false, why: "Soap feels slippery — a sign of a base. Indicator turns blue." },
-  { name: "Baking soda", emoji: "🥄", acid: false, why: "Baking soda dissolved in water is a base. Indicator turns blue." },
-  { name: "Toothpaste", emoji: "🪥", acid: false, why: "Toothpaste is a base — it neutralises mouth acids. Indicator turns blue." },
+  {
+    name: "Lemon juice",
+    emoji: "🍋",
+    acid: true,
+    why: "Lemon juice is sour — a sign of an acid. Indicator turns red.",
+  },
+  {
+    name: "Vinegar",
+    emoji: "🧴",
+    acid: true,
+    why: "Vinegar is a weak acid (that sour smell). Indicator turns red.",
+  },
+  {
+    name: "Orange juice",
+    emoji: "🍊",
+    acid: true,
+    why: "Citrus juices are mild acids. Indicator turns red.",
+  },
+  {
+    name: "Soap water",
+    emoji: "🧼",
+    acid: false,
+    why: "Soap feels slippery — a sign of a base. Indicator turns blue.",
+  },
+  {
+    name: "Baking soda",
+    emoji: "🥄",
+    acid: false,
+    why: "Baking soda dissolved in water is a base. Indicator turns blue.",
+  },
+  {
+    name: "Toothpaste",
+    emoji: "🪥",
+    acid: false,
+    why: "Toothpaste is a base — it neutralises mouth acids. Indicator turns blue.",
+  },
 ];
 
 class AcidBase implements GameInstance {
@@ -56,25 +86,38 @@ class AcidBase implements GameInstance {
     const testBtn = el(
       "button",
       { class: "btn secondary", onclick: () => this.test() },
-      "🧪 Add indicator",
+      "🧪 Add indicator"
     );
     const acidBtn = el(
       "button",
-      { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.classify(true) },
-      "🔴 Acid",
+      {
+        class: "btn",
+        style: { background: "var(--accent-red)" },
+        onclick: () => this.classify(true),
+      },
+      "🔴 Acid"
     );
     const baseBtn = el(
       "button",
-      { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.classify(false) },
-      "🔵 Base",
+      {
+        class: "btn",
+        style: { background: "var(--accent-blue)" },
+        onclick: () => this.classify(false),
+      },
+      "🔵 Base"
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-pink)" } }, `${this.idx + 1} / ${LIQUIDS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-pink)" } },
+      `${this.idx + 1} / ${LIQUIDS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-pink)", background: "#fdf2f8" },
     });
-    this.coachEl.textContent = "Add the indicator to reveal the color, then sort it into the right bin.";
+    this.coachEl.textContent =
+      "Add the indicator to reveal the color, then sort it into the right bin.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -82,14 +125,14 @@ class AcidBase implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Sort every liquid"),
+        el("span", {}, "Sort every liquid")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Step 1 — test it"),
       testBtn,
       el("div", { class: "control-label" }, "Step 2 — sort it"),
       el("div", { class: "chip-row" }, acidBtn, baseBtn),
       el("div", { class: "metric" }, el("span", {}, "🧫 Liquid"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -232,7 +275,14 @@ class AcidBase implements GameInstance {
     c.fillText("Acid or base?", W / 2, 70);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (h <= 0 || w <= 0) return;
     c.beginPath();

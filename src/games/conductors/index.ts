@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -13,14 +13,54 @@ interface Material {
 }
 
 const MATERIALS: Material[] = [
-  { name: "Copper wire", emoji: "🔌", conducts: true, why: "Metals like copper let electricity flow — they're conductors." },
-  { name: "Iron nail", emoji: "🔩", conducts: true, why: "Iron is a metal, so it conducts electricity." },
-  { name: "Aluminium foil", emoji: "🪙", conducts: true, why: "Aluminium is a metal — electricity flows through it." },
-  { name: "Steel spoon", emoji: "🥄", conducts: true, why: "Steel is metal, so the current passes right through." },
-  { name: "Wooden stick", emoji: "🪵", conducts: false, why: "Wood blocks electricity — it's an insulator." },
-  { name: "Plastic ruler", emoji: "📏", conducts: false, why: "Plastic doesn't let current through — an insulator." },
-  { name: "Rubber band", emoji: "⭕", conducts: false, why: "Rubber blocks electricity, which is why wires are wrapped in it." },
-  { name: "Glass marble", emoji: "🔮", conducts: false, why: "Glass is an insulator — no current flows." },
+  {
+    name: "Copper wire",
+    emoji: "🔌",
+    conducts: true,
+    why: "Metals like copper let electricity flow — they're conductors.",
+  },
+  {
+    name: "Iron nail",
+    emoji: "🔩",
+    conducts: true,
+    why: "Iron is a metal, so it conducts electricity.",
+  },
+  {
+    name: "Aluminium foil",
+    emoji: "🪙",
+    conducts: true,
+    why: "Aluminium is a metal — electricity flows through it.",
+  },
+  {
+    name: "Steel spoon",
+    emoji: "🥄",
+    conducts: true,
+    why: "Steel is metal, so the current passes right through.",
+  },
+  {
+    name: "Wooden stick",
+    emoji: "🪵",
+    conducts: false,
+    why: "Wood blocks electricity — it's an insulator.",
+  },
+  {
+    name: "Plastic ruler",
+    emoji: "📏",
+    conducts: false,
+    why: "Plastic doesn't let current through — an insulator.",
+  },
+  {
+    name: "Rubber band",
+    emoji: "⭕",
+    conducts: false,
+    why: "Rubber blocks electricity, which is why wires are wrapped in it.",
+  },
+  {
+    name: "Glass marble",
+    emoji: "🔮",
+    conducts: false,
+    why: "Glass is an insulator — no current flows.",
+  },
 ];
 
 class Conductors implements GameInstance {
@@ -60,17 +100,21 @@ class Conductors implements GameInstance {
       { class: "chip-row" },
       el(
         "button",
-        { class: "btn", style: { background: "var(--accent-yellow)", color: "#1e293b" }, onclick: () => this.guess(true) },
-        "⚡ Conducts",
+        {
+          class: "btn",
+          style: { background: "var(--accent-yellow)", color: "#1e293b" },
+          onclick: () => this.guess(true),
+        },
+        "⚡ Conducts"
       ),
-      el(
-        "button",
-        { class: "btn secondary", onclick: () => this.guess(false) },
-        "🚫 Blocks it",
-      ),
+      el("button", { class: "btn secondary", onclick: () => this.guess(false) }, "🚫 Blocks it")
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.idx + 1} / ${MATERIALS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-blue)" } },
+      `${this.idx + 1} / ${MATERIALS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
@@ -83,12 +127,12 @@ class Conductors implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🔋 Test in the gap"),
-        el("span", {}, this.current().name),
+        el("span", {}, this.current().name)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Conductor or insulator?"),
       choices,
       el("div", { class: "metric" }, el("span", {}, "🧪 Material"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -230,7 +274,14 @@ class Conductors implements GameInstance {
     c.fillText("Does it complete the circuit?", W / 2, 60);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

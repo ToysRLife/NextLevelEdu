@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 // Rock cycle (MS-ESS2-1): rocks change from one type to another through Earth's
 // processes — cooling, weathering, compacting, heat & pressure, and melting.
@@ -103,23 +103,40 @@ class RockCycle implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...PROCESSES.map((p) =>
-        el("button", { class: "btn secondary", onclick: () => this.apply(p.key) }, p.label),
-      ),
+        el("button", { class: "btn secondary", onclick: () => this.apply(p.key) }, p.label)
+      )
     );
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
     this.stepEl = el("span", {}, `${this.steps}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
+    });
     this.coachEl.textContent = "Apply processes to transform this rock into the target.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Target rock"), el("span", {}, `${ROCK_EMOJI[this.round().target]} ${this.round().target}`)),
-      el("div", { class: "metric" }, el("span", {}, "🪨 Current rock"), el("span", {}, `${ROCK_EMOJI[this.current]} ${this.current}`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Target rock"),
+        el("span", {}, `${ROCK_EMOJI[this.round().target]} ${this.round().target}`)
+      ),
+      el(
+        "div",
+        { class: "metric" },
+        el("span", {}, "🪨 Current rock"),
+        el("span", {}, `${ROCK_EMOJI[this.current]} ${this.current}`)
+      ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Apply a process"),
       btns,
       el("div", { class: "metric" }, el("span", {}, "🔁 Steps used"), this.stepEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Rocks made"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -246,7 +263,8 @@ export const rockCycleGame: GameModule = {
     stream: "earth-space",
     gradeBand: "6-8",
     emoji: "🪨",
-    blurb: "Cool, weather, compact, and melt rocks to transform one type into another around the rock cycle.",
+    blurb:
+      "Cool, weather, compact, and melt rocks to transform one type into another around the rock cycle.",
     mission: "Apply Earth's processes to turn each starting rock into the target rock.",
     estMinutes: 4,
   },

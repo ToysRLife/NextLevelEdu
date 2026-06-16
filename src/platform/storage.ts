@@ -3,7 +3,7 @@
 // game or shell code knowing about it.
 
 const PREFIX = "nle:";
-const MUTATED_KEY = PREFIX + "_mutatedAt"; // last local change time (not synced itself)
+const MUTATED_KEY = `${PREFIX}_mutatedAt`; // last local change time (not synced itself)
 
 type Listener = () => void;
 const listeners = new Set<Listener>();

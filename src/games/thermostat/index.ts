@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { byTier } from "@core/difficulty";
 
 // Greenhouse effect & climate (MS-ESS3-5): greenhouse gases like CO₂ trap heat,
@@ -76,19 +76,35 @@ class Thermostat implements GameInstance {
       },
     });
     this.tempRead = readout("🌡️ Global temp");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
+    });
     this.coachEl.textContent = "Dial in the CO₂ to hold Earth at the target temperature.";
-    this.goBtn = el("button", { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.settle() }, "🌍 Set climate") as HTMLButtonElement;
+    this.goBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.settle() },
+      "🌍 Set climate"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Target"), el("span", {}, `${this.round().target}°C`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Target"),
+        el("span", {}, `${this.round().target}°C`)
+      ),
       this.co2Ctl.el,
       this.tempRead.el,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Climates set"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -146,7 +162,9 @@ class Thermostat implements GameInstance {
       this.misses += 1;
       this.ctx.services.audio.play("fail");
       this.coachEl.textContent =
-        t > target ? `Too warm (${t.toFixed(1)}°C) — cut the CO₂ to let heat escape.` : `Too cool (${t.toFixed(1)}°C) — add CO₂ to trap more heat.`;
+        t > target
+          ? `Too warm (${t.toFixed(1)}°C) — cut the CO₂ to let heat escape.`
+          : `Too cool (${t.toFixed(1)}°C) — add CO₂ to trap more heat.`;
     }
   }
 
@@ -255,7 +273,8 @@ export const thermostatGame: GameModule = {
     stream: "earth-space",
     gradeBand: "6-8",
     emoji: "🌡️",
-    blurb: "Tune Earth's CO₂ to hit the target temperature and see the greenhouse effect in action.",
+    blurb:
+      "Tune Earth's CO₂ to hit the target temperature and see the greenhouse effect in action.",
     mission: "Set the CO₂ level to hold the planet at each target temperature.",
     estMinutes: 4,
   },

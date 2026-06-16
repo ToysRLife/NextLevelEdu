@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -40,13 +40,20 @@ class Ecosystem implements GameInstance {
     const { plants: P, rabbits: R, foxes: F } = this;
     if (P < 50) return "🌿 Not enough plants — grow more to feed the ecosystem.";
     if (R < P * 0.3) return "🐰 Too few rabbits for all these plants — add some plant-eaters.";
-    if (R > P * 0.6) return "🐰 Too many rabbits — they'll eat all the plants. Fewer rabbits or more plants.";
-    if (F < R * 0.3) return "🦊 Too few foxes — rabbits will overrun the land. Add a few predators.";
+    if (R > P * 0.6)
+      return "🐰 Too many rabbits — they'll eat all the plants. Fewer rabbits or more plants.";
+    if (F < R * 0.3)
+      return "🦊 Too few foxes — rabbits will overrun the land. Add a few predators.";
     if (F > R * 0.6) return "🦊 Too many foxes — they'll eat all the rabbits and then starve.";
     return "✅ Balanced! A healthy pyramid: most plants, fewer rabbits, fewest foxes.";
   }
 
-  private slider(label: string, accent: string, get: () => number, set: (v: number) => void): HTMLElement {
+  private slider(
+    label: string,
+    accent: string,
+    get: () => number,
+    set: (v: number) => void
+  ): HTMLElement {
     const input = el("input", {
       type: "range",
       min: "0",
@@ -75,13 +82,28 @@ class Ecosystem implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Balance the pyramid"),
+        el("span", {}, "Balance the pyramid")
       ),
-      this.slider("🌿 Plants", "#22c55e", () => this.plants, (v) => (this.plants = v)),
-      this.slider("🐰 Rabbits", "#f59e0b", () => this.rabbits, (v) => (this.rabbits = v)),
-      this.slider("🦊 Foxes", "#ef4444", () => this.foxes, (v) => (this.foxes = v)),
+      this.slider(
+        "🌿 Plants",
+        "#22c55e",
+        () => this.plants,
+        (v) => (this.plants = v)
+      ),
+      this.slider(
+        "🐰 Rabbits",
+        "#f59e0b",
+        () => this.rabbits,
+        (v) => (this.rabbits = v)
+      ),
+      this.slider(
+        "🦊 Foxes",
+        "#ef4444",
+        () => this.foxes,
+        (v) => (this.foxes = v)
+      ),
       el("div", { class: "metric" }, el("span", {}, "⚖️ Status"), this.balanceEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -174,7 +196,14 @@ class Ecosystem implements GameInstance {
     }
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     c.beginPath();
     c.moveTo(x + rr, y);

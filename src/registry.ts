@@ -27,7 +27,7 @@ export async function loadGame(id: string): Promise<GameModule | null> {
   // about its export name.
   const game = Object.values(mod).find(
     (v): v is GameModule =>
-      !!v && typeof (v as GameModule).create === "function" && !!(v as GameModule).meta,
+      !!v && typeof (v as GameModule).create === "function" && !!(v as GameModule).meta
   );
   return game ?? null;
 }

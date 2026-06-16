@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -53,11 +53,15 @@ class FoodChain implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...this.tray.map((l) =>
-        el("button", { class: "chip", onclick: () => this.pick(l.key) }, `${l.emoji} ${l.name}`),
-      ),
+        el("button", { class: "chip", onclick: () => this.pick(l.key) }, `${l.emoji} ${l.name}`)
+      )
     );
 
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.placed} / ${CHAIN.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.placed} / ${CHAIN.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
@@ -72,12 +76,16 @@ class FoodChain implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Build the food chain"),
+        el("span", {}, "Build the food chain")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick the next link (energy flows up)"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Pick the next link (energy flows up)"
+      ),
       trayChips,
       el("div", { class: "metric" }, el("span", {}, "🔗 Links placed"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 

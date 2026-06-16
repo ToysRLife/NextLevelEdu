@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { drawLineGraph } from "@core/graph";
 import { byTier } from "@core/difficulty";
 
@@ -105,7 +105,11 @@ class RocketLab implements GameInstance {
 
     this.aRead = readout("⚡ Acceleration (F ÷ m)");
     this.vRead = readout("🎯 Predicted final speed");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#f5f3ff" },
@@ -115,8 +119,8 @@ class RocketLab implements GameInstance {
     this.launchBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.launch() },
-      "🚀 Launch",
-    ) as HTMLButtonElement;
+      "🚀 Launch"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -124,7 +128,7 @@ class RocketLab implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Mission"),
-        el("span", {}, `Reach ${this.round().targetV} m/s in ${this.round().burn}s`),
+        el("span", {}, `Reach ${this.round().targetV} m/s in ${this.round().burn}s`)
       ),
       this.thrustCtl.el,
       this.massCtl.el,
@@ -132,7 +136,7 @@ class RocketLab implements GameInstance {
       this.vRead.el,
       this.launchBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Launches nailed"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updatePrediction();
   }

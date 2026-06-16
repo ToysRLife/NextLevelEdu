@@ -4,6 +4,9 @@ import { fileURLToPath, URL } from "node:url";
 // Relative base so the static build works on GitHub Pages, Cloudflare Pages, or any subpath.
 export default defineConfig({
   base: "./",
+  server: {
+    port: 3000,
+  },
   resolve: {
     alias: {
       "@sdk": fileURLToPath(new URL("./src/sdk", import.meta.url)),

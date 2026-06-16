@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -82,12 +82,17 @@ class StaticElec implements GameInstance {
 
   private buildPanel(): void {
     this.chargeEl = el("span", {}, "0%");
-    this.statusEl = el("span", { style: { color: "var(--accent-yellow)" } }, `0 / ${this.bitCount}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-yellow)" } },
+      `0 / ${this.bitCount}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-yellow)", background: "#fefce8" },
     });
-    this.coachEl.textContent = "Drag the balloon on the sweater to charge it, then sweep it over the paper bits.";
+    this.coachEl.textContent =
+      "Drag the balloon on the sweater to charge it, then sweep it over the paper bits.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -95,12 +100,16 @@ class StaticElec implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Collect 8 paper bits"),
+        el("span", {}, "Collect 8 paper bits")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Rub on the sweater, then attract the bits"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Rub on the sweater, then attract the bits"
+      ),
       el("div", { class: "metric" }, el("span", {}, "⚡ Charge"), this.chargeEl),
       el("div", { class: "metric" }, el("span", {}, "📄 Collected"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -150,7 +159,8 @@ class StaticElec implements GameInstance {
         this.charge = Math.max(0, this.charge - 0.06); // each pickup uses a little charge
         this.ctx.services.audio.play("tick");
         this.statusEl.textContent = `${this.collected} / ${this.bitCount}`;
-        this.coachEl.textContent = "📄⚡ Stuck! The static charge pulled the paper right onto the balloon.";
+        this.coachEl.textContent =
+          "📄⚡ Stuck! The static charge pulled the paper right onto the balloon.";
         if (this.collected >= this.bitCount) this.finish();
       }
     }

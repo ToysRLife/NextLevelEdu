@@ -1,4 +1,4 @@
-import { snapshot, restore, mutatedAt, onStorageWrite, clearLocal } from "./storage";
+import { clearLocal, mutatedAt, onStorageWrite, restore, snapshot } from "./storage";
 import { getProvider } from "./cloud-config";
 
 // --- Cloud save: swappable provider behind the storage seam. ---------------
@@ -240,7 +240,10 @@ class CloudSync {
     if (!this.user) return;
     try {
       const snap = snapshot();
-      await this.provider.save(this.user.uid, { data: snap.data, updatedAt: mutatedAt() || Date.now() });
+      await this.provider.save(this.user.uid, {
+        data: snap.data,
+        updatedAt: mutatedAt() || Date.now(),
+      });
       this.status = "synced";
     } catch {
       this.status = "error";

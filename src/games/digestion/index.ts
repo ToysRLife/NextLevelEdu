@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -16,10 +16,38 @@ interface Step {
 
 // Slots laid out along the body, top to bottom.
 const STEPS: Step[] = [
-  { key: "mouth", name: "Mouth", emoji: "👄", note: "Teeth chew the food and spit softens it.", x: 400, y: 130 },
-  { key: "stomach", name: "Stomach", emoji: "🫃", note: "Acids churn the food into a mush.", x: 340, y: 270 },
-  { key: "small", name: "Small intestine", emoji: "🌀", note: "Nutrients soak into the blood here.", x: 440, y: 380 },
-  { key: "large", name: "Large intestine", emoji: "♻️", note: "Leftover water is taken out; waste leaves.", x: 360, y: 480 },
+  {
+    key: "mouth",
+    name: "Mouth",
+    emoji: "👄",
+    note: "Teeth chew the food and spit softens it.",
+    x: 400,
+    y: 130,
+  },
+  {
+    key: "stomach",
+    name: "Stomach",
+    emoji: "🫃",
+    note: "Acids churn the food into a mush.",
+    x: 340,
+    y: 270,
+  },
+  {
+    key: "small",
+    name: "Small intestine",
+    emoji: "🌀",
+    note: "Nutrients soak into the blood here.",
+    x: 440,
+    y: 380,
+  },
+  {
+    key: "large",
+    name: "Large intestine",
+    emoji: "♻️",
+    note: "Leftover water is taken out; waste leaves.",
+    x: 360,
+    y: 480,
+  },
 ];
 
 class Digestion implements GameInstance {
@@ -53,16 +81,22 @@ class Digestion implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...this.tray.map((s) =>
-        el("button", { class: "chip", onclick: () => this.pick(s.key) }, `${s.emoji} ${s.name}`),
-      ),
+        el("button", { class: "chip", onclick: () => this.pick(s.key) }, `${s.emoji} ${s.name}`)
+      )
     );
 
-    this.statusEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.placed} / ${STEPS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-orange)" } },
+      `${this.placed} / ${STEPS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
     });
-    this.coachEl.textContent = next ? `What's step #${this.placed + 1} of the journey?` : "Journey complete!";
+    this.coachEl.textContent = next
+      ? `What's step #${this.placed + 1} of the journey?`
+      : "Journey complete!";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -70,12 +104,12 @@ class Digestion implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Trace the food's path"),
+        el("span", {}, "Trace the food's path")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick the next stop"),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🍎 Steps placed"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 

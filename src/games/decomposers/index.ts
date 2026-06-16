@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -85,7 +85,11 @@ class Decomposers implements GameInstance {
             class: "chip",
             style:
               this.active === d.key
-                ? { background: "var(--accent-green)", color: "#fff", borderColor: "var(--accent-green)" }
+                ? {
+                    background: "var(--accent-green)",
+                    color: "#fff",
+                    borderColor: "var(--accent-green)",
+                  }
                 : {},
             onclick: () => {
               this.active = d.key;
@@ -93,9 +97,9 @@ class Decomposers implements GameInstance {
               this.buildPanel();
             },
           },
-          `${d.emoji} ${d.label}`,
-        ),
-      ),
+          `${d.emoji} ${d.label}`
+        )
+      )
     );
 
     this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `0 / 5`);
@@ -104,7 +108,8 @@ class Decomposers implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
     });
-    this.coachEl.textContent = "Tap the dead leaves, logs, and bones to set the decomposers to work.";
+    this.coachEl.textContent =
+      "Tap the dead leaves, logs, and bones to set the decomposers to work.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -112,13 +117,17 @@ class Decomposers implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Recycle all 5 piles"),
+        el("span", {}, "Recycle all 5 piles")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick a decomposer, then tap dead matter"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Pick a decomposer, then tap dead matter"
+      ),
       palette,
       el("div", { class: "metric" }, el("span", {}, "🌱 New plants"), this.statusEl),
       el("div", { class: "metric" }, el("span", {}, "🟤 Soil nutrients"), this.nutrientEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -137,7 +146,11 @@ class Decomposers implements GameInstance {
     if (best) {
       best.power = Math.min(1, best.power + 0.35);
       if (best.critters.length < 6) {
-        best.critters.push({ dx: (Math.random() - 0.5) * 60, dy: -Math.random() * 30, phase: Math.random() * 6 });
+        best.critters.push({
+          dx: (Math.random() - 0.5) * 60,
+          dy: -Math.random() * 30,
+          phase: Math.random() * 6,
+        });
       }
       this.ctx.services.audio.play("tick");
     }
@@ -164,7 +177,8 @@ class Decomposers implements GameInstance {
         this.nutrientEl.textContent = String(this.nutrients);
         this.statusEl.textContent = `${this.grown} / 5`;
         this.ctx.services.audio.play("reward");
-        this.coachEl.textContent = "♻️ Broken down into rich soil — and a new plant sprouts from it!";
+        this.coachEl.textContent =
+          "♻️ Broken down into rich soil — and a new plant sprouts from it!";
         if (this.grown >= this.piles.length) this.finish();
       }
       for (const cr of pile.critters) cr.phase += 0.1 * f;

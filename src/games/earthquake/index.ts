@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -73,7 +73,11 @@ class Earthquake implements GameInstance {
         {
           class: "chip",
           style: get()
-            ? { background: "var(--accent-green)", color: "#fff", borderColor: "var(--accent-green)" }
+            ? {
+                background: "var(--accent-green)",
+                color: "#fff",
+                borderColor: "var(--accent-green)",
+              }
             : {},
           onclick: () => {
             if (this.shaking) return;
@@ -81,24 +85,40 @@ class Earthquake implements GameInstance {
             this.buildPanel();
           },
         },
-        `${get() ? "✓ " : ""}${label}`,
+        `${get() ? "✓ " : ""}${label}`
       );
 
     const opts = el(
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
-      toggle("🔻 Wide base", () => this.wideBase, (v) => (this.wideBase = v)),
-      toggle("🔩 Cross-braces", () => this.braced, (v) => (this.braced = v)),
-      toggle("🪶 Light top", () => this.lightTop, (v) => (this.lightTop = v)),
+      toggle(
+        "🔻 Wide base",
+        () => this.wideBase,
+        (v) => (this.wideBase = v)
+      ),
+      toggle(
+        "🔩 Cross-braces",
+        () => this.braced,
+        (v) => (this.braced = v)
+      ),
+      toggle(
+        "🪶 Light top",
+        () => this.lightTop,
+        (v) => (this.lightTop = v)
+      )
     );
     const shakeBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.shake() },
-      "🌋 Shake it!",
+      "🌋 Shake it!"
     );
 
     this.scoreEl = el("span", {}, "");
-    this.statusEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.roundIdx} / ${ROUNDS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-orange)" } },
+      `${this.roundIdx} / ${ROUNDS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
@@ -110,14 +130,14 @@ class Earthquake implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Survive"),
-        el("span", {}, this.round().label),
+        el("span", {}, this.round().label)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Add safety features"),
       opts,
       shakeBtn,
       el("div", { class: "metric" }, el("span", {}, "🏗️ Stability"), this.scoreEl),
       el("div", { class: "metric" }, el("span", {}, "🏆 Survived"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -125,7 +145,8 @@ class Earthquake implements GameInstance {
   private updateReadout(): void {
     const sc = this.score();
     this.scoreEl.textContent = `${sc} / 6 (need ${this.round().needed})`;
-    this.scoreEl.style.color = sc >= this.round().needed ? "var(--accent-green)" : "var(--accent-red)";
+    this.scoreEl.style.color =
+      sc >= this.round().needed ? "var(--accent-green)" : "var(--accent-red)";
     if (!this.shaking && !this.collapsed) {
       this.coachEl.textContent =
         sc >= this.round().needed
@@ -200,7 +221,10 @@ class Earthquake implements GameInstance {
           b.y += b.vy;
           b.rot += b.vr;
           if (b.y < GROUND - 16) settled = false;
-          else { b.y = GROUND - 16; b.vx *= 0.7; }
+          else {
+            b.y = GROUND - 16;
+            b.vx *= 0.7;
+          }
         }
         if (this.shakeT > 0) this.shakeT = 0;
         // after a moment, reset for retry
@@ -256,7 +280,13 @@ class Earthquake implements GameInstance {
         const bw = baseW - level * (this.wideBase ? 14 : 4);
         // top block lighter (smaller) if lightTop chosen
         const topAdjust = i === 4 && this.lightTop ? 0.7 : 1;
-        const sway = this.shaking ? Math.sin(this.shakeT * 0.6 + level * 0.5) * this.round().magnitude * (level + 1) * 0.25 * (1 - stability / 8) : 0;
+        const sway = this.shaking
+          ? Math.sin(this.shakeT * 0.6 + level * 0.5) *
+            this.round().magnitude *
+            (level + 1) *
+            0.25 *
+            (1 - stability / 8)
+          : 0;
         c.save();
         c.translate(cx + gx + sway, by);
         c.fillStyle = i === 4 ? "#f59e0b" : "#3b82f6";

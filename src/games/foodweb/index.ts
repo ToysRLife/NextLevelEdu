@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -68,18 +68,23 @@ class FoodWeb implements GameInstance {
   }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `0 / ${CORRECT.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `0 / ${CORRECT.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
     });
-    this.coachEl.textContent = "Drag from a food source to the animal that eats it to draw an energy arrow.";
+    this.coachEl.textContent =
+      "Drag from a food source to the animal that eats it to draw an energy arrow.";
     clear(this.ctx.panel);
     this.ctx.panel.append(
       el("div", { class: "control-label" }, "Build the energy flow"),
       el("div", { class: "metric" }, el("span", {}, "🔗 Links"), this.progressEl),
       el("div", { class: "metric" }, el("span", {}, "🌐 How"), el("span", {}, "drag node → node")),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -137,7 +142,8 @@ class FoodWeb implements GameInstance {
     const stars = this.mistakes === 0 ? 3 : this.mistakes <= 2 ? 2 : 1;
     this.ctx.services.score.event("foodweb_complete", { mistakes: this.mistakes });
     this.ctx.services.outcome.succeed({
-      message: "You mapped the whole food web! Energy flows from the Sun, to plants, to plant-eaters, to predators.",
+      message:
+        "You mapped the whole food web! Energy flows from the Sun, to plants, to plant-eaters, to predators.",
       stars,
       resources: { Biomass: 50 },
     });
@@ -159,7 +165,13 @@ class FoodWeb implements GameInstance {
     return ORGANISMS.find((o) => o.id === id)!;
   }
 
-  private arrow(c: CanvasRenderingContext2D, a: Organism, b: Organism, color: string, width: number): void {
+  private arrow(
+    c: CanvasRenderingContext2D,
+    a: Organism,
+    b: Organism,
+    color: string,
+    width: number
+  ): void {
     const ang = Math.atan2(b.y - a.y, b.x - a.x);
     const sx = a.x + Math.cos(ang) * R;
     const sy = a.y + Math.sin(ang) * R;
@@ -259,7 +271,8 @@ export const foodwebGame: GameModule = {
     gradeBand: "5",
     emoji: "🕸️",
     blurb: "Draw the arrows that show how energy flows from the Sun through every living thing.",
-    mission: "Connect the food web: drag from each food source to whatever eats it until every energy link is drawn.",
+    mission:
+      "Connect the food web: drag from each food source to whatever eats it until every energy link is drawn.",
     estMinutes: 4,
   },
   create: (ctx) => new FoodWeb(ctx),

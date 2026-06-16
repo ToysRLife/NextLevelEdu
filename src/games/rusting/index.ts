@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -43,13 +43,17 @@ class Rusting implements GameInstance {
   private buildPanel(): void {
     const coatBtn = el(
       "button",
-      { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.applyCoating() },
-      "🛢️ Apply coating",
+      {
+        class: "btn",
+        style: { background: "var(--accent-blue)" },
+        onclick: () => this.applyCoating(),
+      },
+      "🛢️ Apply coating"
     );
     const dryBtn = el(
       "button",
       { class: "btn secondary", onclick: () => this.wipeDry() },
-      "🧽 Wipe dry",
+      "🧽 Wipe dry"
     );
 
     this.rustEl = el("span", {}, "0%");
@@ -67,15 +71,19 @@ class Rusting implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Survive ${SURVIVE}s rust-free`),
+        el("span", {}, `Survive ${SURVIVE}s rust-free`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Keep water & air off the iron"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Keep water & air off the iron"
+      ),
       coatBtn,
       dryBtn,
       el("div", { class: "metric" }, el("span", {}, "🦠 Rust"), this.rustEl),
       el("div", { class: "metric" }, el("span", {}, "💧 Wetness"), this.waterEl),
       el("div", { class: "metric" }, el("span", {}, "⏱️ Time left"), this.timeEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -83,7 +91,8 @@ class Rusting implements GameInstance {
     if (this.ended) return;
     this.coating = 1;
     this.ctx.services.audio.play("click");
-    this.coachEl.textContent = "🛢️ Coated! The seal blocks water and air — but it wears off, so reapply it.";
+    this.coachEl.textContent =
+      "🛢️ Coated! The seal blocks water and air — but it wears off, so reapply it.";
   }
 
   private wipeDry(): void {
@@ -109,7 +118,8 @@ class Rusting implements GameInstance {
     }
     if (this.rainOn) {
       this.water = Math.min(1, this.water + 0.01 * f);
-      if (this.rainDrops.length < 60) this.rainDrops.push({ x: Math.random() * W, y: 0, v: 6 + Math.random() * 4 });
+      if (this.rainDrops.length < 60)
+        this.rainDrops.push({ x: Math.random() * W, y: 0, v: 6 + Math.random() * 4 });
     } else {
       this.water = Math.max(0, this.water - 0.002 * f); // slowly dries
     }
@@ -127,7 +137,8 @@ class Rusting implements GameInstance {
     }
 
     this.rustEl.textContent = `${Math.round(this.rust)}%`;
-    this.waterEl.textContent = this.water > 0.5 ? "💧💧 wet" : this.water > 0.1 ? "💧 damp" : "· dry";
+    this.waterEl.textContent =
+      this.water > 0.5 ? "💧💧 wet" : this.water > 0.1 ? "💧 damp" : "· dry";
     this.timeEl.textContent = `${Math.ceil(this.timeLeft)}s`;
 
     if (this.rust >= 100) {
@@ -234,7 +245,11 @@ class Rusting implements GameInstance {
     c.fillStyle = "#fff";
     c.font = "bold 20px Nunito, sans-serif";
     c.textAlign = "center";
-    c.fillText(this.rainOn ? "🌧️ Rain! Keep it dry or sealed" : "☀️ Dry spell — stay ready", W / 2, 60);
+    c.fillText(
+      this.rainOn ? "🌧️ Rain! Keep it dry or sealed" : "☀️ Dry spell — stay ready",
+      W / 2,
+      60
+    );
 
     // rust bar
     c.fillStyle = "rgba(255,255,255,0.7)";
@@ -245,7 +260,14 @@ class Rusting implements GameInstance {
     c.fill();
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (w <= 0) return;
     c.beginPath();

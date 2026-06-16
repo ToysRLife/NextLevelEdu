@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -14,9 +14,24 @@ const START_H = 200; // flat plateau to carve down from
 
 type Agent = "water" | "wind" | "ice";
 const AGENTS: { key: Agent; label: string; emoji: string; teaches: string }[] = [
-  { key: "water", label: "Water", emoji: "💧", teaches: "Running water carves narrow, deep valleys and canyons." },
-  { key: "wind", label: "Wind", emoji: "🌬️", teaches: "Wind wears away rock slowly over a wide area, smoothing it." },
-  { key: "ice", label: "Ice", emoji: "🧊", teaches: "Freezing and thawing cracks chunks off the rock." },
+  {
+    key: "water",
+    label: "Water",
+    emoji: "💧",
+    teaches: "Running water carves narrow, deep valleys and canyons.",
+  },
+  {
+    key: "wind",
+    label: "Wind",
+    emoji: "🌬️",
+    teaches: "Wind wears away rock slowly over a wide area, smoothing it.",
+  },
+  {
+    key: "ice",
+    label: "Ice",
+    emoji: "🧊",
+    teaches: "Freezing and thawing cracks chunks off the rock.",
+  },
 ];
 
 interface Debris {
@@ -70,14 +85,12 @@ class Weathering implements GameInstance {
   }
 
   private buildLand(): void {
-    this.heights = new Array(N).fill(START_H);
-    this.target = [];
-    for (let i = 0; i < N; i++) {
-      const t = i / (N - 1);
+    this.heights = Array.from({ length: N }, () => START_H);
+    this.target = Array.from({ length: N }, (item, index) => {
+      const t = index / (N - 1);
       // two rounded hills with a valley between — a believable eroded profile
-      const h = 70 + 80 * (0.5 + 0.5 * Math.cos(t * Math.PI * 4));
-      this.target.push(Math.round(h));
-    }
+      return Math.round(70 + 80 * (0.5 + 0.5 * Math.cos(t * Math.PI * 4)));
+    });
   }
 
   private buildPanel(): void {
@@ -91,7 +104,11 @@ class Weathering implements GameInstance {
             class: "chip",
             style:
               this.active === a.key
-                ? { background: "var(--accent-blue)", color: "#fff", borderColor: "var(--accent-blue)" }
+                ? {
+                    background: "var(--accent-blue)",
+                    color: "#fff",
+                    borderColor: "var(--accent-blue)",
+                  }
                 : {},
             onclick: () => {
               this.active = a.key;
@@ -99,9 +116,9 @@ class Weathering implements GameInstance {
               this.buildPanel();
             },
           },
-          `${a.emoji} ${a.label}`,
-        ),
-      ),
+          `${a.emoji} ${a.label}`
+        )
+      )
     );
 
     this.matchEl = el("span", { style: { color: "var(--accent-blue)" } }, "0%");
@@ -109,7 +126,8 @@ class Weathering implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
     });
-    this.coachEl.textContent = "Pick an agent, then drag across the rock to wear it down to the dashed target.";
+    this.coachEl.textContent =
+      "Pick an agent, then drag across the rock to wear it down to the dashed target.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -117,12 +135,12 @@ class Weathering implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Carve the target shape"),
+        el("span", {}, "Carve the target shape")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Choose an erosion force"),
       palette,
       el("div", { class: "metric" }, el("span", {}, "🪨 Shape match"), this.matchEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -141,7 +159,7 @@ class Weathering implements GameInstance {
       // Rock "resists" as it nears the target, so you can't easily overshoot.
       const room = this.heights[i] - (this.target[i] - 4);
       const resist = Math.max(0, Math.min(1, room / 40));
-      let cut = strength * falloff * resist;
+      const cut = strength * falloff * resist;
       this.heights[i] = Math.max(this.target[i] - 6, this.heights[i] - cut);
     }
     // wind also smooths neighbours
@@ -193,7 +211,8 @@ class Weathering implements GameInstance {
 
       const pct = this.matchPct();
       if (this.matchEl) this.matchEl.textContent = `${Math.round(pct * 100)}%`;
-      if (this.started && pct >= byTier(this.ctx.tier, 0.85, 0.92, 0.97) && !this.ended) this.finish();
+      if (this.started && pct >= byTier(this.ctx.tier, 0.85, 0.92, 0.97) && !this.ended)
+        this.finish();
 
       this.render();
       this.raf = requestAnimationFrame(draw);
@@ -287,7 +306,11 @@ class Weathering implements GameInstance {
     c.textAlign = "center";
     c.fillText("Wear the rock down to the dashed shape", W / 2, 36);
     c.font = "13px Nunito, sans-serif";
-    c.fillText(`Using: ${AGENTS.find((a) => a.key === this.active)!.emoji} ${this.active}`, W / 2, 58);
+    c.fillText(
+      `Using: ${AGENTS.find((a) => a.key === this.active)!.emoji} ${this.active}`,
+      W / 2,
+      58
+    );
   }
 
   start(): void {}

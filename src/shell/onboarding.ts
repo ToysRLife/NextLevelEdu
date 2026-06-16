@@ -1,4 +1,4 @@
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { savePersona } from "./profile";
 
 // First-run gate: the learner chooses an explorer alias + a preset avatar.
@@ -20,7 +20,7 @@ export function renderOnboarding(root: HTMLElement, onDone: () => void): void {
       alias = (e.target as HTMLInputElement).value.trim();
       startBtn.toggleAttribute("disabled", alias.length === 0);
     },
-  }) as HTMLInputElement;
+  });
 
   const avatarGrid = el(
     "div",
@@ -29,17 +29,17 @@ export function renderOnboarding(root: HTMLElement, onDone: () => void): void {
       el(
         "button",
         {
-          class: "avatar-option" + (a === emoji ? " active" : ""),
+          class: `avatar-option${a === emoji ? " active" : ""}`,
           onclick: () => {
             emoji = a;
-            avatarGrid.querySelectorAll("button").forEach((b) =>
-              b.classList.toggle("active", b.textContent === a),
-            );
+            avatarGrid
+              .querySelectorAll("button")
+              .forEach((b) => b.classList.toggle("active", b.textContent === a));
           },
         },
-        a,
-      ),
-    ),
+        a
+      )
+    )
   );
 
   const ideas = el(
@@ -56,9 +56,9 @@ export function renderOnboarding(root: HTMLElement, onDone: () => void): void {
             startBtn.removeAttribute("disabled");
           },
         },
-        idea,
-      ),
-    ),
+        idea
+      )
+    )
   );
 
   const startBtn = el(
@@ -72,21 +72,25 @@ export function renderOnboarding(root: HTMLElement, onDone: () => void): void {
         onDone();
       },
     },
-    "🚀 Start Exploring",
-  ) as HTMLButtonElement;
+    "🚀 Start Exploring"
+  );
 
   const card = el(
     "div",
     { class: "onboard-card" },
     el("div", { class: "onboard-hero" }, "👋"),
     el("h1", {}, "Welcome, Explorer!"),
-    el("p", { class: "onboard-sub" }, "Master science to build worlds of your own. First, who are you?"),
+    el(
+      "p",
+      { class: "onboard-sub" },
+      "Master science to build worlds of your own. First, who are you?"
+    ),
     el("div", { class: "control-label" }, "Choose your avatar"),
     avatarGrid,
     el("div", { class: "control-label" }, "Your explorer name"),
     aliasInput,
     ideas,
-    startBtn,
+    startBtn
   );
 
   clear(root);

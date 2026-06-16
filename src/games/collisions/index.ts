@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -70,8 +70,8 @@ class Collisions implements GameInstance {
     this.launchBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.launch() },
-      "🎱 Launch",
-    ) as HTMLButtonElement;
+      "🎱 Launch"
+    );
 
     this.speedEl = el("span", {}, "");
     this.statusEl = el("span", { style: { color: "var(--accent-orange)" } }, `0 / ${NEED}`);
@@ -87,14 +87,14 @@ class Collisions implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Sink ${NEED} shots`),
+        el("span", {}, `Sink ${NEED} shots`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🚀 Launch speed"),
       slider,
       this.launchBtn,
       el("div", { class: "metric" }, el("span", {}, "⚡ Speed"), this.speedEl),
       el("div", { class: "metric" }, el("span", {}, "🥅 Sunk"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -142,7 +142,8 @@ class Collisions implements GameInstance {
           if (inPocket) {
             this.hits += 1;
             this.ctx.services.audio.play("reward");
-            this.coachEl.textContent = "🥅 Sunk it! The cue's motion passed straight through to the end ball.";
+            this.coachEl.textContent =
+              "🥅 Sunk it! The cue's motion passed straight through to the end ball.";
             this.statusEl.textContent = `${this.hits} / ${NEED}`;
             if (this.hits >= NEED) {
               this.finish();
@@ -245,7 +246,14 @@ class Collisions implements GameInstance {
     c.fillText("Pass the motion through the chain into the pocket 🎱", W / 2, 50);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     c.beginPath();
     c.moveTo(x + rr, y);

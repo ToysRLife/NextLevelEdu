@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { byTier } from "@core/difficulty";
 
 // Plate tectonics (MS-ESS2-3): the type of plate boundary decides the landform —
@@ -84,19 +84,21 @@ class Tectonic implements GameInstance {
         el(
           "button",
           {
-            class: "chip" + (b.key === this.boundary ? " active" : ""),
+            class: `chip${b.key === this.boundary ? " active" : ""}`,
             "data-b": b.key,
             onclick: () => {
               if (this.running) return;
               this.boundary = b.key;
-              this.chips.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x.getAttribute("data-b") === b.key));
+              this.chips
+                .querySelectorAll("button")
+                .forEach((x) => x.classList.toggle("active", x.getAttribute("data-b") === b.key));
               this.updateReadout();
               this.render();
             },
           },
-          b.label,
-        ),
-      ),
+          b.label
+        )
+      )
     );
     this.speedCtl = slider({
       label: "🛤️ Plate speed",
@@ -113,21 +115,37 @@ class Tectonic implements GameInstance {
       },
     });
     this.sizeRead = readout("📏 Feature size (speed × 500)");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
+    });
     this.coachEl.textContent = "Choose the boundary that builds this landform, then set the speed.";
-    this.goBtn = el("button", { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.run() }, "🌍 Move the plates") as HTMLButtonElement;
+    this.goBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.run() },
+      "🌍 Move the plates"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Build"), el("span", {}, `${this.round().landform} (${this.round().target} m)`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Build"),
+        el("span", {}, `${this.round().landform} (${this.round().target} m)`)
+      ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Boundary type"),
       this.chips,
       this.speedCtl.el,
       this.sizeRead.el,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Landforms built"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }

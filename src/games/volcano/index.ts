@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -48,12 +48,12 @@ class Volcano implements GameInstance {
     const eruptBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.erupt() },
-      "🌋 Erupt",
+      "🌋 Erupt"
     );
     const steamBtn = el(
       "button",
       { class: "btn secondary", onclick: () => this.releaseSteam() },
-      "💨 Release Steam",
+      "💨 Release Steam"
     );
 
     this.pressEl = el("span", {}, "10%");
@@ -62,7 +62,8 @@ class Volcano implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
     });
-    this.coachEl.textContent = "Let pressure build into the green band, then erupt to build new rock.";
+    this.coachEl.textContent =
+      "Let pressure build into the green band, then erupt to build new rock.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -70,14 +71,14 @@ class Volcano implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `${NEED} controlled eruptions`),
+        el("span", {}, `${NEED} controlled eruptions`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Erupt in the green band"),
       eruptBtn,
       steamBtn,
       el("div", { class: "metric" }, el("span", {}, "🌡️ Pressure"), this.pressEl),
       el("div", { class: "metric" }, el("span", {}, "🏔️ Eruptions"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -95,12 +96,14 @@ class Volcano implements GameInstance {
     } else if (this.pressure < this.bandLo) {
       this.mistakes += 1;
       this.ctx.services.audio.play("fail");
-      this.coachEl.textContent = "Just a fizzle — not enough pressure yet. Let it build into the green band.";
+      this.coachEl.textContent =
+        "Just a fizzle — not enough pressure yet. Let it build into the green band.";
     } else {
       this.mistakes += 1;
       this.ctx.services.audio.play("fail");
       this.burst(50);
-      this.coachEl.textContent = "💥 Too much pressure — a violent burst! Vent steam earlier next time.";
+      this.coachEl.textContent =
+        "💥 Too much pressure — a violent burst! Vent steam earlier next time.";
       this.pressure = 8;
     }
   }
@@ -136,7 +139,8 @@ class Volcano implements GameInstance {
       this.mistakes += 1;
       this.burst(50);
       this.ctx.services.audio.play("fail");
-      this.coachEl.textContent = "💥 It blew on its own — pressure hit the max! Erupt or vent before that.";
+      this.coachEl.textContent =
+        "💥 It blew on its own — pressure hit the max! Erupt or vent before that.";
       this.pressure = 8;
     }
     if (this.erupting > 0) this.erupting = Math.max(0, this.erupting - 0.02 * f);
@@ -243,7 +247,14 @@ class Volcano implements GameInstance {
     c.restore();
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     c.beginPath();
     c.moveTo(x + rr, y);

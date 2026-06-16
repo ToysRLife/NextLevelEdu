@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -52,10 +52,21 @@ class Lander implements GameInstance {
   }
 
   private buildPanel(): void {
-    const thrustBtn = el("button", { class: "btn", style: { background: "var(--accent-orange)" } }, "🔥 Hold to thrust") as HTMLButtonElement;
-    thrustBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); this.thrusting = true; });
-    thrustBtn.addEventListener("pointerup", () => { this.thrusting = false; });
-    thrustBtn.addEventListener("pointerleave", () => { this.thrusting = false; });
+    const thrustBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-orange)" } },
+      "🔥 Hold to thrust"
+    );
+    thrustBtn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      this.thrusting = true;
+    });
+    thrustBtn.addEventListener("pointerup", () => {
+      this.thrusting = false;
+    });
+    thrustBtn.addEventListener("pointerleave", () => {
+      this.thrusting = false;
+    });
 
     this.speedEl = el("span", {}, "");
     this.fuelEl = el("span", {}, `${Math.round(this.fuel)}%`);
@@ -72,14 +83,18 @@ class Lander implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Land softly ${NEED}×`),
+        el("span", {}, `Land softly ${NEED}×`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Fight gravity with thrust"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Fight gravity with thrust"
+      ),
       thrustBtn,
       el("div", { class: "metric" }, el("span", {}, "⬇️ Fall speed"), this.speedEl),
       el("div", { class: "metric" }, el("span", {}, "⛽ Fuel"), this.fuelEl),
       el("div", { class: "metric" }, el("span", {}, "🚀 Landings"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -111,7 +126,8 @@ class Lander implements GameInstance {
     }
 
     this.speedEl.textContent = `${Math.max(0, this.vy).toFixed(1)}`;
-    this.speedEl.style.color = this.vy > this.safeSpeed ? "var(--accent-red)" : "var(--accent-green)";
+    this.speedEl.style.color =
+      this.vy > this.safeSpeed ? "var(--accent-red)" : "var(--accent-green)";
     this.fuelEl.textContent = `${Math.round(this.fuel)}%`;
     this.render();
   }
@@ -125,7 +141,11 @@ class Lander implements GameInstance {
       this.win();
     } else {
       this.coachEl.textContent = "🚀 Perfect touchdown! Get ready for the next landing.";
-      setTimeout(() => { if (!this.ended) { this.resetLander(); } }, 1000);
+      setTimeout(() => {
+        if (!this.ended) {
+          this.resetLander();
+        }
+      }, 1000);
     }
   }
 
@@ -134,7 +154,11 @@ class Lander implements GameInstance {
     this.resting = true;
     this.ctx.services.audio.play("fail");
     this.coachEl.textContent = "💥 Too fast — crash landing! Use the thruster sooner to slow down.";
-    setTimeout(() => { if (!this.ended) { this.resetLander(); } }, 1100);
+    setTimeout(() => {
+      if (!this.ended) {
+        this.resetLander();
+      }
+    }, 1100);
   }
 
   private win(): void {
@@ -194,8 +218,10 @@ class Lander implements GameInstance {
     c.strokeStyle = "#94a3b8";
     c.lineWidth = 3;
     c.beginPath();
-    c.moveTo(-14, 16); c.lineTo(-20, 26);
-    c.moveTo(14, 16); c.lineTo(20, 26);
+    c.moveTo(-14, 16);
+    c.lineTo(-20, 26);
+    c.moveTo(14, 16);
+    c.lineTo(20, 26);
     c.stroke();
     c.restore();
 

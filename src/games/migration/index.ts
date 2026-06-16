@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -15,14 +15,54 @@ interface Animal {
 }
 
 const ANIMALS: Animal[] = [
-  { name: "Goose", emoji: "🦢", strategy: "migrate", why: "Geese fly to warmer places for winter — they migrate." },
-  { name: "Bear", emoji: "🐻", strategy: "hibernate", why: "Bears sleep deeply through winter — they hibernate." },
-  { name: "Monarch butterfly", emoji: "🦋", strategy: "migrate", why: "Monarchs travel thousands of miles south — they migrate." },
-  { name: "Frog", emoji: "🐸", strategy: "hibernate", why: "Frogs bury into the mud and sleep — they hibernate." },
-  { name: "Deer", emoji: "🦌", strategy: "active", why: "Deer grow a thick coat and stay active all winter." },
-  { name: "Bat", emoji: "🦇", strategy: "hibernate", why: "Bats hibernate in caves through the cold months." },
-  { name: "Squirrel", emoji: "🐿️", strategy: "active", why: "Squirrels store nuts and stay active in winter." },
-  { name: "Swallow", emoji: "🐦", strategy: "migrate", why: "Swallows fly south to find food and warmth — they migrate." },
+  {
+    name: "Goose",
+    emoji: "🦢",
+    strategy: "migrate",
+    why: "Geese fly to warmer places for winter — they migrate.",
+  },
+  {
+    name: "Bear",
+    emoji: "🐻",
+    strategy: "hibernate",
+    why: "Bears sleep deeply through winter — they hibernate.",
+  },
+  {
+    name: "Monarch butterfly",
+    emoji: "🦋",
+    strategy: "migrate",
+    why: "Monarchs travel thousands of miles south — they migrate.",
+  },
+  {
+    name: "Frog",
+    emoji: "🐸",
+    strategy: "hibernate",
+    why: "Frogs bury into the mud and sleep — they hibernate.",
+  },
+  {
+    name: "Deer",
+    emoji: "🦌",
+    strategy: "active",
+    why: "Deer grow a thick coat and stay active all winter.",
+  },
+  {
+    name: "Bat",
+    emoji: "🦇",
+    strategy: "hibernate",
+    why: "Bats hibernate in caves through the cold months.",
+  },
+  {
+    name: "Squirrel",
+    emoji: "🐿️",
+    strategy: "active",
+    why: "Squirrels store nuts and stay active in winter.",
+  },
+  {
+    name: "Swallow",
+    emoji: "🐦",
+    strategy: "migrate",
+    why: "Swallows fly south to find food and warmth — they migrate.",
+  },
 ];
 
 class Migration implements GameInstance {
@@ -59,12 +99,40 @@ class Migration implements GameInstance {
     const choices = el(
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
-      el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.choose("migrate") }, "✈️ Migrate"),
-      el("button", { class: "btn", style: { background: "var(--accent-purple)" }, onclick: () => this.choose("hibernate") }, "😴 Hibernate"),
-      el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.choose("active") }, "🧥 Stay active"),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-blue)" },
+          onclick: () => this.choose("migrate"),
+        },
+        "✈️ Migrate"
+      ),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-purple)" },
+          onclick: () => this.choose("hibernate"),
+        },
+        "😴 Hibernate"
+      ),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-green)" },
+          onclick: () => this.choose("active"),
+        },
+        "🧥 Stay active"
+      )
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.idx + 1} / ${ANIMALS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-blue)" } },
+      `${this.idx + 1} / ${ANIMALS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
@@ -77,12 +145,12 @@ class Migration implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Help all 8 survive"),
+        el("span", {}, "Help all 8 survive")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick a winter strategy"),
       choices,
       el("div", { class: "metric" }, el("span", {}, "❄️ Animal"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -183,7 +251,14 @@ class Migration implements GameInstance {
     c.fillText("Winter is coming — how will it survive? ❄️", W / 2, 50);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -97,7 +97,11 @@ class Friction implements GameInstance {
             class: "chip",
             style:
               this.surface.key === s.key
-                ? { background: "var(--accent-blue)", color: "#fff", borderColor: "var(--accent-blue)" }
+                ? {
+                    background: "var(--accent-blue)",
+                    color: "#fff",
+                    borderColor: "var(--accent-blue)",
+                  }
                 : {},
             onclick: () => {
               if (this.sliding) return;
@@ -106,23 +110,24 @@ class Friction implements GameInstance {
               this.render(); // refresh the prediction ghost right away
             },
           },
-          `${s.emoji} ${s.label}`,
-        ),
-      ),
+          `${s.emoji} ${s.label}`
+        )
+      )
     );
 
     this.goBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.launch() },
-      "🛷 Push the sled",
-    ) as HTMLButtonElement;
+      "🛷 Push the sled"
+    );
 
     this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `0 / ${NEED}`);
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
     });
-    this.coachEl.textContent = "Choose a surface, then push. Friction will slow the sled to a stop.";
+    this.coachEl.textContent =
+      "Choose a surface, then push. Friction will slow the sled to a stop.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -130,13 +135,17 @@ class Friction implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Stop on ${NEED} targets`),
+        el("span", {}, `Stop on ${NEED} targets`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick the sliding surface"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Pick the sliding surface"
+      ),
       surfRow,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "🎯 Landed on target"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -250,7 +259,8 @@ class Friction implements GameInstance {
       // The purple prediction always shows. The green "lines up!" confirmation is
       // a stronger aid, revealed only once the learner has asked for a hint.
       const hintsUsed = this.ctx.services.hints.count() > 0;
-      const onTarget = hintsUsed && gNose >= this.target.x && gNose <= this.target.x + this.target.w;
+      const onTarget =
+        hintsUsed && gNose >= this.target.x && gNose <= this.target.x + this.target.w;
       c.save();
       c.globalAlpha = 0.45;
       c.fillStyle = onTarget ? "#16a34a" : "#7c3aed";
@@ -304,7 +314,14 @@ class Friction implements GameInstance {
     c.fillText("Stop the sled on the target 🎯", W / 2, 40);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

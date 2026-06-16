@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -17,10 +17,30 @@ interface Component {
 }
 
 const METHODS: { id: Method; label: string; emoji: string; teaches: string }[] = [
-  { id: "sieve", label: "Sieve", emoji: "🪤", teaches: "A sieve catches big bits and lets small ones through." },
-  { id: "magnet", label: "Magnet", emoji: "🧲", teaches: "A magnet pulls out magnetic metals like iron." },
-  { id: "filter", label: "Filter", emoji: "☕", teaches: "A filter traps solids that don't dissolve, letting water through." },
-  { id: "evaporate", label: "Evaporate", emoji: "🔥", teaches: "Boiling the water away leaves the dissolved solid behind." },
+  {
+    id: "sieve",
+    label: "Sieve",
+    emoji: "🪤",
+    teaches: "A sieve catches big bits and lets small ones through.",
+  },
+  {
+    id: "magnet",
+    label: "Magnet",
+    emoji: "🧲",
+    teaches: "A magnet pulls out magnetic metals like iron.",
+  },
+  {
+    id: "filter",
+    label: "Filter",
+    emoji: "☕",
+    teaches: "A filter traps solids that don't dissolve, letting water through.",
+  },
+  {
+    id: "evaporate",
+    label: "Evaporate",
+    emoji: "🔥",
+    teaches: "Boiling the water away leaves the dissolved solid behind.",
+  },
 ];
 
 class Separating implements GameInstance {
@@ -31,10 +51,38 @@ class Separating implements GameInstance {
   private anim = 0;
 
   private components: Component[] = [
-    { key: "pebbles", label: "Pebbles", emoji: "🪨", method: "sieve", color: "#9ca3af", separated: false },
-    { key: "iron", label: "Iron filings", emoji: "🔩", method: "magnet", color: "#475569", separated: false },
-    { key: "sand", label: "Sand", emoji: "🟫", method: "filter", color: "#d4a373", separated: false },
-    { key: "salt", label: "Salt", emoji: "🧂", method: "evaporate", color: "#f8fafc", separated: false },
+    {
+      key: "pebbles",
+      label: "Pebbles",
+      emoji: "🪨",
+      method: "sieve",
+      color: "#9ca3af",
+      separated: false,
+    },
+    {
+      key: "iron",
+      label: "Iron filings",
+      emoji: "🔩",
+      method: "magnet",
+      color: "#475569",
+      separated: false,
+    },
+    {
+      key: "sand",
+      label: "Sand",
+      emoji: "🟫",
+      method: "filter",
+      color: "#d4a373",
+      separated: false,
+    },
+    {
+      key: "salt",
+      label: "Salt",
+      emoji: "🧂",
+      method: "evaporate",
+      color: "#f8fafc",
+      separated: false,
+    },
   ];
 
   private coachEl!: HTMLElement;
@@ -70,9 +118,9 @@ class Separating implements GameInstance {
             "data-method": m.id,
             onclick: () => this.applyMethod(m.id),
           },
-          `${m.emoji} ${m.label}`,
-        ),
-      ),
+          `${m.emoji} ${m.label}`
+        )
+      )
     );
 
     clear(this.ctx.panel);
@@ -81,12 +129,16 @@ class Separating implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Separate it all"),
+        el("span", {}, "Separate it all")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Choose a separation tool"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Choose a separation tool"
+      ),
       toolRow,
       el("div", { class: "metric" }, el("span", {}, "🧪 Parts left"), this.leftEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -114,7 +166,8 @@ class Separating implements GameInstance {
     const stars = this.mistakes === 0 ? 3 : this.mistakes <= 2 ? 2 : 1;
     this.ctx.services.score.event("separating_done", { mistakes: this.mistakes });
     this.ctx.services.outcome.succeed({
-      message: "Fully separated! Because a mixture isn't chemically joined, the right physical method pulls each part back out.",
+      message:
+        "Fully separated! Because a mixture isn't chemically joined, the right physical method pulls each part back out.",
       stars,
       resources: { Elements: 40 },
     });
@@ -197,7 +250,14 @@ class Separating implements GameInstance {
     c.fill();
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

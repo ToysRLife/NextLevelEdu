@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { ParticleSystem } from "@core/particles";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -75,8 +75,8 @@ class WaterCycle implements GameInstance {
           }
         },
       },
-      "🌬️ Blow Wind →",
-    ) as HTMLButtonElement;
+      "🌬️ Blow Wind →"
+    );
 
     this.stageEl = el("span", { style: { color: "var(--accent-blue)" } }, STAGE_LABEL.evaporate);
     this.cloudEl = el("span", { style: { color: "#64748b" } }, "0%");
@@ -92,14 +92,14 @@ class WaterCycle implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "📍 Stage"),
-        this.stageEl,
+        this.stageEl
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "☀️ Sun Heat"),
       slider,
       this.windBtn,
       el("div", { class: "metric" }, el("span", {}, "☁️ Cloud"), this.cloudEl),
       el("div", { class: "metric" }, el("span", {}, "💧 Collected"), this.collectEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -111,7 +111,10 @@ class WaterCycle implements GameInstance {
     let msg = "";
     switch (this.phase) {
       case "evaporate":
-        msg = this.heat < 20 ? "🌥️ Turn up the Sun — water needs heat to evaporate." : "♨️ Vapor is rising and forming a cloud!";
+        msg =
+          this.heat < 20
+            ? "🌥️ Turn up the Sun — water needs heat to evaporate."
+            : "♨️ Vapor is rising and forming a cloud!";
         break;
       case "drift":
         msg = "☁️ Cloud is full! Blow it over the mountains on the right.";
@@ -197,7 +200,8 @@ class WaterCycle implements GameInstance {
     const stars = hintsUsed === 0 ? 3 : hintsUsed === 1 ? 2 : 1;
     this.ctx.services.score.event("watercycle_complete", {});
     this.ctx.services.outcome.succeed({
-      message: "You completed the water cycle! Evaporation → condensation → precipitation → collection, round and round.",
+      message:
+        "You completed the water cycle! Evaporation → condensation → precipitation → collection, round and round.",
       stars,
       resources: { Water: 50 },
     });
@@ -208,7 +212,8 @@ class WaterCycle implements GameInstance {
     this.failed = true;
     this.loop.stop();
     this.ctx.services.outcome.fail({
-      message: "The cloud blew out past the land before it rained — the land got no water. Use gentler puffs of wind.",
+      message:
+        "The cloud blew out past the land before it rained — the land got no water. Use gentler puffs of wind.",
     });
   }
 
@@ -340,7 +345,8 @@ export const watercycleGame: GameModule = {
     gradeBand: "4-5",
     emoji: "💧",
     blurb: "Heat the ocean, grow a cloud, and steer the rain to complete the water cycle.",
-    mission: "Drive the full water cycle: evaporate ocean water, drift the cloud over land, make it rain, and collect it.",
+    mission:
+      "Drive the full water cycle: evaporate ocean water, drift the cloud over land, make it rain, and collect it.",
     estMinutes: 4,
   },
   create: (ctx) => new WaterCycle(ctx),

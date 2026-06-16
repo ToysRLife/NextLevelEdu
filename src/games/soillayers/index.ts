@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -15,10 +15,34 @@ interface Layer {
 
 // Correct order is top (index 0) to bottom.
 const LAYERS: Layer[] = [
-  { key: "humus", name: "Humus", emoji: "🍂", color: "#4d3b1f", note: "The top layer of rotting leaves and twigs." },
-  { key: "topsoil", name: "Topsoil", emoji: "🌱", color: "#6b4423", note: "Dark, rich soil where plant roots grow." },
-  { key: "subsoil", name: "Subsoil", emoji: "🟫", color: "#a87c4f", note: "Lighter soil with clay and minerals." },
-  { key: "bedrock", name: "Bedrock", emoji: "🪨", color: "#6b7280", note: "Solid rock at the very bottom." },
+  {
+    key: "humus",
+    name: "Humus",
+    emoji: "🍂",
+    color: "#4d3b1f",
+    note: "The top layer of rotting leaves and twigs.",
+  },
+  {
+    key: "topsoil",
+    name: "Topsoil",
+    emoji: "🌱",
+    color: "#6b4423",
+    note: "Dark, rich soil where plant roots grow.",
+  },
+  {
+    key: "subsoil",
+    name: "Subsoil",
+    emoji: "🟫",
+    color: "#a87c4f",
+    note: "Lighter soil with clay and minerals.",
+  },
+  {
+    key: "bedrock",
+    name: "Bedrock",
+    emoji: "🪨",
+    color: "#6b7280",
+    note: "Solid rock at the very bottom.",
+  },
 ];
 
 class SoilLayers implements GameInstance {
@@ -51,10 +75,16 @@ class SoilLayers implements GameInstance {
     const chips = el(
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
-      ...this.tray.map((l) => el("button", { class: "chip", onclick: () => this.pick(l.key) }, `${l.emoji} ${l.name}`)),
+      ...this.tray.map((l) =>
+        el("button", { class: "chip", onclick: () => this.pick(l.key) }, `${l.emoji} ${l.name}`)
+      )
     );
 
-    this.statusEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.placed} / ${LAYERS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-orange)" } },
+      `${this.placed} / ${LAYERS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
@@ -71,12 +101,16 @@ class SoilLayers implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Stack the soil layers"),
+        el("span", {}, "Stack the soil layers")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick the next layer (top → bottom)"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Pick the next layer (top → bottom)"
+      ),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🪏 Layers placed"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -124,7 +158,10 @@ class SoilLayers implements GameInstance {
     c.fillRect(0, 0, W, H);
 
     // cross-section pit
-    const px = 250, pw = 300, top = 130, layerH = 95;
+    const px = 250,
+      pw = 300,
+      top = 130,
+      layerH = 95;
     for (let i = 0; i < LAYERS.length; i++) {
       const y = top + i * layerH;
       const done = i < this.placed;

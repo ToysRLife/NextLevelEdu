@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance, DifficultyTier } from "@sdk/types";
+import type { DifficultyTier, GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { ParticleSystem } from "@core/particles";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -14,7 +14,11 @@ const ESCAPE_DIST = 380; // past this the craft has flown off into deep space
 
 // Stricter circularity required for 3 stars as the tier climbs — older learners
 // are nudged toward a precise circular orbit, younger ones rewarded for staying up.
-const TIER_3STAR_ECC: Record<DifficultyTier, number> = { junior: 0.12, explorer: 0.07, master: 0.04 };
+const TIER_3STAR_ECC: Record<DifficultyTier, number> = {
+  junior: 0.12,
+  explorer: 0.07,
+  master: 0.04,
+};
 
 interface Vec {
   x: number;
@@ -70,13 +74,9 @@ class Orbits implements GameInstance {
         this.resetCraft();
         this.render();
       },
-    }) as HTMLInputElement;
+    });
 
-    this.launchBtn = el(
-      "button",
-      { class: "btn", onclick: () => this.launch() },
-      "🚀 Launch",
-    ) as HTMLButtonElement;
+    this.launchBtn = el("button", { class: "btn", onclick: () => this.launch() }, "🚀 Launch");
 
     this.speedEl = el("span", { style: { color: "var(--accent-blue)" } }, "2.00 km/s");
     this.distEl = el("span", { style: { color: "var(--accent-orange)" } }, `${START_ALT} km`);
@@ -92,7 +92,7 @@ class Orbits implements GameInstance {
       el("div", { class: "metric" }, el("span", {}, "🚀 Speed"), this.speedEl),
       el("div", { class: "metric" }, el("span", {}, "📏 Altitude"), this.distEl),
       this.launchBtn,
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -119,8 +119,10 @@ class Orbits implements GameInstance {
   private coachText(): string {
     if (this.phase === "flying") return "🛰️ In flight — let it ride and watch the path it traces.";
     const circ = Math.sqrt(GM / START_ALT);
-    if (this.speed < circ * 0.8) return "🪨 That looks slow — gravity may drag you down into the planet.";
-    if (this.speed > circ * 1.25) return "💫 That looks fast — you might fling off into deep space.";
+    if (this.speed < circ * 0.8)
+      return "🪨 That looks slow — gravity may drag you down into the planet.";
+    if (this.speed > circ * 1.25)
+      return "💫 That looks fast — you might fling off into deep space.";
     return "✅ That's in the orbital zone. Launch and see how round your path is!";
   }
 
@@ -190,7 +192,10 @@ class Orbits implements GameInstance {
     if (hintsUsed >= 2) stars = Math.min(stars, 2);
     const minerals = 30 + Math.round((1 - Math.min(ecc, 1)) * 40);
 
-    this.ctx.services.score.event("orbit_complete", { eccentricity: Number(ecc.toFixed(3)), stars });
+    this.ctx.services.score.event("orbit_complete", {
+      eccentricity: Number(ecc.toFixed(3)),
+      stars,
+    });
     const shape = ecc <= 0.08 ? "a beautifully round" : "a stable elliptical";
     this.ctx.services.outcome.succeed({
       message: `Orbit achieved! You traced ${shape} path around the planet.`,
@@ -202,10 +207,11 @@ class Orbits implements GameInstance {
   private crash(): void {
     this.phase = "ended";
     this.loop.stop();
-    this.spawnBurst("#f87171");
+    this.spawnBurst();
     this.render();
     this.ctx.services.outcome.fail({
-      message: "Crashed into the planet — too slow to stay up. Try a faster launch so your speed balances gravity.",
+      message:
+        "Crashed into the planet — too slow to stay up. Try a faster launch so your speed balances gravity.",
     });
   }
 
@@ -213,11 +219,12 @@ class Orbits implements GameInstance {
     this.phase = "ended";
     this.loop.stop();
     this.ctx.services.outcome.fail({
-      message: "Flew off into deep space — too fast for the planet to hold on. Ease the launch speed down a touch.",
+      message:
+        "Flew off into deep space — too fast for the planet to hold on. Ease the launch speed down a touch.",
     });
   }
 
-  private spawnBurst(_color: string): void {
+  private spawnBurst(): void {
     for (let i = 0; i < 24; i++) {
       const a = (i / 24) * Math.PI * 2;
       this.particles.spawn({
@@ -278,7 +285,14 @@ class Orbits implements GameInstance {
     c.globalAlpha = 1;
 
     // planet
-    const grad = c.createRadialGradient(PLANET.x - 12, PLANET.y - 12, 6, PLANET.x, PLANET.y, PLANET.r);
+    const grad = c.createRadialGradient(
+      PLANET.x - 12,
+      PLANET.y - 12,
+      6,
+      PLANET.x,
+      PLANET.y,
+      PLANET.r
+    );
     grad.addColorStop(0, "#60a5fa");
     grad.addColorStop(1, "#1e3a8a");
     c.fillStyle = grad;
@@ -337,7 +351,8 @@ export const orbitsGame: GameModule = {
     gradeBand: "5",
     emoji: "🛰️",
     blurb: "Launch a craft at just the right speed to balance gravity and circle the planet.",
-    mission: "Find the launch speed that balances gravity — not too slow, not too fast — to lock a stable orbit.",
+    mission:
+      "Find the launch speed that balances gravity — not too slow, not too fast — to lock a stable orbit.",
     estMinutes: 4,
   },
   create: (ctx) => new Orbits(ctx),

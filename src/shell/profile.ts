@@ -1,5 +1,5 @@
 import { read, write } from "@platform/storage";
-import type { Stream, ResourceGrant } from "@sdk/types";
+import type { ResourceGrant, Stream } from "@sdk/types";
 
 // The learner's persona. Today it's a self-chosen alias + a preset avatar emoji;
 // later the avatar becomes an AI-generated anime portrait (the source photo is

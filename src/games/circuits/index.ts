@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -60,8 +60,13 @@ class Circuits implements GameInstance {
     this.ctx.panel.append(
       el("div", { class: "control-label" }, "Tap a gap to connect / disconnect"),
       el("div", { class: "metric" }, el("span", {}, "🔌 Battery"), el("span", {}, "1.5 V")),
-      el("div", { class: "metric" }, el("span", {}, "💡 Bulb"), el("span", { id: "bulb-state" }, "Off")),
-      this.coachEl,
+      el(
+        "div",
+        { class: "metric" },
+        el("span", {}, "💡 Bulb"),
+        el("span", { id: "bulb-state" }, "Off")
+      ),
+      this.coachEl
     );
   }
 
@@ -111,7 +116,8 @@ class Circuits implements GameInstance {
     const stars = hintsUsed === 0 ? 3 : hintsUsed === 1 ? 2 : 1;
     this.ctx.services.score.event("circuit_complete", {});
     this.ctx.services.outcome.succeed({
-      message: "The bulb lit up! You built a complete circuit — an unbroken loop carrying current through the bulb.",
+      message:
+        "The bulb lit up! You built a complete circuit — an unbroken loop carrying current through the bulb.",
       stars,
       resources: { Power: 45 },
     });
@@ -120,7 +126,8 @@ class Circuits implements GameInstance {
   private fail(): void {
     this.ended = true;
     this.ctx.services.outcome.fail({
-      message: "Short circuit! The jumper let current race straight across the battery, skipping the bulb. Keep that gap open.",
+      message:
+        "Short circuit! The jumper let current race straight across the battery, skipping the bulb. Keep that gap open.",
     });
   }
 
@@ -258,7 +265,8 @@ export const circuitsGame: GameModule = {
     gradeBand: "4-5",
     emoji: "💡",
     blurb: "Connect the wires into a complete loop to light the bulb — without causing a short.",
-    mission: "Close the gaps to make one complete loop through the bulb, and keep the dangerous jumper open.",
+    mission:
+      "Close the gaps to make one complete loop through the bulb, and keep the dangerous jumper open.",
     estMinutes: 3,
   },
   create: (ctx) => new Circuits(ctx),

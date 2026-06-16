@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -62,12 +62,12 @@ class Mirrors implements GameInstance {
     const rot1 = el(
       "button",
       { class: "btn secondary", onclick: () => this.rotate(0) },
-      "🔄 Rotate Mirror 1",
+      "🔄 Rotate Mirror 1"
     );
     const rot2 = el(
       "button",
       { class: "btn secondary", onclick: () => this.rotate(1) },
-      "🔄 Rotate Mirror 2",
+      "🔄 Rotate Mirror 2"
     );
 
     this.coachEl = el("div", {
@@ -82,14 +82,14 @@ class Mirrors implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Light up the target"),
+        el("span", {}, "Light up the target")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🔦 Aim the light"),
       angleSlider,
       el("div", { class: "control-label" }, "Rotate the mirrors"),
       rot1,
       rot2,
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -235,7 +235,13 @@ class Mirrors implements GameInstance {
     if (hit) {
       c.fillStyle = "rgba(253,224,71,0.3)";
       c.beginPath();
-      c.arc(this.target.x, this.target.y, this.target.r + 10 + Math.sin(this.anim) * 4, 0, Math.PI * 2);
+      c.arc(
+        this.target.x,
+        this.target.y,
+        this.target.r + 10 + Math.sin(this.anim) * 4,
+        0,
+        Math.PI * 2
+      );
       c.fill();
     }
     c.font = "26px serif";

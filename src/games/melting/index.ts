@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -82,13 +82,13 @@ class Melting implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Make"),
-        el("span", {}, `${this.target().emoji} ${this.target().label}`),
+        el("span", {}, `${this.target().emoji} ${this.target().label}`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🌡️ Temperature (°C)"),
       slider,
       el("div", { class: "metric" }, el("span", {}, "🔬 State now"), this.stateEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Matched"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -160,7 +160,12 @@ class Melting implements GameInstance {
       c.strokeStyle = "rgba(255,255,255,0.8)";
       c.lineWidth = 2;
       for (let i = 0; i < 4; i++) {
-        c.strokeRect(beaker.x + 30 + i * 8, beaker.y + 120 + i * 6, beaker.w - 60 - i * 16, beaker.h - 130 - i * 12);
+        c.strokeRect(
+          beaker.x + 30 + i * 8,
+          beaker.y + 120 + i * 6,
+          beaker.w - 60 - i * 16,
+          beaker.h - 130 - i * 12
+        );
       }
       c.font = "40px serif";
       c.textAlign = "center";
@@ -241,7 +246,14 @@ class Melting implements GameInstance {
     }
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (h <= 0) return;
     c.beginPath();

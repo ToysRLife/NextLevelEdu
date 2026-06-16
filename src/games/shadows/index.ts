@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -78,20 +78,25 @@ class Shadows implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Match ${NEED} shadows`),
+        el("span", {}, `Match ${NEED} shadows`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "💡 Lamp distance (near → far)"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "💡 Lamp distance (near → far)"
+      ),
       slider,
       el("div", { class: "metric" }, el("span", {}, "🌑 Shadow"), this.sizeEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Matched"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
 
   private updateReadout(): void {
     const diff = this.shadowH() - this.targetH;
-    this.sizeEl.textContent = Math.abs(diff) < this.tol ? "just right 🎯" : diff > 0 ? "too big ⬆️" : "too small ⬇️";
+    this.sizeEl.textContent =
+      Math.abs(diff) < this.tol ? "just right 🎯" : diff > 0 ? "too big ⬆️" : "too small ⬇️";
   }
 
   private renderLoop(): void {

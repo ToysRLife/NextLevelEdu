@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -16,11 +16,31 @@ interface Stage {
 }
 
 const STAGES: Stage[] = [
-  { key: "seed", name: "Seed", emoji: "🌰", note: "A seed rests in the soil, waiting for water and warmth." },
-  { key: "sprout", name: "Sprout", emoji: "🌱", note: "It germinates — a tiny root and shoot push out." },
-  { key: "seedling", name: "Seedling", emoji: "🌿", note: "Leaves grow and the young plant makes its own food." },
+  {
+    key: "seed",
+    name: "Seed",
+    emoji: "🌰",
+    note: "A seed rests in the soil, waiting for water and warmth.",
+  },
+  {
+    key: "sprout",
+    name: "Sprout",
+    emoji: "🌱",
+    note: "It germinates — a tiny root and shoot push out.",
+  },
+  {
+    key: "seedling",
+    name: "Seedling",
+    emoji: "🌿",
+    note: "Leaves grow and the young plant makes its own food.",
+  },
   { key: "flower", name: "Flower", emoji: "🌻", note: "The grown plant blooms with flowers." },
-  { key: "newseed", name: "New seeds", emoji: "🫛", note: "Flowers make new seeds — and the cycle begins again!" },
+  {
+    key: "newseed",
+    name: "New seeds",
+    emoji: "🫛",
+    note: "Flowers make new seeds — and the cycle begins again!",
+  },
 ];
 
 class PlantCycle implements GameInstance {
@@ -59,16 +79,22 @@ class PlantCycle implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...this.tray.map((s) =>
-        el("button", { class: "chip", onclick: () => this.pick(s.key) }, `${s.emoji} ${s.name}`),
-      ),
+        el("button", { class: "chip", onclick: () => this.pick(s.key) }, `${s.emoji} ${s.name}`)
+      )
     );
 
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.placed} / ${STAGES.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.placed} / ${STAGES.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
     });
-    this.coachEl.textContent = next ? `What comes at stage #${this.placed + 1}?` : "Cycle complete!";
+    this.coachEl.textContent = next
+      ? `What comes at stage #${this.placed + 1}?`
+      : "Cycle complete!";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -76,12 +102,12 @@ class PlantCycle implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Order the life cycle"),
+        el("span", {}, "Order the life cycle")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick the next stage"),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🌱 Stages placed"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 

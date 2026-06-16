@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -93,10 +93,14 @@ class Minerals implements GameInstance {
     const chips = el(
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
-      ...NAMES.map((n) => el("button", { class: "chip", onclick: () => this.choose(n) }, n)),
+      ...NAMES.map((n) => el("button", { class: "chip", onclick: () => this.choose(n) }, n))
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${SPECIMENS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-orange)" } },
+      `${this.idx + 1} / ${SPECIMENS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
@@ -109,12 +113,12 @@ class Minerals implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Identify every mineral"),
+        el("span", {}, "Identify every mineral")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Which mineral is it?"),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🪨 Specimen"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -206,8 +210,10 @@ class Minerals implements GameInstance {
     c.strokeStyle = "rgba(255,255,255,0.5)";
     c.lineWidth = 2;
     c.beginPath();
-    c.moveTo(cx - 10, cy - 60); c.lineTo(cx + 10, cy + 10);
-    c.moveTo(cx - 60, cy - 40); c.lineTo(cx + 10, cy + 10);
+    c.moveTo(cx - 10, cy - 60);
+    c.lineTo(cx + 10, cy + 10);
+    c.moveTo(cx - 60, cy - 40);
+    c.lineTo(cx + 10, cy + 10);
     c.stroke();
     c.font = "36px serif";
     c.textAlign = "center";
@@ -233,7 +239,14 @@ class Minerals implements GameInstance {
     c.fillText("Identify the mineral from its clues", W / 2, 50);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

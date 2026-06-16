@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -15,7 +15,12 @@ interface Animal {
 }
 
 const ANIMALS: Animal[] = [
-  { name: "Rabbit", emoji: "🐰", diet: "herbivore", why: "Rabbits eat only plants — they're herbivores." },
+  {
+    name: "Rabbit",
+    emoji: "🐰",
+    diet: "herbivore",
+    why: "Rabbits eat only plants — they're herbivores.",
+  },
   { name: "Cow", emoji: "🐮", diet: "herbivore", why: "Cows graze on grass — herbivores." },
   { name: "Deer", emoji: "🦌", diet: "herbivore", why: "Deer eat leaves and plants — herbivores." },
   { name: "Lion", emoji: "🦁", diet: "carnivore", why: "Lions hunt and eat meat — carnivores." },
@@ -59,12 +64,40 @@ class DietGame implements GameInstance {
     const choices = el(
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
-      el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.choose("herbivore") }, "🌿 Herbivore"),
-      el("button", { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.choose("carnivore") }, "🍖 Carnivore"),
-      el("button", { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.choose("omnivore") }, "🍽️ Omnivore"),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-green)" },
+          onclick: () => this.choose("herbivore"),
+        },
+        "🌿 Herbivore"
+      ),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-red)" },
+          onclick: () => this.choose("carnivore"),
+        },
+        "🍖 Carnivore"
+      ),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-orange)" },
+          onclick: () => this.choose("omnivore"),
+        },
+        "🍽️ Omnivore"
+      )
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${ANIMALS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.idx + 1} / ${ANIMALS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
@@ -77,12 +110,12 @@ class DietGame implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Sort all 8 by diet"),
+        el("span", {}, "Sort all 8 by diet")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick its diet"),
       choices,
       el("div", { class: "metric" }, el("span", {}, "🍽️ Animal"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -173,7 +206,14 @@ class DietGame implements GameInstance {
     c.fillText("What's for dinner? 🍽️", W / 2, 60);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

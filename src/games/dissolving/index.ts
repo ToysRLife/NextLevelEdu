@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -59,8 +59,8 @@ class Dissolving implements GameInstance {
           }
         },
       },
-      "🥄 Add Sugar",
-    ) as HTMLButtonElement;
+      "🥄 Add Sugar"
+    );
 
     const tempSlider = el("input", {
       type: "range",
@@ -85,7 +85,7 @@ class Dissolving implements GameInstance {
           this.ctx.services.audio.play("click");
         },
       },
-      "🌀 Stir",
+      "🌀 Stir"
     );
 
     this.spoonsEl = el("span", {}, "0");
@@ -102,7 +102,7 @@ class Dissolving implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Dissolve ${this.targetSpoons} spoons`),
+        el("span", {}, `Dissolve ${this.targetSpoons} spoons`)
       ),
       this.addBtn,
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🌡️ Temperature"),
@@ -111,7 +111,7 @@ class Dissolving implements GameInstance {
       el("div", { class: "metric" }, el("span", {}, "🥄 Spoons added"), this.spoonsEl),
       el("div", { class: "metric" }, el("span", {}, "💧 Dissolved"), this.dissEl),
       el("div", { class: "metric" }, el("span", {}, "🫙 Can hold"), this.capEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -123,11 +123,14 @@ class Dissolving implements GameInstance {
     this.dissEl.textContent = `${pct}%`;
     this.capEl.textContent = `${cap.toFixed(1)} spoons`;
     if (this.spoons > cap + 0.05) {
-      this.coachEl.textContent = "The water is saturated — it can't hold this much! Turn up the heat so it can dissolve more.";
+      this.coachEl.textContent =
+        "The water is saturated — it can't hold this much! Turn up the heat so it can dissolve more.";
     } else if (this.spoons === 0) {
-      this.coachEl.textContent = "Add some sugar, then heat and stir to dissolve it into a clear solution.";
+      this.coachEl.textContent =
+        "Add some sugar, then heat and stir to dissolve it into a clear solution.";
     } else {
-      this.coachEl.textContent = "Keep stirring! Warmer water and stirring dissolve the sugar faster.";
+      this.coachEl.textContent =
+        "Keep stirring! Warmer water and stirring dissolve the sugar faster.";
     }
   }
 
@@ -233,7 +236,11 @@ class Dissolving implements GameInstance {
     c.fillStyle = "#831843";
     c.font = "bold 18px Nunito, sans-serif";
     c.textAlign = "center";
-    c.fillText(undissolved < 0.08 && this.spoons > 0 ? "Clear solution ✨" : "Stir to dissolve", W / 2, BEAKER.y - 16);
+    c.fillText(
+      undissolved < 0.08 && this.spoons > 0 ? "Clear solution ✨" : "Stir to dissolve",
+      W / 2,
+      BEAKER.y - 16
+    );
   }
 
   start(): void {
@@ -271,7 +278,8 @@ export const dissolvingGame: GameModule = {
     gradeBand: "4-5",
     emoji: "🥤",
     blurb: "Dissolve sugar into water using heat and stirring — without oversaturating it.",
-    mission: "Dissolve every grain of sugar into a clear solution by controlling temperature and stirring.",
+    mission:
+      "Dissolve every grain of sugar into a clear solution by controlling temperature and stirring.",
     estMinutes: 3,
   },
   create: (ctx) => new Dissolving(ctx),

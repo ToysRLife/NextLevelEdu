@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -77,12 +77,16 @@ class Ramp implements GameInstance {
     const pushBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.push() },
-      "💪 Push it up",
+      "💪 Push it up"
     );
 
     this.forceEl = el("span", {}, "");
     this.angleEl = el("span", { style: { color: "var(--accent-orange)" } }, "");
-    this.formulaEl = el("span", { style: { color: "var(--accent-purple)", fontVariantNumeric: "tabular-nums" } }, "");
+    this.formulaEl = el(
+      "span",
+      { style: { color: "var(--accent-purple)", fontVariantNumeric: "tabular-nums" } },
+      ""
+    );
     this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `0 / ${ROUNDS.length}`);
     this.coachEl = el("div", {
       class: "hint-panel",
@@ -95,17 +99,21 @@ class Ramp implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Get the crate up"),
+        el("span", {}, "Get the crate up")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "📐 Ramp steepness"),
       slider,
       el("div", { class: "metric" }, el("span", {}, "📐 Ramp angle"), this.angleEl),
       pushBtn,
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "🧮 Force = weight × sin(angle)"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "🧮 Force = weight × sin(angle)"
+      ),
       el("div", { class: "metric" }, el("span", {}, "Your crate"), this.formulaEl),
       el("div", { class: "metric" }, el("span", {}, "💪 Force needed"), this.forceEl),
       el("div", { class: "metric" }, el("span", {}, "📦 Crates moved"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -174,7 +182,8 @@ class Ramp implements GameInstance {
     } else {
       this.progress = 0;
       this.statusEl.textContent = `${this.roundIdx} / ${ROUNDS.length}`;
-      this.coachEl.textContent = "📦 Up it goes! Heavier crate next — you may need an even gentler ramp.";
+      this.coachEl.textContent =
+        "📦 Up it goes! Heavier crate next — you may need an even gentler ramp.";
       this.updateReadout();
     }
   }
@@ -273,7 +282,14 @@ class Ramp implements GameInstance {
     c.fillText("Push the crate up to the platform 📦", W / 2, 30);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (w <= 0) return;
     c.beginPath();

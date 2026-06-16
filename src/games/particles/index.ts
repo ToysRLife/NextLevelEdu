@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -105,13 +105,13 @@ class Particles implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Make a"),
-        el("span", {}, `${this.target().emoji} ${this.target().label}`),
+        el("span", {}, `${this.target().emoji} ${this.target().label}`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🔥 Heat (energy)"),
       slider,
       el("div", { class: "metric" }, el("span", {}, "🔬 State now"), this.stateEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Matched"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -162,10 +162,22 @@ class Particles implements GameInstance {
       p.x += p.vx * f;
       p.y += p.vy * f;
       // walls
-      if (p.x < BOX.x + 8) { p.x = BOX.x + 8; p.vx = Math.abs(p.vx) * 0.6; }
-      if (p.x > BOX.x + BOX.w - 8) { p.x = BOX.x + BOX.w - 8; p.vx = -Math.abs(p.vx) * 0.6; }
-      if (p.y < BOX.y + 8) { p.y = BOX.y + 8; p.vy = Math.abs(p.vy) * 0.6; }
-      if (p.y > BOX.y + BOX.h - 8) { p.y = BOX.y + BOX.h - 8; p.vy = -Math.abs(p.vy) * (s === "gas" ? 0.8 : 0.2); }
+      if (p.x < BOX.x + 8) {
+        p.x = BOX.x + 8;
+        p.vx = Math.abs(p.vx) * 0.6;
+      }
+      if (p.x > BOX.x + BOX.w - 8) {
+        p.x = BOX.x + BOX.w - 8;
+        p.vx = -Math.abs(p.vx) * 0.6;
+      }
+      if (p.y < BOX.y + 8) {
+        p.y = BOX.y + 8;
+        p.vy = Math.abs(p.vy) * 0.6;
+      }
+      if (p.y > BOX.y + BOX.h - 8) {
+        p.y = BOX.y + BOX.h - 8;
+        p.vy = -Math.abs(p.vy) * (s === "gas" ? 0.8 : 0.2);
+      }
     }
 
     // matching: hold the right state
@@ -252,7 +264,11 @@ class Particles implements GameInstance {
     c.fillStyle = "#1e3a8a";
     c.font = "bold 18px Nunito, sans-serif";
     c.textAlign = "center";
-    c.fillText(`Make a ${this.target().label} ${this.target().emoji} — heat the particles`, W / 2, 60);
+    c.fillText(
+      `Make a ${this.target().label} ${this.target().emoji} — heat the particles`,
+      W / 2,
+      60
+    );
 
     if (this.hold > 0 && !this.ended) {
       c.fillStyle = "#16a34a";
@@ -261,7 +277,14 @@ class Particles implements GameInstance {
     }
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (h <= 0) return;
     c.beginPath();

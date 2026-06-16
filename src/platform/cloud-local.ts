@@ -1,4 +1,4 @@
-import type { CloudProvider, CloudUser, CloudDoc } from "./cloud";
+import type { CloudDoc, CloudProvider, CloudUser } from "./cloud";
 
 // A zero-config "cloud" that simulates a backend in a SEPARATE localStorage
 // namespace keyed by account. It exercises the full sign-in → pull → merge →
@@ -6,10 +6,16 @@ import type { CloudProvider, CloudUser, CloudDoc } from "./cloud";
 // real cross-device sync by adding a config (see cloud-config.ts).
 
 const NS = "nlecloud:";
-const CURRENT = NS + "current";
+const CURRENT = `${NS}current`;
 
 function slug(name: string): string {
-  return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "explorer";
+  return (
+    name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "explorer"
+  );
 }
 
 export class LocalCloudProvider implements CloudProvider {
@@ -37,7 +43,7 @@ export class LocalCloudProvider implements CloudProvider {
 
   async load(uid: string): Promise<CloudDoc | null> {
     try {
-      const raw = localStorage.getItem(NS + "doc:" + uid);
+      const raw = localStorage.getItem(`${NS}doc:${uid}`);
       return raw ? (JSON.parse(raw) as CloudDoc) : null;
     } catch {
       return null;
@@ -45,6 +51,6 @@ export class LocalCloudProvider implements CloudProvider {
   }
 
   async save(uid: string, doc: CloudDoc): Promise<void> {
-    localStorage.setItem(NS + "doc:" + uid, JSON.stringify(doc));
+    localStorage.setItem(`${NS}doc:${uid}`, JSON.stringify(doc));
   }
 }

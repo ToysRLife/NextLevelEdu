@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -63,13 +63,17 @@ class Crystals implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Grow a big clear crystal"),
+        el("span", {}, "Grow a big clear crystal")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "❄️ Cooling speed (slow → fast)"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "❄️ Cooling speed (slow → fast)"
+      ),
       slider,
       el("div", { class: "metric" }, el("span", {}, "💎 Size"), this.sizeEl),
       el("div", { class: "metric" }, el("span", {}, "✨ Clarity"), this.clarityEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -160,9 +164,12 @@ class Crystals implements GameInstance {
     c.strokeStyle = "rgba(255,255,255,0.6)";
     c.lineWidth = 2;
     c.beginPath();
-    c.moveTo(0, -s * 1.3); c.lineTo(0, s * 1.3);
-    c.moveTo(-s * 0.7, -s * 0.5); c.lineTo(s * 0.7, -s * 0.5);
-    c.moveTo(-s * 0.7, s * 0.5); c.lineTo(s * 0.7, s * 0.5);
+    c.moveTo(0, -s * 1.3);
+    c.lineTo(0, s * 1.3);
+    c.moveTo(-s * 0.7, -s * 0.5);
+    c.lineTo(s * 0.7, -s * 0.5);
+    c.moveTo(-s * 0.7, s * 0.5);
+    c.lineTo(s * 0.7, s * 0.5);
     c.stroke();
     // cloudiness overlay when clarity is low
     if (this.clarity < 1) {

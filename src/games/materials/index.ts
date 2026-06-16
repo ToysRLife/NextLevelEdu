@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -29,12 +29,42 @@ interface Job {
 }
 
 const JOBS: Job[] = [
-  { prompt: "A window you can see through", emoji: "🏠", answer: "glass", why: "Glass is transparent — light passes straight through it." },
-  { prompt: "A wire to carry electricity", emoji: "⚡", answer: "metal", why: "Metal conducts electricity, so charge flows through it." },
-  { prompt: "A raincoat to stay dry", emoji: "🌧️", answer: "plastic", why: "Plastic is waterproof — water can't soak through it." },
-  { prompt: "A ball that bounces high", emoji: "⛹️", answer: "rubber", why: "Rubber is stretchy and springy, so it bounces back." },
-  { prompt: "A scarf to keep you warm", emoji: "❄️", answer: "wool", why: "Wool is soft and traps warm air to keep you cozy." },
-  { prompt: "A strong tree-house floor", emoji: "🌳", answer: "wood", why: "Wood is strong and stiff, so it holds weight without bending." },
+  {
+    prompt: "A window you can see through",
+    emoji: "🏠",
+    answer: "glass",
+    why: "Glass is transparent — light passes straight through it.",
+  },
+  {
+    prompt: "A wire to carry electricity",
+    emoji: "⚡",
+    answer: "metal",
+    why: "Metal conducts electricity, so charge flows through it.",
+  },
+  {
+    prompt: "A raincoat to stay dry",
+    emoji: "🌧️",
+    answer: "plastic",
+    why: "Plastic is waterproof — water can't soak through it.",
+  },
+  {
+    prompt: "A ball that bounces high",
+    emoji: "⛹️",
+    answer: "rubber",
+    why: "Rubber is stretchy and springy, so it bounces back.",
+  },
+  {
+    prompt: "A scarf to keep you warm",
+    emoji: "❄️",
+    answer: "wool",
+    why: "Wool is soft and traps warm air to keep you cozy.",
+  },
+  {
+    prompt: "A strong tree-house floor",
+    emoji: "🌳",
+    answer: "wood",
+    why: "Wood is strong and stiff, so it holds weight without bending.",
+  },
 ];
 
 class Materials implements GameInstance {
@@ -72,15 +102,15 @@ class Materials implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...MATERIALS.map((m) =>
-        el(
-          "button",
-          { class: "chip", onclick: () => this.choose(m.key) },
-          `${m.emoji} ${m.name}`,
-        ),
-      ),
+        el("button", { class: "chip", onclick: () => this.choose(m.key) }, `${m.emoji} ${m.name}`)
+      )
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${JOBS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-orange)" } },
+      `${this.idx + 1} / ${JOBS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
@@ -93,12 +123,16 @@ class Materials implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Match every job"),
+        el("span", {}, "Match every job")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Choose the best material"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Choose the best material"
+      ),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🧰 Job"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -198,7 +232,14 @@ class Materials implements GameInstance {
     c.fillText("Which material fits best?", W / 2, 70);
   }
 
-  private wrapText(c: CanvasRenderingContext2D, text: string, x: number, y: number, maxW: number, lh: number): void {
+  private wrapText(
+    c: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    maxW: number,
+    lh: number
+  ): void {
     const words = text.split(" ");
     let line = "";
     let yy = y;
@@ -215,7 +256,14 @@ class Materials implements GameInstance {
     c.fillText(line, x, yy);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     c.beginPath();
     c.moveTo(x + rr, y);

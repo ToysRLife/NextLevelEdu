@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -16,13 +16,62 @@ interface Source {
 }
 
 const SOURCES: Source[] = [
-  { key: "solar", label: "Solar", emoji: "☀️", output: 25, renewable: true, why: "Sunlight never runs out — solar power is renewable." },
-  { key: "wind", label: "Wind", emoji: "🌬️", output: 25, renewable: true, why: "The wind keeps blowing — wind power is renewable." },
-  { key: "hydro", label: "Hydro", emoji: "💧", output: 30, renewable: true, why: "Flowing water is refilled by rain — hydro is renewable." },
-  { key: "geo", label: "Geothermal", emoji: "🌋", output: 30, renewable: true, why: "Earth's inner heat lasts forever — geothermal is renewable." },
-  { key: "coal", label: "Coal", emoji: "🪨", output: 40, renewable: false, why: "Coal took millions of years to form and runs out — it's non-renewable and pollutes." },
-  { key: "oil", label: "Oil", emoji: "🛢️", output: 40, renewable: false, why: "Oil is a fossil fuel that runs out — non-renewable and polluting." },
-  { key: "gas", label: "Gas", emoji: "⛽", output: 40, renewable: false, why: "Natural gas is a fossil fuel — non-renewable and polluting." },
+  {
+    key: "solar",
+    label: "Solar",
+    emoji: "☀️",
+    output: 25,
+    renewable: true,
+    why: "Sunlight never runs out — solar power is renewable.",
+  },
+  {
+    key: "wind",
+    label: "Wind",
+    emoji: "🌬️",
+    output: 25,
+    renewable: true,
+    why: "The wind keeps blowing — wind power is renewable.",
+  },
+  {
+    key: "hydro",
+    label: "Hydro",
+    emoji: "💧",
+    output: 30,
+    renewable: true,
+    why: "Flowing water is refilled by rain — hydro is renewable.",
+  },
+  {
+    key: "geo",
+    label: "Geothermal",
+    emoji: "🌋",
+    output: 30,
+    renewable: true,
+    why: "Earth's inner heat lasts forever — geothermal is renewable.",
+  },
+  {
+    key: "coal",
+    label: "Coal",
+    emoji: "🪨",
+    output: 40,
+    renewable: false,
+    why: "Coal took millions of years to form and runs out — it's non-renewable and pollutes.",
+  },
+  {
+    key: "oil",
+    label: "Oil",
+    emoji: "🛢️",
+    output: 40,
+    renewable: false,
+    why: "Oil is a fossil fuel that runs out — non-renewable and polluting.",
+  },
+  {
+    key: "gas",
+    label: "Gas",
+    emoji: "⛽",
+    output: 40,
+    renewable: false,
+    why: "Natural gas is a fossil fuel — non-renewable and polluting.",
+  },
 ];
 
 interface Built {
@@ -60,8 +109,8 @@ class EnergySources implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...SOURCES.map((s) =>
-        el("button", { class: "chip", onclick: () => this.add(s.key) }, `${s.emoji} ${s.label}`),
-      ),
+        el("button", { class: "chip", onclick: () => this.add(s.key) }, `${s.emoji} ${s.label}`)
+      )
     );
 
     this.powerEl = el("span", { style: { color: "var(--accent-green)" } }, "0%");
@@ -77,12 +126,12 @@ class EnergySources implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "100% clean power"),
+        el("span", {}, "100% clean power")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Add a power source"),
       chips,
       el("div", { class: "metric" }, el("span", {}, "⚡ City power"), this.powerEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -187,7 +236,14 @@ class EnergySources implements GameInstance {
     c.fillText("Power the city with clean energy ⚡", W / 2, 100);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (w <= 0) return;
     c.beginPath();

@@ -68,10 +68,18 @@ class Shooting implements GameInstance {
     this.scoreEl = el("span", { style: { color: "var(--accent-green)" } }, "0");
     this.hitsEl = el("span", { style: { color: "var(--accent-orange)" } }, "0");
     this.missesEl = el("span", { style: { color: "var(--accent-red)" } }, "0");
-    this.problemEl = el("div", { class: "metric", style: { fontSize: "1.25rem", padding: "16px" } }, "Ready to start");
+    this.problemEl = el(
+      "div",
+      { class: "metric", style: { fontSize: "1.25rem", padding: "16px" } },
+      "Ready to start"
+    );
     this.feedbackEl = el("div", { class: "feedback" });
     this.startBtn = el("button", { class: "btn", onclick: () => this.start() }, "▶ Start");
-    this.nextBtn = el("button", { class: "btn", style: { display: "none" }, onclick: () => this.nextProblem() }, "➡️ Next Problem");
+    this.nextBtn = el(
+      "button",
+      { class: "btn", style: { display: "none" }, onclick: () => this.nextProblem() },
+      "➡️ Next Problem"
+    );
     this.resetBtn = el("button", { class: "btn", onclick: () => this.reset() }, "Reset");
 
     this.buildPanel();
@@ -126,34 +134,18 @@ class Shooting implements GameInstance {
     this.ctx.panel.append(
       el(
         "div",
-        { class: "metric", style: { display: "flex", justifyContent: "space-between", alignItems: "center" } },
+        {
+          class: "metric",
+          style: { display: "flex", justifyContent: "space-between", alignItems: "center" },
+        },
         el("span", {}, "🎯 Problem"),
         this.problemEl
       ),
-      el(
-        "div",
-        { class: "control-label" },
-        "Select operation"
-      ),
+      el("div", { class: "control-label" }, "Select operation"),
       operationRow,
-      el(
-        "div",
-        { class: "metric" },
-        el("span", {}, "💥 Score"),
-        this.scoreEl
-      ),
-      el(
-        "div",
-        { class: "metric" },
-        el("span", {}, "🎯 Hits"),
-        this.hitsEl
-      ),
-      el(
-        "div",
-        { class: "metric" },
-        el("span", {}, "❌ Misses"),
-        this.missesEl
-      ),
+      el("div", { class: "metric" }, el("span", {}, "💥 Score"), this.scoreEl),
+      el("div", { class: "metric" }, el("span", {}, "🎯 Hits"), this.hitsEl),
+      el("div", { class: "metric" }, el("span", {}, "❌ Misses"), this.missesEl),
       el(
         "div",
         { style: { display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "12px" } },

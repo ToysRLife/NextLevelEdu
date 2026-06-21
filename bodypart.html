@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#6957e8">
+    <meta name="description" content="Body Explorer Mission — a playful body-parts learning game for young children.">
+    <title>Body Explorer Mission</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="sky-decor" aria-hidden="true">
+    <span class="cloud cloud-one"></span><span class="cloud cloud-two"></span>
+    <span class="star-speck s1">★</span><span class="star-speck s2">★</span><span class="star-speck s3">★</span>
+</div>
+
+<main id="app">
+    <!-- Welcome screen -->
+    <section id="welcomeScreen" class="screen welcome-screen active" aria-labelledby="gameTitle">
+        <div class="hero-card">
+            <div class="mission-pill">🚀 Junior Science Adventure</div>
+            <h1 id="gameTitle"><span>Body Explorer</span> Mission</h1>
+            <p class="hero-copy">Help Dr. Buddy Bot repair a magical body!</p>
+            <div class="welcome-art" aria-hidden="true">
+                <div class="buddy big-buddy">
+                    <div class="antenna"><i></i></div><div class="bot-head"><b></b><b></b><span></span></div>
+                    <div class="bot-body">❤</div><div class="bot-arm left"></div><div class="bot-arm right"></div>
+                </div>
+                <div class="mission-orbit"><span>🦴</span><span>💪</span><span>🧠</span><span>🛡️</span></div>
+            </div>
+            <div class="name-row">
+                <label for="playerName">Explorer name</label>
+                <input id="playerName" maxlength="16" autocomplete="off" placeholder="Your name" aria-label="Explorer name">
+            </div>
+            <button id="startButton" class="primary-btn jumbo-btn">Start Mission! <span>➜</span></button>
+            <button id="continueButton" class="text-btn hidden">Continue saved mission</button>
+        </div>
+    </section>
+
+    <!-- Main game shell -->
+    <section id="gameScreen" class="screen game-screen" aria-label="Body Explorer game">
+        <header class="topbar">
+            <button id="homeButton" class="round-btn" aria-label="Go to mission map">⌂</button>
+            <div class="progress-wrap" aria-label="Mission progress">
+                <div class="progress-label"><span id="levelLabel">Level 1</span><span id="progressText">0%</span></div>
+                <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+            </div>
+            <div class="stat-chip stars" aria-label="Stars"><span>★</span><b id="starCount">0</b></div>
+            <div id="livesDisplay" class="stat-chip lives" aria-label="Lives">♥ ♥ ♥</div>
+            <button id="soundButton" class="round-btn" aria-label="Turn sound off">🔊</button>
+        </header>
+
+        <div class="guide-row">
+            <div class="buddy mini-buddy" aria-hidden="true">
+                <div class="antenna"><i></i></div><div class="bot-head"><b></b><b></b><span></span></div><div class="bot-body">❤</div>
+            </div>
+            <div class="speech-bubble">
+                <p id="instructionText">Ready, Explorer?</p>
+                <button id="repeatButton" class="speak-btn" aria-label="Repeat instructions">🔊 Hear it</button>
+            </div>
+        </div>
+
+        <section id="levelStage" class="level-stage" aria-live="polite"></section>
+    </section>
+
+    <!-- Level map -->
+    <section id="mapScreen" class="screen map-screen" aria-labelledby="mapTitle">
+        <div class="map-card">
+            <div class="map-top"><button id="mapBackButton" class="round-btn">←</button><div><h2 id="mapTitle">Mission Map</h2><p>Choose your next adventure!</p></div><div class="stat-chip stars"><span>★</span><b id="mapStars">0</b></div></div>
+            <div id="levelMap" class="level-map"></div>
+        </div>
+    </section>
+</main>
+
+<!-- Feedback and celebration layers -->
+<div id="toast" class="toast" role="status" aria-live="assertive"></div>
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+        <div id="modalIcon" class="modal-icon">⭐</div>
+        <h2 id="modalTitle">Super work!</h2>
+        <p id="modalMessage"></p>
+        <div id="earnedStars" class="earned-stars">★ ★ ★</div>
+        <button id="modalButton" class="primary-btn">Next Mission ➜</button>
+    </div>
+</div>
+<div id="confetti" class="confetti-layer" aria-hidden="true"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

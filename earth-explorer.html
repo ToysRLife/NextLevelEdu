@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#178f75">
+    <meta name="description" content="Earth Explorer Adventure — a playful environment game for Class 2 children.">
+    <title>Earth Explorer Adventure</title>
+    <link rel="stylesheet" href="earth-explorer.css">
+</head>
+<body>
+<div class="world-bg" aria-hidden="true">
+    <div class="sun-orb">☀️</div><i class="bg-cloud c1"></i><i class="bg-cloud c2"></i>
+    <span class="leaf l1">🍃</span><span class="leaf l2">🍃</span><span class="leaf l3">🌼</span>
+</div>
+
+<main id="earthApp">
+    <!-- Opening scene -->
+    <section id="earthWelcome" class="page welcome-page active" aria-labelledby="earthTitle">
+        <div class="welcome-card">
+            <div class="eyebrow">🌱 A Class 2 Learning Adventure</div>
+            <h1 id="earthTitle">Earth Explorer<br><span>Adventure!</span></h1>
+            <p class="welcome-copy">Travel through six magical lands with Eco Bunny.</p>
+            <div class="welcome-scene" aria-hidden="true">
+                <div class="planet"><span>🌍</span><i class="orbit">⭐</i></div>
+                <div class="eco-bunny big-bunny"><div class="ears"><i></i><i></i></div><div class="bunny-face">• ᴥ •</div><div class="bunny-body">🌿</div></div>
+            </div>
+            <label class="name-box">Explorer name
+                <input id="earthPlayerName" maxlength="18" autocomplete="off" placeholder="Type your name">
+            </label>
+            <button id="earthStart" class="big-action">Begin Adventure! <span>➜</span></button>
+            <button id="earthContinue" class="link-button hidden">Continue my adventure</button>
+        </div>
+    </section>
+
+    <!-- Adventure shell -->
+    <section id="earthGame" class="page game-page" aria-label="Earth Explorer game">
+        <header class="game-header">
+            <button id="earthMapButton" class="icon-button" aria-label="Open adventure map">🗺️</button>
+            <div class="journey-progress">
+                <div><b id="earthLevelName">Planet Earth</b><span id="earthProgressText">0%</span></div>
+                <div class="progress-rail"><i id="earthProgressFill"></i></div>
+            </div>
+            <div class="reward-pill" aria-label="Stars">⭐ <b id="earthStars">0</b></div>
+            <button id="earthSound" class="icon-button" aria-label="Turn sound off">🔊</button>
+        </header>
+
+        <div class="bunny-message">
+            <div class="eco-bunny mini-bunny" aria-hidden="true"><div class="ears"><i></i><i></i></div><div class="bunny-face">• ᴥ •</div><div class="bunny-body">🌿</div></div>
+            <div class="message-cloud"><p id="earthInstruction">Ready to explore?</p><button id="earthRepeat">🔊 Hear Eco Bunny</button></div>
+        </div>
+
+        <section id="earthStage" class="adventure-stage" aria-live="polite"></section>
+    </section>
+
+    <!-- Adventure map -->
+    <section id="earthMap" class="page map-page" aria-labelledby="earthMapTitle">
+        <div class="map-panel">
+            <div class="map-heading">
+                <button id="earthMapBack" class="icon-button" aria-label="Back">←</button>
+                <div><h2 id="earthMapTitle">Explorer Map</h2><p>Pick an unlocked land.</p></div>
+                <div class="reward-pill">⭐ <b id="mapStarCount">0</b></div>
+            </div>
+            <div id="earthLevelMap" class="land-grid"></div>
+        </div>
+    </section>
+</main>
+
+<!-- Feedback overlays -->
+<div id="earthToast" class="earth-toast" role="status" aria-live="assertive"></div>
+<div id="earthModal" class="earth-modal" role="dialog" aria-modal="true" aria-labelledby="earthModalTitle">
+    <div class="modal-panel">
+        <div id="earthModalIcon" class="modal-picture">🏅</div>
+        <h2 id="earthModalTitle">Badge earned!</h2>
+        <p id="earthModalMessage"></p>
+        <div id="earthBadge" class="badge-display">🌍 Earth Friend</div>
+        <button id="earthModalButton" class="big-action">Next Land ➜</button>
+    </div>
+</div>
+<div id="earthConfetti" class="confetti-zone" aria-hidden="true"></div>
+
+<!-- Printable certificate, shown after passing the quiz -->
+<section id="certificate" class="certificate" aria-label="Earth Protector Certificate">
+    <div class="certificate-inner">
+        <div class="certificate-earth">🌍</div>
+        <p class="certificate-small">CERTIFICATE OF AWESOME EXPLORING</p>
+        <h2>Earth Protector</h2>
+        <p>This certificate proudly belongs to</p>
+        <strong id="certificateName">Young Explorer</strong>
+        <p>for learning how to care for our wonderful Earth.</p>
+        <div class="certificate-score">Quiz score: <b id="certificateScore">10 / 10</b></div>
+        <div class="certificate-sign">🐰 Eco Bunny &nbsp; • &nbsp; Earth Explorer Adventure</div>
+        <button id="printCertificate" class="big-action">🖨️ Print Certificate</button>
+        <button id="certificateMap" class="link-button">Return to adventure map</button>
+    </div>
+</section>
+
+<script src="earth-explorer.js"></script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#6c55e8">
+    <title>Testing Testing</title>
+    <style>
+        :root {
+          --purple: #6c55e8;
+          --purple-dark: #4836b4;
+          --pink: #ff5c91;
+          --yellow: #ffd84d;
+          --blue: #42baf4;
+          --green: #38c994;
+          --ink: #28335b;
+          --paper: #fffdf7;
+          --shadow: 0 8px 0 rgba(65, 49, 155, .14), 0 18px 40px rgba(54, 42, 123, .16);
+        }
+
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; margin: 0; }
+        body {
+          color: var(--ink);
+          background: linear-gradient(145deg, #d9f7ff 0%, #eee8ff 53%, #fff1bb 100%);
+          font-family: "Arial Rounded MT Bold", "Trebuchet MS", Arial, sans-serif;
+          overflow-x: hidden;
+        }
+        button { font: inherit; -webkit-tap-highlight-color: transparent; }
+        button:focus-visible, a:focus-visible { outline: 5px solid var(--yellow); outline-offset: 3px; }
+
+        .decorations { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+        .dot { position: absolute; width: 24px; height: 24px; border-radius: 50%; opacity: .55; animation: float 5s ease-in-out infinite; }
+        .dot:nth-child(1) { left: 5%; top: 18%; background: var(--pink); }
+        .dot:nth-child(2) { right: 7%; top: 34%; width: 40px; height: 40px; background: var(--blue); animation-delay: -2s; }
+        .dot:nth-child(3) { left: 12%; bottom: 8%; width: 34px; height: 34px; background: var(--yellow); animation-delay: -3s; }
+        .dot:nth-child(4) { right: 14%; bottom: 12%; background: var(--green); animation-delay: -1s; }
+        .star { position: absolute; font-size: 31px; color: white; animation: twinkle 1.8s ease-in-out infinite alternate; }
+        .s1 { left: 8%; top: 47%; } .s2 { right: 10%; top: 8%; animation-delay: -.7s; }
+        .balloon { position: absolute; font-size: 55px; animation: balloon 7s ease-in-out infinite; }
+        .b1 { left: 2%; top: 5%; } .b2 { right: 2%; bottom: 4%; animation-delay: -3s; }
+        @keyframes float { 50% { transform: translateY(-22px) rotate(15deg); } }
+        @keyframes twinkle { to { transform: scale(1.35) rotate(15deg); opacity: .4; } }
+        @keyframes balloon { 50% { transform: translateY(-35px) rotate(5deg); } }
+
+        .app { position: relative; z-index: 2; width: min(980px, 100%); min-height: 100vh; margin: auto; padding: 16px; display: flex; flex-direction: column; }
+        header {
+          display: flex; align-items: center; gap: 14px; padding: 13px 18px;
+          border: 4px solid white; border-radius: 25px; background: rgba(255, 255, 255, .9); box-shadow: var(--shadow);
+        }
+        .logo { flex: 1; }
+        h1 { margin: 0; color: var(--purple); font-size: clamp(1.8rem, 6vw, 3rem); line-height: .9; letter-spacing: -2px; text-shadow: 0 3px white, 0 5px #d9d0ff; }
+        .tagline { margin: 6px 0 0; color: #657094; font-weight: 800; }
+        .score-box { min-width: 100px; padding: 9px 14px; border-radius: 17px; background: #fff0a9; text-align: center; font-weight: 900; }
+        .score-box span { display: block; color: #866200; font-size: .75rem; }
+        #score { font-size: 1.45rem; color: #d38e00; }
+
+        .progress-wrap { margin: 16px 5px 8px; }
+        .progress-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: .85rem; font-weight: 900; }
+        .progress-track { height: 15px; overflow: hidden; border: 3px solid white; border-radius: 99px; background: #d9d4ef; }
+        #progressFill { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), #8cdd4c); transition: width .4s; }
+
+        main { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .game-card {
+          width: 100%; margin: 8px 0 16px; padding: clamp(16px, 4vw, 30px);
+          border: 5px solid white; border-radius: 34px; background: rgba(255, 253, 247, .96); box-shadow: var(--shadow);
+        }
+        .card-top { display: flex; align-items: center; gap: 12px; }
+        .question-number { flex: 1; display: inline-block; color: var(--purple-dark); font-weight: 900; }
+        .timer {
+          position: relative; min-width: 92px; padding: 10px 14px; overflow: hidden;
+          border: 3px solid #ffcf52; border-radius: 16px; background: #fff5c8; color: #8c6200; text-align: center; font-weight: 900;
+        }
+        .timer.danger { color: #a92149; border-color: #ff8cac; background: #ffe2ea; animation: pulse .6s infinite; }
+        @keyframes pulse { 50% { transform: scale(1.07); } }
+        .question-emoji { margin: 5px auto -4px; text-align: center; font-size: clamp(3.5rem, 10vw, 5.8rem); animation: wiggle 2.2s ease-in-out infinite; }
+        @keyframes wiggle { 50% { transform: rotate(7deg) scale(1.06); } }
+        #questionText { margin: 8px auto 20px; max-width: 780px; text-align: center; font-size: clamp(1.35rem, 4vw, 2rem); line-height: 1.25; }
+
+        .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+        .answer {
+          min-height: 68px; padding: 12px 15px; border: 4px solid #d9d3fa; border-radius: 20px;
+          background: white; color: var(--ink); text-align: left; font-size: clamp(1rem, 2.4vw, 1.18rem); font-weight: 900;
+          box-shadow: 0 5px 0 #d8d1f2; cursor: pointer; transition: transform .15s, border-color .15s, background .15s;
+        }
+        .answer:hover:not(:disabled) { transform: translateY(-4px) rotate(-1deg); border-color: var(--purple); background: #f3f0ff; }
+        .answer:nth-child(2n):hover:not(:disabled) { transform: translateY(-4px) rotate(1deg); }
+        .answer.correct { border-color: #2dbd88; background: #dcfff2; box-shadow: 0 5px 0 #92e3c4; animation: happy .45s; }
+        .answer.wrong { border-color: #f05c86; background: #ffe0e9; box-shadow: 0 5px 0 #ffabc1; animation: shake .4s; }
+        .answer.removed { visibility: hidden; pointer-events: none; }
+        .answer:disabled { cursor: default; }
+        .letter { display: inline-grid; place-items: center; width: 34px; height: 34px; margin-right: 9px; border-radius: 11px; background: #eeeaff; color: var(--purple-dark); }
+        @keyframes happy { 50% { transform: scale(1.05) rotate(1deg); } }
+        @keyframes shake { 25%, 75% { transform: translateX(-7px); } 50% { transform: translateX(7px); } }
+
+        .feedback { min-height: 42px; margin: 15px 0 5px; text-align: center; font-size: 1.15rem; font-weight: 900; }
+        .feedback.good { color: #16805f; animation: pop .35s; }
+        .feedback.oops { color: #b32e57; animation: pop .35s; }
+        @keyframes pop { from { transform: scale(.6); opacity: 0; } }
+
+        .helper-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+        .helper-button {
+          border: 3px solid #a9dff5; border-radius: 14px; padding: 9px 14px; background: #e8f8ff;
+          color: #1d7397; font-weight: 900; text-decoration: none; cursor: pointer;
+        }
+        .helper-button:hover { transform: translateY(-2px); background: white; }
+        #hintBox { display: none; max-width: 620px; margin: 12px auto 0; padding: 11px 14px; border: 3px dashed #e4b835; border-radius: 16px; background: #fff7cc; text-align: center; font-weight: 800; }
+        #hintBox.show { display: block; animation: pop .3s; }
+
+        .lifelines { margin-top: 17px; padding: 12px; border-radius: 21px; background: #eeeaff; text-align: center; }
+        .lifelines h2 { margin: 0 0 9px; color: var(--purple-dark); font-size: 1rem; }
+        .lifeline-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 9px; }
+        .lifeline {
+          border: 3px solid #bdb3f3; border-radius: 14px; padding: 9px 12px; background: white; color: var(--purple-dark); font-weight: 900; cursor: pointer;
+        }
+        .lifeline:hover:not(:disabled) { animation: bounce .5s; background: #fff9d7; border-color: var(--yellow); }
+        .lifeline:disabled { opacity: .4; filter: grayscale(1); text-decoration: line-through; cursor: not-allowed; }
+        @keyframes bounce { 40% { transform: translateY(-8px); } 70% { transform: translateY(2px); } }
+
+        .result-screen { display: none; text-align: center; }
+        .result-screen.show { display: block; animation: pop .5s; }
+        .game-content.hidden { display: none; }
+        .trophy { font-size: 95px; animation: trophy 1.3s ease-in-out infinite alternate; }
+        @keyframes trophy { to { transform: translateY(-10px) rotate(5deg); } }
+        .result-screen h2 { margin: 5px; color: var(--purple); font-size: clamp(2rem, 7vw, 3.5rem); }
+        .result-screen p { font-size: 1.2rem; font-weight: 800; }
+        .restart {
+          border: 0; border-radius: 18px; padding: 14px 25px; background: linear-gradient(#7a65f2, #5d46dc);
+          color: white; box-shadow: 0 6px 0 var(--purple-dark); font-size: 1.1rem; font-weight: 900; cursor: pointer;
+        }
+        .restart:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--purple-dark); }
+
+        footer { padding: 8px; text-align: center; color: #64718c; font-size: .9rem; font-weight: 800; }
+        .confetti { position: fixed; z-index: 20; inset: 0; overflow: hidden; pointer-events: none; }
+        .confetti i { position: absolute; top: -25px; width: 12px; height: 18px; border-radius: 3px; animation: fall 2.6s linear forwards; }
+        @keyframes fall { to { transform: translate(var(--drift), 110vh) rotate(720deg); } }
+
+        @media (max-width: 620px) {
+          .app { padding: 9px; }
+          header { padding: 10px 12px; }
+          .tagline { display: none; }
+          .score-box { min-width: 78px; padding: 7px; }
+          .game-card { border-radius: 26px; }
+          .answers { grid-template-columns: 1fr; gap: 10px; }
+          .answer { min-height: 58px; }
+          .question-emoji { font-size: 3.8rem; }
+          .lifeline { flex: 1 1 120px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="decorations" aria-hidden="true">
+    <i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i>
+    <span class="star s1">★</span><span class="star s2">★</span>
+    <span class="balloon b1">🎈</span><span class="balloon b2">🎈</span>
+</div>
+
+<div class="app">
+    <header>
+        <div class="logo">
+            <h1>Testing Testing 🎤</h1>
+            <p class="tagline">Think, giggle, and pick an answer!</p>
+        </div>
+        <div class="score-box"><span>SCORE</span><b id="score">0</b> ⭐</div>
+    </header>
+
+    <div class="progress-wrap" aria-label="Quiz progress">
+        <div class="progress-label"><span id="progressText">Question 1 of 8</span><span id="progressPercent">0%</span></div>
+        <div class="progress-track"><i id="progressFill"></i></div>
+    </div>
+
+    <main>
+        <section class="game-card" aria-live="polite">
+            <div id="gameContent" class="game-content">
+                <div class="card-top">
+                    <span id="questionNumber" class="question-number">Question 1</span>
+                    <div id="timer" class="timer" aria-label="Time remaining">⏰ <b id="timeLeft">15</b>s</div>
+                </div>
+
+                <div id="questionEmoji" class="question-emoji" aria-hidden="true">🐄</div>
+                <h2 id="questionText">Which animal says “Moo”?</h2>
+                <div id="answers" class="answers"></div>
+                <div id="feedback" class="feedback" role="status"></div>
+
+                <div class="helper-row">
+                    <button id="hintButton" class="helper-button">💡 Hint</button>
+                    <a id="videoButton" class="helper-button" href="#" target="_blank" rel="noopener noreferrer">▶️ Watch Video</a>
+                </div>
+                <div id="hintBox"></div>
+
+                <aside class="lifelines" aria-label="Available lifelines">
+                    <h2>🛟 Your 3 Lifelines</h2>
+                    <div class="lifeline-list">
+                        <button id="fiftyLifeline" class="lifeline">✂️ 50/50</button>
+                        <button id="skipLifeline" class="lifeline">⏭️ Skip</button>
+                        <button id="hintLifeline" class="lifeline">🐵 Ask Hint</button>
+                    </div>
+                </aside>
+            </div>
+
+            <div id="resultScreen" class="result-screen">
+                <div class="trophy">🏆</div>
+                <h2 id="resultTitle">Super Star!</h2>
+                <p id="resultMessage"></p>
+                <button id="restartButton" class="restart">🔄 Play Again</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>🌈 Made for curious kids • Keep learning, keep smiling! 🚀</footer>
+</div>
+<div id="confetti" class="confetti" aria-hidden="true"></div>
+
+<script>
+    "use strict";
+
+    const questions = [
+      { emoji: "🐄", text: "Which animal says ‘Moo’ ?", options: ["Lion", "Cow", "Duck", "Cat"], answer: 1, hint: "It gives us milk.", video: "animals and their sounds for kids" },
+      { emoji: "🌈", text: "How many colors are in a rainbow?", options: ["Five", "Six", "Seven", "Ten"], answer: 2, hint: "Count: red, orange, yellow, green, blue, indigo, violet.", video: "seven colours of rainbow for kids" },
+      { emoji: "🔢", text: "What is 2 + 3?", options: ["4", "5", "6", "7"], answer: 1, hint: "Hold up two fingers, then three more. Count them all!", video: "addition up to 10 for kids" },
+      { emoji: "☀️", text: "What shines brightly in the daytime sky?", options: ["Moon", "Lamp", "Sun", "Starfish"], answer: 2, hint: "It keeps Earth warm and gives us light.", video: "sun for kids educational" },
+      { emoji: "🔺", text: "Which shape has three sides?", options: ["Circle", "Square", "Rectangle", "Triangle"], answer: 3, hint: "Its name begins with ‘tri’, which means three.", video: "2D shapes triangle for kids" },
+      { emoji: "🌱", text: "What does a plant need to grow?", options: ["Water", "Toy blocks", "Shoes", "Television"], answer: 0, hint: "Plants drink this through their roots.", video: "what plants need to grow for kids" },
+      { emoji: "🐧", text: "Which animal is a bird?", options: ["Penguin", "Frog", "Whale", "Tiger"], answer: 0, hint: "It has feathers and waddles on ice.", video: "penguins for kids educational" },
+      { emoji: "👃", text: "Which body part helps us smell?", options: ["Knee", "Elbow", "Nose", "Foot"], answer: 2, hint: "It sits in the middle of your face.", video: "five senses smell for kids" }
+    ];
+
+    const $ = selector => document.querySelector(selector);
+    const state = { index: 0, score: 0, time: 15, timer: null, locked: false, used: { fifty: false, skip: false, hint: false } };
+    const letters = ["A", "B", "C", "D"];
+
+    function renderQuestion() {
+      clearInterval(state.timer);
+      state.locked = false;
+      state.time = 15;
+      const question = questions[state.index];
+      $("#questionNumber").textContent = `Question ${state.index + 1}`;
+      $("#progressText").textContent = `Question ${state.index + 1} of ${questions.length}`;
+      $("#progressPercent").textContent = `${Math.round((state.index / questions.length) * 100)}%`;
+      $("#progressFill").style.width = `${(state.index / questions.length) * 100}%`;
+      $("#questionEmoji").textContent = question.emoji;
+      $("#questionText").textContent = question.text;
+      $("#feedback").textContent = "";
+      $("#feedback").className = "feedback";
+      $("#hintBox").textContent = question.hint;
+      $("#hintBox").classList.remove("show");
+      $("#videoButton").href = `https://www.youtube.com/results?search_query=${encodeURIComponent(question.video)}`;
+      $("#answers").innerHTML = question.options.map((option, index) =>
+        `<button class="answer" data-index="${index}"><span class="letter">${letters[index]}</span>${option}</button>`
+      ).join("");
+      document.querySelectorAll(".answer").forEach(button => button.addEventListener("click", chooseAnswer));
+      updateTimer();
+      state.timer = setInterval(() => {
+        state.time--;
+        updateTimer();
+        if (state.time <= 0) timeOut();
+      }, 1000);
+    }
+
+    function updateTimer() {
+      $("#timeLeft").textContent = state.time;
+      $("#timer").classList.toggle("danger", state.time <= 5);
+    }
+
+    function chooseAnswer(event) {
+      if (state.locked) return;
+      state.locked = true;
+      clearInterval(state.timer);
+      const selected = Number(event.currentTarget.dataset.index);
+      const correct = questions[state.index].answer;
+      disableAnswers();
+      document.querySelectorAll(".answer")[correct].classList.add("correct");
+
+      if (selected === correct) {
+        state.score += 10;
+        event.currentTarget.classList.add("correct");
+        $("#feedback").textContent = "🎉 Correct! You are a clever cookie!";
+        $("#feedback").className = "feedback good";
+        celebrate(28);
+      } else {
+        event.currentTarget.classList.add("wrong");
+        $("#feedback").textContent = `😄 Oops! The answer is ${questions[state.index].options[correct]}.`;
+        $("#feedback").className = "feedback oops";
+      }
+      $("#score").textContent = state.score;
+      setTimeout(nextQuestion, 1500);
+    }
+
+    function timeOut() {
+      if (state.locked) return;
+      state.locked = true;
+      clearInterval(state.timer);
+      disableAnswers();
+      const correct = questions[state.index].answer;
+      document.querySelectorAll(".answer")[correct].classList.add("correct");
+      $("#feedback").textContent = `⏰ Time's up! It was ${questions[state.index].options[correct]}.`;
+      $("#feedback").className = "feedback oops";
+      setTimeout(nextQuestion, 1600);
+    }
+
+    function disableAnswers() {
+      document.querySelectorAll(".answer").forEach(button => button.disabled = true);
+    }
+
+    function nextQuestion() {
+      state.index++;
+      if (state.index < questions.length) renderQuestion();
+      else showResults();
+    }
+
+    function showHint() {
+      if (state.locked) return;
+      $("#hintBox").classList.add("show");
+    }
+
+    function useHintLifeline() {
+      if (state.used.hint || state.locked) return;
+      state.used.hint = true;
+      $("#hintLifeline").disabled = true;
+      $("#hintButton").disabled = true;
+      showHint();
+    }
+
+    function useFifty() {
+      if (state.used.fifty || state.locked) return;
+      state.used.fifty = true;
+      $("#fiftyLifeline").disabled = true;
+      const correct = questions[state.index].answer;
+      const wrong = [0, 1, 2, 3].filter(index => index !== correct).sort(() => Math.random() - .5);
+      wrong.slice(0, 2).forEach(index => document.querySelectorAll(".answer")[index].classList.add("removed"));
+      $("#feedback").textContent = "✂️ Two silly answers vanished!";
+      $("#feedback").className = "feedback good";
+    }
+
+    function useSkip() {
+      if (state.used.skip || state.locked) return;
+      state.used.skip = true;
+      state.locked = true;
+      $("#skipLifeline").disabled = true;
+      clearInterval(state.timer);
+      $("#feedback").textContent = "⏭️ Whoosh! Question skipped!";
+      $("#feedback").className = "feedback good";
+      setTimeout(nextQuestion, 700);
+    }
+
+    function showResults() {
+      clearInterval(state.timer);
+      $("#gameContent").classList.add("hidden");
+      $("#resultScreen").classList.add("show");
+      $("#progressFill").style.width = "100%";
+      $("#progressPercent").textContent = "100%";
+      $("#progressText").textContent = "Quiz complete!";
+      const correct = state.score / 10;
+      $("#resultTitle").textContent = correct >= 6 ? "Quiz-tastic!" : correct >= 4 ? "Good Exploring!" : "Nice Try!";
+      $("#resultMessage").textContent = `You got ${correct} out of ${questions.length} correct and earned ${state.score} stars!`;
+      if (correct >= 6) celebrate(90);
+    }
+
+    function celebrate(amount) {
+      const colors = ["#ff5c91", "#ffd84d", "#42baf4", "#38c994", "#6c55e8"];
+      for (let i = 0; i < amount; i++) {
+        const piece = document.createElement("i");
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.animationDelay = `${Math.random() * .5}s`;
+        piece.style.setProperty("--drift", `${(Math.random() - .5) * 240}px`);
+        $("#confetti").appendChild(piece);
+        setTimeout(() => piece.remove(), 3200);
+      }
+    }
+
+    function restartGame() {
+      state.index = 0;
+      state.score = 0;
+      state.used = { fifty: false, skip: false, hint: false };
+      $("#score").textContent = "0";
+      $("#gameContent").classList.remove("hidden");
+      $("#resultScreen").classList.remove("show");
+      document.querySelectorAll(".lifeline").forEach(button => button.disabled = false);
+      $("#hintButton").disabled = false;
+      renderQuestion();
+    }
+
+    $("#hintButton").addEventListener("click", useHintLifeline);
+    $("#hintLifeline").addEventListener("click", useHintLifeline);
+    $("#fiftyLifeline").addEventListener("click", useFifty);
+    $("#skipLifeline").addEventListener("click", useSkip);
+    $("#restartButton").addEventListener("click", restartGame);
+    renderQuestion();
+</script>
+</body>
+</html>

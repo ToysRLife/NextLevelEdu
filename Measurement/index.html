@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Measurement Hero Adventure</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="game-container">
+    <header>
+        <h1>📏🥤 Measurement Hero Adventure</h1>
+        <p>Help Bobo learn Distance and Liquid Measurement!</p>
+    </header>
+
+    <section class="score-board">
+        <div>⭐ Score: <span id="score">0</span></div>
+        <div>🎯 Level: <span id="level">Easy</span></div>
+        <div>🧠 Topic: <span id="topic">Distance</span></div>
+    </section>
+
+    <section class="story-box">
+        <div class="robot">🤖</div>
+        <div>
+            <h2 id="placeName">Bobo's Home</h2>
+            <p id="questionText">Loading question...</p>
+        </div>
+    </section>
+
+    <section class="scene-box">
+        <div id="mainEmoji">✏️</div>
+        <h3 id="itemName">Pencil</h3>
+    </section>
+
+    <section class="options-box" id="optionsBox"></section>
+
+    <section class="feedback-box">
+        <p id="feedback">Choose the correct answer.</p>
+    </section>
+
+    <section class="buttons">
+        <button id="nextBtn">Next Question</button>
+        <button id="switchBtn">Switch Topic</button>
+    </section>
+
+    <section class="lesson-box">
+        <h3>💡 Bobo's Tip</h3>
+        <p id="lessonText">Small things are measured in centimetres. Long distances are measured in kilometres.</p>
+    </section>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#604fe8">
+  <meta name="description" content="The Time & Money Bazaar — a Class 3 simulation game about earning money over time.">
+  <title>The Time & Money Bazaar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="decor" aria-hidden="true">
+    <span class="sun">☀️</span>
+    <span class="cloud c1"></span>
+    <span class="cloud c2"></span>
+    <span class="coin-float cf1">🪙</span>
+    <span class="coin-float cf2">💵</span>
+    <span class="star s1">✦</span>
+    <span class="star s2">✦</span>
+    <span class="balloon">🎈</span>
+  </div>
+
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">⏰💰 Class 3 Sandbox Simulation</p>
+        <h1>The Time & Money <span>Bazaar</span></h1>
+        <p class="subtitle">Earn money, spend time wisely, and buy the $10.00 Toy Rocket before the day ends!</p>
+      </div>
+      <div class="guide" aria-label="Game guide">
+        <span class="guide-face">🧑‍🏫</span>
+        <p id="guideText">Choose a level. Then work or visit the shop.</p>
+      </div>
+    </header>
+
+    <section class="level-panel" aria-label="Difficulty selector">
+      <span class="level-title">Difficulty:</span>
+      <label><input type="radio" name="level" value="easy" checked> Easy</label>
+      <label><input type="radio" name="level" value="medium"> Medium</label>
+      <label><input type="radio" name="level" value="hard"> Hard</label>
+      <button id="resetButton" class="secondary-btn">Reset Day 🔄</button>
+    </section>
+
+    <section class="dashboard" aria-label="Sandbox dashboard">
+      <article class="status-card clock-card">
+        <div class="card-heading">
+          <h2>Clock</h2>
+          <strong id="timeText">8h 00m left</strong>
+        </div>
+        <div class="clock-wrap">
+          <div class="clock-face" aria-hidden="true">
+            <span>8h</span>
+            <i id="clockHand"></i>
+            <b></b>
+          </div>
+          <div class="time-bar" aria-label="Time countdown">
+            <i id="timeFill"></i>
+          </div>
+        </div>
+      </article>
+
+      <article class="status-card wallet-card">
+        <div class="card-heading">
+          <h2>Wallet</h2>
+          <strong id="balanceText">$0.00</strong>
+        </div>
+        <div id="walletBreakdown" class="wallet-breakdown"></div>
+      </article>
+
+      <article class="status-card goal-card">
+        <div class="card-heading">
+          <h2>Grand Prize</h2>
+          <strong>$10.00</strong>
+        </div>
+        <div class="rocket">🚀</div>
+        <p id="goalText">Need $10.00 more.</p>
+        <button id="buyPrizeButton" class="main-btn" disabled>Buy Toy Rocket</button>
+      </article>
+    </section>
+
+    <section class="sandbox">
+      <div class="action-strip" aria-label="Actions">
+        <button id="workButton" class="main-btn">Go to Work 🧰</button>
+        <button id="shopButton" class="main-btn shop">Visit Shop 🏪</button>
+      </div>
+
+      <article id="challengeCard" class="challenge-card" aria-live="polite">
+        <div class="empty-state">
+          <span>🛍️</span>
+          <h2>Welcome to the Bazaar!</h2>
+          <p>Pick an action. Work earns money but uses time. Shop challenges help you practice spending and change.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <section id="resultOverlay" class="result-overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="result-card">
+      <div id="resultIcon" class="result-icon">🏆</div>
+      <h2 id="resultTitle">Victory!</h2>
+      <p id="resultMessage"></p>
+      <button id="playAgainButton" class="main-btn">Play Again</button>
+    </div>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="assertive"></div>
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

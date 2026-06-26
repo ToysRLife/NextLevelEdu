@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#6b56e8">
+  <meta name="description" content="Time & Treasure Island — an interactive Class 3 game about time and Indian money.">
+  <title>Time & Treasure Island</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background" aria-hidden="true">
+    <span class="sun">☀️</span>
+    <span class="cloud cloud-one"></span>
+    <span class="cloud cloud-two"></span>
+    <span class="bird bird-one">🕊️</span>
+    <span class="bird bird-two">🦜</span>
+    <span class="wave wave-one"></span>
+    <span class="wave wave-two"></span>
+    <span class="star-dot d1">✦</span>
+    <span class="star-dot d2">✦</span>
+    <span class="star-dot d3">✦</span>
+  </div>
+
+  <main id="app">
+    <section id="startScreen" class="screen start-screen active" aria-labelledby="gameTitle">
+      <div class="start-card">
+        <p class="pill">🕰️ Class 3 Adventure Game</p>
+        <h1 id="gameTitle">Time & Treasure <span>Island</span></h1>
+        <p class="hero-text">Recover the Golden Clock and Rainbow Coin Chest!</p>
+
+        <div class="hero-scene" aria-hidden="true">
+          <div class="captain-tick big-character">
+            <div class="clock-face"><i class="hand hour"></i><i class="hand minute"></i><b></b></div>
+            <div class="robot-body">⏱️</div>
+          </div>
+          <div class="treasure-island">
+            <span class="palm">🌴</span>
+            <span class="gold-clock">🕰️</span>
+            <span class="coin-chest">💰</span>
+          </div>
+          <div class="penny-parrot big-character">🦜</div>
+        </div>
+
+        <label class="name-box">
+          Explorer name
+          <input id="playerName" maxlength="18" autocomplete="off" placeholder="Type your name">
+        </label>
+        <div class="button-row">
+          <button id="startButton" class="main-button">Start Quest 🚀</button>
+          <button id="startVoiceButton" class="small-button">🔊 Voice On</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen" aria-label="Time and money game">
+      <header class="topbar">
+        <button id="mapButton" class="icon-button" aria-label="Open treasure map">🗺️</button>
+        <div class="brand">
+          <strong>Time & Treasure Island</strong>
+          <span id="levelLabel">Golden Clock Coast</span>
+        </div>
+        <div class="progress-area">
+          <div><span id="progressText">0 / 15 Levels</span><span id="accuracyText">100%</span></div>
+          <div class="progress-track"><i id="progressFill"></i></div>
+        </div>
+        <div class="reward">⭐ <b id="starCount">0</b></div>
+        <div class="reward">💎 <b id="gemCount">0</b></div>
+        <div class="reward">🪙 <b id="coinCount">0</b></div>
+        <button id="voiceButton" class="icon-button" aria-label="Toggle voice">🔊</button>
+        <button id="dashboardButton" class="icon-button" aria-label="Open dashboard">📊</button>
+      </header>
+
+      <section class="guide-bar">
+        <div class="captain-tick mini-character" aria-hidden="true">
+          <div class="clock-face"><i class="hand hour"></i><i class="hand minute"></i><b></b></div>
+          <div class="robot-body">⏱️</div>
+        </div>
+        <div id="pennyMini" class="penny-mini" aria-hidden="true">🦜</div>
+        <div id="rubyMini" class="ruby-mini hidden" aria-hidden="true">🐰</div>
+        <div id="tockMini" class="tock-mini hidden" aria-hidden="true">🐢</div>
+        <div class="speech">
+          <p id="guideText">Ahoy! I am Captain Tick. Let us find the Golden Clock!</p>
+          <button id="repeatButton" class="listen-button">🔊 Replay</button>
+        </div>
+      </section>
+
+      <section id="stage" class="stage" aria-live="polite"></section>
+    </section>
+
+    <section id="mapScreen" class="screen map-screen" aria-labelledby="mapTitle">
+      <div class="map-card">
+        <div class="map-head">
+          <button id="closeMapButton" class="icon-button">←</button>
+          <div>
+            <h2 id="mapTitle">Treasure Map</h2>
+            <p>Finish levels to unlock new islands, hats, pets, badges, and treasure.</p>
+          </div>
+          <button id="certificateButton" class="small-button" disabled>🏆 Certificate</button>
+        </div>
+        <div id="levelMap" class="level-map"></div>
+      </div>
+    </section>
+
+    <section id="dashboardScreen" class="screen dashboard-screen" aria-labelledby="dashboardTitle">
+      <div class="dashboard-card">
+        <div class="map-head">
+          <button id="closeDashboardButton" class="icon-button">←</button>
+          <div>
+            <h2 id="dashboardTitle">Parent & Teacher Dashboard</h2>
+            <p>Simple progress view for quick revision planning.</p>
+          </div>
+        </div>
+        <div id="dashboardContent" class="dashboard-grid"></div>
+      </div>
+    </section>
+
+    <section id="certificateScreen" class="certificate-screen" aria-labelledby="certTitle">
+      <div class="certificate">
+        <div class="cert-icons">🏆 ⭐⭐⭐⭐⭐ 🕰️ 💰</div>
+        <p>Certificate of Completion</p>
+        <h2 id="certTitle">Official Time & Money Explorer</h2>
+        <strong id="certName">Explorer</strong>
+        <div class="cert-recap">
+          <span>🕰️ I can read clocks.</span>
+          <span>🌞 I know morning, afternoon, evening, and night.</span>
+          <span>⏳ I can solve simple elapsed time.</span>
+          <span>🪙 I can count Indian money.</span>
+          <span>🛍️ I can buy items and find change.</span>
+          <span>🐷 I can choose to save or spend.</span>
+        </div>
+        <button id="playAgainButton" class="main-button">Play Again 🔄</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="assertive"></div>
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Money Market Adventure</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="game-container">
+    <header>
+      <h1>🪙 Money Market Adventure</h1>
+      <p>Help Meera buy things using Indian money!</p>
+    </header>
+
+    <section class="score-board">
+      <div>⭐ Score: <span id="score">0</span></div>
+      <div>🎯 Level: <span id="level">1</span></div>
+    </section>
+
+    <section class="story-box">
+      <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" alt="kid" class="character" />
+      <div>
+        <h2 id="shopName">Fruit Shop</h2>
+        <p id="questionText">Meera wants to buy an apple for ₹10. Select the correct money.</p>
+      </div>
+    </section>
+
+    <section class="item-box">
+      <div id="itemEmoji">🍎</div>
+      <h3 id="itemName">Apple</h3>
+      <p>Price: ₹<span id="price">10</span></p>
+    </section>
+
+    <section class="money-box">
+      <button class="money" data-value="1">₹1</button>
+      <button class="money" data-value="2">₹2</button>
+      <button class="money" data-value="5">₹5</button>
+      <button class="money" data-value="10">₹10</button>
+      <button class="money note" data-value="20">₹20</button>
+      <button class="money note" data-value="50">₹50</button>
+    </section>
+
+    <section class="selected-box">
+      <p>You selected: ₹<span id="selectedAmount">0</span></p>
+      <div id="selectedCoins"></div>
+    </section>
+
+    <section class="buttons">
+      <button id="checkBtn">Check Answer</button>
+      <button id="resetBtn">Reset Money</button>
+      <button id="nextBtn" disabled>Next Item</button>
+    </section>
+
+    <section class="feedback-box">
+      <p id="feedback">Select coins or notes to make the exact amount.</p>
+    </section>
+
+    <section class="lesson-box">
+      <h3>💡 Money Tip</h3>
+      <p id="lessonText">Money helps us buy things like fruits, toys, books, and snacks.</p>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

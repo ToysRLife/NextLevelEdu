@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3aa66f">
+  <meta name="description" content="Science Adventure Island — an interactive Class 3 science game about matter, force, and energy.">
+  <title>Science Adventure Island</title>
+  <link rel="stylesheet" href="science-adventure.css">
+  <link rel="stylesheet" href="science-animations.css">
+</head>
+<body>
+  <div class="world-decor" aria-hidden="true">
+    <span class="sun">☀️</span>
+    <span class="cloud c1"></span>
+    <span class="cloud c2"></span>
+    <span class="bubble b1"></span>
+    <span class="bubble b2"></span>
+    <span class="bubble b3"></span>
+    <span class="leaf l1">🍃</span>
+    <span class="leaf l2">🍃</span>
+  </div>
+
+  <main id="app" class="app">
+    <section id="startScreen" class="screen start-screen active" aria-labelledby="gameTitle">
+      <div class="start-card">
+        <p class="tiny-pill">🔬 Class 3 Science Quest</p>
+        <h1 id="gameTitle">Science Adventure <span>Island</span></h1>
+        <p class="hero-copy">Find the lost Science Crystals with Professor Spark and Momo!</p>
+
+        <div class="hero-scene" aria-hidden="true">
+          <div class="professor hero-professor">
+            <div class="robot-head"><i></i><i></i><b></b></div>
+            <div class="robot-body">⚡</div>
+            <span class="spark-wand">✦</span>
+          </div>
+          <div class="island">
+            <span class="palm">🌴</span>
+            <span class="crystal-orbit">💎</span>
+            <span class="crystal-orbit two">💎</span>
+          </div>
+          <div id="momoHero" class="momo hero-momo">
+            <div class="momo-hat">🎩</div>
+            <div class="momo-face">🙉</div>
+          </div>
+        </div>
+
+        <label class="name-field">
+          Explorer name
+          <input id="playerName" maxlength="16" autocomplete="off" placeholder="Type your name">
+        </label>
+
+        <div class="start-actions">
+          <button id="startButton" class="primary-action">Start Adventure 🚀</button>
+          <button id="soundToggleStart" class="small-action">🔊 Voice On</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen" aria-label="Science Adventure Island game">
+      <header class="topbar">
+        <button id="mapButton" class="round-button" aria-label="Open island map">🗺️</button>
+        <div class="brand-block">
+          <strong>Science Adventure Island</strong>
+          <span id="levelName">Crystal Cove</span>
+        </div>
+        <div class="progress-panel" aria-label="Crystal progress">
+          <span id="crystalProgressText">0 / 6 Crystals</span>
+          <div class="progress-track"><i id="crystalProgressFill"></i></div>
+        </div>
+        <div class="reward-chip" title="Stars">⭐ <b id="starCount">0</b></div>
+        <div class="reward-chip" title="Gems">💎 <b id="gemCount">0</b></div>
+        <div class="reward-chip" title="Coins">🪙 <b id="coinCount">0</b></div>
+        <button id="soundToggle" class="round-button" aria-label="Toggle voice">🔊</button>
+      </header>
+
+      <section class="guide-panel">
+        <div class="professor mini-professor" aria-hidden="true">
+          <div class="robot-head"><i></i><i></i><b></b></div>
+          <div class="robot-body">⚡</div>
+        </div>
+        <div id="momoGuide" class="momo mini-momo" aria-hidden="true">
+          <div class="momo-hat" id="momoHat">🎩</div>
+          <div class="momo-face">🙉</div>
+        </div>
+        <div class="speech-card">
+          <p id="guideText">Hello, Explorer! Ready to save the island?</p>
+          <button id="repeatButton" class="listen-button">🔊 Hear it</button>
+        </div>
+      </section>
+
+      <section id="stage" class="stage" aria-live="polite"></section>
+    </section>
+
+    <section id="mapScreen" class="screen map-screen" aria-labelledby="mapTitle">
+      <div class="map-card">
+        <div class="map-head">
+          <button id="closeMapButton" class="round-button">←</button>
+          <div>
+            <h2 id="mapTitle">Island Map</h2>
+            <p>Collect all 6 Science Crystals. Then claim your certificate!</p>
+          </div>
+          <div class="reward-chip">💎 <b id="mapGemCount">0</b></div>
+        </div>
+        <div id="islandMap" class="island-map"></div>
+      </div>
+    </section>
+
+    <section id="certificateScreen" class="certificate-screen" aria-labelledby="certificateTitle">
+      <div class="certificate">
+        <div class="certificate-icons">🏆 ⭐⭐⭐⭐⭐ 💎</div>
+        <p class="certificate-small">Certificate of Completion</p>
+        <h2 id="certificateTitle">Junior Science Explorer</h2>
+        <strong id="certificateName">Explorer</strong>
+        <p>
+          Fantastic! You helped save Science Adventure Island.
+          You learned that matter is around us, forces help things move,
+          and energy makes people, plants, and machines work.
+        </p>
+        <div class="recap-grid">
+          <span>🧊 Solids keep their shape.</span>
+          <span>💧 Liquids flow.</span>
+          <span>☁ Gases spread out.</span>
+          <span>👐 Force means push or pull.</span>
+          <span>⚡ Energy helps things work.</span>
+          <span>🌞 Plants use sunlight.</span>
+        </div>
+        <button id="playAgainButton" class="primary-action">Play Again 🔄</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="assertive"></div>
+  <div id="questionPop" class="question-pop" role="dialog" aria-modal="true" aria-labelledby="popQuestion">
+    <div class="question-card">
+      <div class="question-mascot">🧠✨</div>
+      <h2 id="popQuestion">Quick Science Question!</h2>
+      <div id="popAnswers" class="pop-answers"></div>
+      <p id="popFeedback" class="pop-feedback"></p>
+    </div>
+  </div>
+  <div id="celebrationLayer" class="celebration-layer" aria-hidden="true"></div>
+
+  <script src="science-adventure.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#8954d6">
+  <meta name="description" content="Fraction Paint & Play — an interactive fractions and division game for Classes 1 to 4.">
+  <title>Fraction Paint & Play</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background-fun" aria-hidden="true">
+    <span class="bubble b1"></span>
+    <span class="bubble b2"></span>
+    <span class="bubble b3"></span>
+    <span class="float-emoji e1">🎨</span>
+    <span class="float-emoji e2">⭐</span>
+    <span class="float-emoji e3">🎈</span>
+  </div>
+
+  <main class="app">
+    <header class="hero-card">
+      <div class="hero-title">
+        <h1>Fraction Paint & Play</h1>
+        <p>Paint shapes, match fractions, and share objects into equal groups!</p>
+      </div>
+      <div class="teacher-bubble">
+        <span class="teacher">🧑‍🏫</span>
+        <p id="guideText">Fractions show equal parts of one whole.</p>
+      </div>
+    </header>
+
+    <section class="mode-strip" aria-label="Game modes">
+      <span>🖌️ Paint the given fraction</span>
+      <span>👨‍👩‍👧 Division connection</span>
+      <span>🏷️ Match the fraction</span>
+    </section>
+
+    <section class="dashboard" aria-label="Score and level progress">
+      <div class="stat">⭐ Score <b id="scoreText">0</b></div>
+      <div class="stat">🏅 Badges <b id="badgeText">0</b></div>
+      <div class="stat">🎯 Level <b id="levelText">1</b></div>
+      <button id="hintButton" class="mini-button">💡 Hint</button>
+      <button id="resetButton" class="mini-button reset">Reset Game</button>
+    </section>
+
+    <section class="level-board" aria-label="Difficulty levels">
+      <button class="level-card easy active" data-level="1">
+        <strong>EASY</strong>
+        <span>⭐</span>
+        <small>1/2 and 1/4</small>
+      </button>
+      <button class="level-card medium" data-level="2">
+        <strong>MEDIUM</strong>
+        <span>🌟</span>
+        <small>1/2, 1/3, 1/4</small>
+      </button>
+      <button class="level-card hard" data-level="3">
+        <strong>HARD</strong>
+        <span>🧙‍♂️⭐</span>
+        <small>2/3, 2/4, 3/4</small>
+      </button>
+      <button class="level-card division" data-level="4">
+        <strong>DIVISION</strong>
+        <span>👨‍👩‍👧</span>
+        <small>Equal groups</small>
+      </button>
+    </section>
+
+    <section class="progress-wrap" aria-label="Question progress">
+      <div class="progress-label">
+        <span id="questionProgress">Question 1 of 7</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-track"><i id="progressFill"></i></div>
+    </section>
+
+    <section class="game-panel" aria-live="polite">
+      <div class="question-bar">
+        <div>
+          <p id="modeLabel" class="mode-label">Paint the fraction</p>
+          <h2 id="questionText">Color 1/2 of the circle.</h2>
+        </div>
+        <div id="fractionBadge" class="fraction-badge">1/2</div>
+      </div>
+
+      <div id="activityArea" class="activity-area"></div>
+
+      <div class="button-row">
+        <button id="checkButton" class="primary-button">Check Answer ✅</button>
+        <button id="nextButton" class="primary-button next" disabled>Next Question ➜</button>
+      </div>
+
+      <p id="feedbackText" class="feedback">Tap parts of the shape to color them.</p>
+    </section>
+
+    <footer class="skills-card">
+      <div><b>🖌️ Paint:</b> Color the given fraction of the shape.</div>
+      <div><b>👨‍👩‍👧 Division:</b> Share objects equally.</div>
+      <div><b>🏷️ Match:</b> Match pictures with the correct fraction.</div>
+      <div><b>🏆 Skills:</b> Equal parts, fractions, division connection.</div>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="assertive"></div>
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

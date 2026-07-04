@@ -42,15 +42,27 @@ const levelConfig = {
   3: {
     name: "Hard",
     fractions: ["2/3", "2/4", "3/4", "1/3"],
-    shapes: ["circle", "square", "star", "hexagon", "chocolate"],
+    shapes: ["triangle", "circle", "square", "star", "hexagon", "chocolate"],
     modes: ["paint", "paint", "match"]
   },
   4: {
     name: "Division",
     fractions: ["1/2", "1/3", "1/4", "2/4", "2/3", "3/4"],
-    shapes: ["circle", "square", "rectangle", "hexagon", "star"],
+    shapes: ["triangle", "circle", "square", "rectangle", "hexagon", "star"],
     modes: ["division", "division", "paint", "match"]
   }
+};
+
+const plannedPaintQuestions = {
+  2: [
+    { fraction: "1/2", shape: "triangle" },
+    { fraction: "1/3", shape: "triangle" }
+  ],
+  3: [
+    { fraction: "2/4", shape: "triangle" },
+    { fraction: "3/4", shape: "triangle" },
+    { fraction: "2/3", shape: "triangle" }
+  ]
 };
 
 const shapeInfo = {
@@ -141,7 +153,8 @@ function makeQuestion() {
   $("#checkButton").disabled = false;
   $("#nextButton").disabled = true;
 
-  const mode = randomFrom(levelConfig[state.level].modes);
+  const planned = plannedPaintQuestions[state.level]?.[state.questionNumber - 1];
+  const mode = planned ? "paint" : randomFrom(levelConfig[state.level].modes);
   if (mode === "division") renderDivisionQuestion();
   if (mode === "match") renderMatchQuestion();
   if (mode === "paint") renderPaintQuestion();
@@ -150,8 +163,9 @@ function makeQuestion() {
 
 function renderPaintQuestion() {
   const config = levelConfig[state.level];
-  const fraction = fractions[randomFrom(config.fractions)];
-  const shapeKey = chooseShapeForFraction(config.shapes, fraction);
+  const planned = plannedPaintQuestions[state.level]?.[state.questionNumber - 1];
+  const fraction = planned ? fractions[planned.fraction] : fractions[randomFrom(config.fractions)];
+  const shapeKey = planned ? planned.shape : chooseShapeForFraction(config.shapes, fraction);
   const shape = shapeInfo[shapeKey];
   state.current = { mode: "paint", fraction, shapeKey, shape };
 
@@ -197,7 +211,6 @@ function renderPaintQuestion() {
 
 function chooseShapeForFraction(shapes, fraction) {
   const friendly = shapes.filter(shape => {
-    if (shape === "triangle" && fraction.denominator === 4) return false;
     if (shape === "hexagon" && fraction.denominator === 4) return false;
     return true;
   });
@@ -333,6 +346,9 @@ function shapeParts(shapeKey, denominator, clipId, color, paintedCount, interact
   if (["circle", "pizza", "cake", "watermelon"].includes(shapeKey)) {
     return circleWedges(denominator, paintedCount, interactive);
   }
+  if (shapeKey === "triangle") {
+    return triangleParts(denominator, paintedCount, interactive);
+  }
   if (shapeKey === "square") {
     return gridRects(denominator, 34, 34, 132, 132, paintedCount, interactive);
   }
@@ -384,6 +400,30 @@ function gridRects(denominator, x, y, width, height, paintedCount, interactive) 
   return cells.map((cell, index) =>
     `<rect class="shape-part ${index < paintedCount ? "painted" : ""}" data-part="${index}" x="${cell.x}" y="${cell.y}" width="${cell.width}" height="${cell.height}" ${interactive ? "" : "pointer-events='none'"}></rect>`
   ).join("");
+}
+
+function triangleParts(denominator, paintedCount, interactive) {
+  const partsByDenominator = {
+    2: [
+      "100,24 100,174 22,174",
+      "100,24 178,174 100,174"
+    ],
+    3: [
+      "100,24 55,111 145,111",
+      "55,111 36,147 164,147 145,111",
+      "36,147 22,174 178,174 164,147"
+    ],
+    4: [
+      "100,24 61,99 139,99",
+      "61,99 22,174 100,174",
+      "61,99 100,174 139,99",
+      "139,99 100,174 178,174"
+    ]
+  };
+  const polygons = partsByDenominator[denominator] || partsByDenominator[2];
+  return polygons.map((points, index) => `
+    <polygon class="shape-part ${index < paintedCount ? "painted" : ""}" data-part="${index}" points="${points}" ${interactive ? "" : "pointer-events='none'"}></polygon>
+  `).join("");
 }
 
 function clippedStrips(denominator, clipId, paintedCount, interactive) {

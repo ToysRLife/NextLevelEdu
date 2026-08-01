@@ -11,6 +11,7 @@ export const LEVEL_SIZE = 5;
 export type Difficulty = "easy" | "medium" | "hard";
 
 export const STREAMS: { id: Stream; label: string }[] = [
+  { id: "maths", label: "🧮 Maths" },
   { id: "physics", label: "🚀 Physics" },
   { id: "chemistry", label: "⚗️ Chemistry" },
   { id: "biology", label: "🌱 Biology" },

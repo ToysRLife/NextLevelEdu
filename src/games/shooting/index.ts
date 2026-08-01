@@ -124,7 +124,7 @@ class Shooting implements GameInstance {
             onclick: () => this.selectOperation(op.key),
           },
           op.label
-        ) as HTMLButtonElement;
+        );
         this.opButtons.push(button);
         return button;
       })

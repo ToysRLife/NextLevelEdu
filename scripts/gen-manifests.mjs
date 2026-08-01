@@ -8,7 +8,7 @@ import path from "node:path";
 
 const ROOT = "src/games";
 
-const STREAM_ORDER = { physics: 0, chemistry: 1, biology: 2, "earth-space": 3 };
+const STREAM_ORDER = { maths: 0, physics: 1, chemistry: 2, biology: 3, "earth-space": 4 };
 const gradeRank = (g) => (/^k/i.test(g) ? 0 : parseInt(g, 10) || 0);
 
 const str = (block, name) => {
@@ -30,9 +30,7 @@ try {
   console.warn("⚠️  Could not read content/curriculum.json — takeaways will be empty");
 }
 
-const folders = fs
-  .readdirSync(ROOT)
-  .filter((f) => fs.existsSync(path.join(ROOT, f, "index.ts")));
+const folders = fs.readdirSync(ROOT).filter((f) => fs.existsSync(path.join(ROOT, f, "index.ts")));
 
 const entries = [];
 for (const folder of folders) {

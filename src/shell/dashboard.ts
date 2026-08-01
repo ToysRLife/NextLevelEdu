@@ -1,6 +1,6 @@
 import { clear, el } from "@core/dom";
 import { read } from "@platform/storage";
-import type { GameManifest } from "@sdk/types";
+import type { GameManifest, Stream } from "@sdk/types";
 import { GAME_MANIFESTS } from "../registry";
 import { getFavorites, getRecent, isFavorite, toggleFavorite } from "./profile";
 import {
@@ -16,12 +16,14 @@ import {
   unlockHint,
 } from "./progression";
 
-// The home screen, designed like a world-class app: a difficulty filter on top
+// The home screen, designed like a world-class app: a set of filters on top
 // and a stack of horizontally-scrolling "shelves" (Jump back in, Favorites,
 // Recommended, then one per subject). Within a shelf, finished games sink to the
 // end unless favorited, and locked games trail behind a mastery gate.
 
 let activeDifficulty: Difficulty | "all" = "all";
+let activeStream: Stream | "all" = "all";
+let activeGrade: "all" | "K-2" | "3-5" | "6-8" = "all";
 
 const DIFF_FILTERS: { key: Difficulty | "all"; label: string }[] = [
   { key: "all", label: "🎯 All" },
@@ -30,9 +32,40 @@ const DIFF_FILTERS: { key: Difficulty | "all"; label: string }[] = [
   { key: "hard", label: "🔴 Hard" },
 ];
 
+const STREAM_FILTERS: { key: Stream | "all"; label: string }[] = [
+  { key: "all", label: "🌐 All" },
+  ...STREAMS.map((s) => ({ key: s.id, label: s.label })),
+];
+
+const GRADE_FILTERS = [
+  { key: "all", label: "All Grades" },
+  { key: "K-2", label: "K-2" },
+  { key: "3-5", label: "3-5" },
+  { key: "6-8", label: "6-8" },
+] as const;
+
 export function renderDashboard(root: HTMLElement): void {
+  const parseBand = (band: string): [number, number] => {
+    const normalized = band.replace(/K/gi, "0").trim();
+    const parts = normalized.split("-").map((part) => Number(part.trim()));
+    return parts.length === 2 ? [parts[0], parts[1]] : [parts[0], parts[0]];
+  };
+
+  const overlaps = (a: [number, number], b: [number, number]): boolean =>
+    a[0] <= b[1] && b[0] <= a[1];
+
+  const gradeMatches = (m: GameManifest): boolean => {
+    if (activeGrade === "all") return true;
+    return overlaps(parseBand(activeGrade), parseBand(m.gradeBand));
+  };
+
+  const streamMatches = (m: GameManifest): boolean =>
+    activeStream === "all" || m.stream === activeStream;
+
   const matchDiff = (m: GameManifest) =>
-    activeDifficulty === "all" || difficultyOf(m) === activeDifficulty;
+    (activeDifficulty === "all" || difficultyOf(m) === activeDifficulty) &&
+    streamMatches(m) &&
+    gradeMatches(m);
   const byId = (id: string) => GAME_MANIFESTS.find((m) => m.id === id);
 
   const rerender = () => renderDashboard(root);
@@ -129,7 +162,7 @@ export function renderDashboard(root: HTMLElement): void {
     shelves.push(shelf(s.label, streamGames(s.id), caption));
   }
 
-  const filterBar = el(
+  const difficultyBar = el(
     "div",
     { class: "filter-bar" },
     ...DIFF_FILTERS.map((f) =>
@@ -139,6 +172,42 @@ export function renderDashboard(root: HTMLElement): void {
           class: `filter-chip ${activeDifficulty === f.key ? "active" : ""}`,
           onclick: () => {
             activeDifficulty = f.key;
+            rerender();
+          },
+        },
+        f.label
+      )
+    )
+  );
+
+  const streamBar = el(
+    "div",
+    { class: "filter-bar" },
+    ...STREAM_FILTERS.map((f) =>
+      el(
+        "button",
+        {
+          class: `filter-chip ${activeStream === f.key ? "active" : ""}`,
+          onclick: () => {
+            activeStream = f.key;
+            rerender();
+          },
+        },
+        f.label
+      )
+    )
+  );
+
+  const gradeBar = el(
+    "div",
+    { class: "filter-bar" },
+    ...GRADE_FILTERS.map((f) =>
+      el(
+        "button",
+        {
+          class: `filter-chip ${activeGrade === f.key ? "active" : ""}`,
+          onclick: () => {
+            activeGrade = f.key;
             rerender();
           },
         },
@@ -164,7 +233,9 @@ export function renderDashboard(root: HTMLElement): void {
       "div",
       { class: "container home" },
       el("h2", { class: "section-title" }, "Pick a Mission"),
-      filterBar,
+      difficultyBar,
+      streamBar,
+      gradeBar,
       ...body
     )
   );

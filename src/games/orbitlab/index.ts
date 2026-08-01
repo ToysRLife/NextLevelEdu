@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { byTier } from "@core/difficulty";
 
 // Gravity & orbits (MS-PS2-4): a satellite needs just the right sideways speed
@@ -85,19 +85,35 @@ class OrbitLab implements GameInstance {
       },
     });
     this.needRead = readout("🛰️ Orbit speed √(GM ÷ r)");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
+    });
     this.coachEl.textContent = "Match the orbit speed for this radius, then launch the satellite.";
-    this.goBtn = el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.launch() }, "🛰️ Launch") as HTMLButtonElement;
+    this.goBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.launch() },
+      "🛰️ Launch"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Orbit radius"), el("span", {}, `${this.round().r0} (units)`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Orbit radius"),
+        el("span", {}, `${this.round().r0} (units)`)
+      ),
       this.speedCtl.el,
       this.needRead.el,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Orbits achieved"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -105,7 +121,9 @@ class OrbitLab implements GameInstance {
   private updateReadout(): void {
     const need = this.needed();
     const ok = Math.abs(this.speed - need) <= this.tol;
-    this.needRead.set(`${need.toFixed(1)} km/s ${ok ? "✓" : this.speed < need ? "(go faster)" : "(go slower)"}`);
+    this.needRead.set(
+      `${need.toFixed(1)} km/s ${ok ? "✓" : this.speed < need ? "(go faster)" : "(go slower)"}`
+    );
   }
 
   private launch(): void {
@@ -139,8 +157,10 @@ class OrbitLab implements GameInstance {
   private step(): void {
     this.prog += 0.012;
     this.theta += (this.speed * 14) / this.rr; // angular speed ≈ v/r
-    if (this.outcome === "crash") this.rr = this.round().r0 - (this.round().r0 - PLANET_R + 4) * this.prog;
-    else if (this.outcome === "escape") this.rr = this.round().r0 + (MAX_R + 60 - this.round().r0) * this.prog;
+    if (this.outcome === "crash")
+      this.rr = this.round().r0 - (this.round().r0 - PLANET_R + 4) * this.prog;
+    else if (this.outcome === "escape")
+      this.rr = this.round().r0 + (MAX_R + 60 - this.round().r0) * this.prog;
     if (this.prog >= (this.outcome === "orbit" ? 1.4 : 1)) {
       this.flying = false;
       this.speedCtl.setEnabled(true);
@@ -157,7 +177,8 @@ class OrbitLab implements GameInstance {
       if (this.hits >= ROUNDS.length) this.finish();
       else {
         this.idx += 1;
-        this.coachEl.textContent = "🛰️ Stable orbit! Next radius is different — recompute √(GM ÷ r).";
+        this.coachEl.textContent =
+          "🛰️ Stable orbit! Next radius is different — recompute √(GM ÷ r).";
         this.buildPanel();
       }
     } else {

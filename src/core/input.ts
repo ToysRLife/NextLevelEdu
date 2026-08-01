@@ -6,7 +6,12 @@ export interface Point {
   y: number;
 }
 
-export function pointerPos(canvas: HTMLCanvasElement, e: PointerEvent | MouseEvent, width: number, height: number): Point {
+export function pointerPos(
+  canvas: HTMLCanvasElement,
+  e: PointerEvent | MouseEvent,
+  width: number,
+  height: number
+): Point {
   const rect = canvas.getBoundingClientRect();
   return {
     x: ((e.clientX - rect.left) / rect.width) * width,
@@ -23,7 +28,7 @@ export function onPointer(
     down?: (p: Point, e: PointerEvent) => void;
     move?: (p: Point, e: PointerEvent) => void;
     up?: (p: Point, e: PointerEvent) => void;
-  },
+  }
 ): () => void {
   const down = (e: PointerEvent) => handlers.down?.(pointerPos(canvas, e, width, height), e);
   const move = (e: PointerEvent) => handlers.move?.(pointerPos(canvas, e, width, height), e);

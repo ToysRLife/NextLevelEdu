@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -65,7 +65,11 @@ class Absorbency implements GameInstance {
             class: "chip",
             style:
               this.active === m.key
-                ? { background: "var(--accent-blue)", color: "#fff", borderColor: "var(--accent-blue)" }
+                ? {
+                    background: "var(--accent-blue)",
+                    color: "#fff",
+                    borderColor: "var(--accent-blue)",
+                  }
                 : {},
             onclick: () => {
               this.active = m.key;
@@ -73,9 +77,9 @@ class Absorbency implements GameInstance {
               this.buildPanel();
             },
           },
-          `${m.emoji} ${m.label}`,
-        ),
-      ),
+          `${m.emoji} ${m.label}`
+        )
+      )
     );
 
     // Reflect the real spill level — buildPanel() runs on every material switch,
@@ -93,12 +97,16 @@ class Absorbency implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Mop up the spill"),
+        el("span", {}, "Mop up the spill")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Choose a material to mop with"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Choose a material to mop with"
+      ),
       chips,
       el("div", { class: "metric" }, el("span", {}, "💧 Spill left"), this.volEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -160,10 +168,16 @@ class Absorbency implements GameInstance {
     c.strokeStyle = "#e2e8f0";
     c.lineWidth = 2;
     for (let x = 0; x < W; x += 80) {
-      c.beginPath(); c.moveTo(x, 0); c.lineTo(x, H); c.stroke();
+      c.beginPath();
+      c.moveTo(x, 0);
+      c.lineTo(x, H);
+      c.stroke();
     }
     for (let y = 0; y < H; y += 80) {
-      c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke();
+      c.beginPath();
+      c.moveTo(0, y);
+      c.lineTo(W, y);
+      c.stroke();
     }
 
     // puddle

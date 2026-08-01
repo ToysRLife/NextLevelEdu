@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance, DifficultyTier } from "@sdk/types";
+import type { DifficultyTier, GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { ParticleSystem } from "@core/particles";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -24,7 +24,11 @@ const WEATHER: Weather[] = [
 ];
 
 // Tier tunes how punishing transpiration is, so younger learners get a gentler curve.
-const TIER_WATER_FACTOR: Record<DifficultyTier, number> = { junior: 0.7, explorer: 1, master: 1.25 };
+const TIER_WATER_FACTOR: Record<DifficultyTier, number> = {
+  junior: 0.7,
+  explorer: 1,
+  master: 1.25,
+};
 
 class Photosynthesis implements GameInstance {
   private readonly ctx2d: CanvasRenderingContext2D;
@@ -79,20 +83,23 @@ class Photosynthesis implements GameInstance {
         el(
           "button",
           {
-            class: "chip" + (w.key === this.weather.key ? " active" : ""),
+            class: `chip${w.key === this.weather.key ? " active" : ""}`,
             "data-w": w.key,
             onclick: () => this.applyWeather(w),
           },
-          w.label,
-        ),
-      ),
+          w.label
+        )
+      )
     );
     this.weatherChips = chips;
 
     this.envEl = el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } });
     this.h2oEl = el("span", { style: { color: "var(--accent-blue)" } }, "100%");
     this.glucoseEl = el("span", { style: { color: "var(--accent-green)" } }, "0%");
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" } });
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
+    });
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -103,7 +110,7 @@ class Photosynthesis implements GameInstance {
       this.envEl,
       el("div", { class: "metric" }, el("span", {}, "💧 Water"), this.h2oEl),
       el("div", { class: "metric" }, el("span", {}, "⚡ Glucose"), this.glucoseEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -123,17 +130,24 @@ class Photosynthesis implements GameInstance {
     this.glucoseEl.textContent = `${this.state.glucose.toFixed(0)}%`;
     this.envEl.replaceChildren(
       el("span", { style: { color: "#fca5a5" } }, `${this.weather.temp}°C`),
-      el("span", { style: { color: "#7dd3fc" } }, `${Math.round(this.weather.humidity * 100)}% Hum`),
-      el("span", { style: { color: "#fde047" } }, `${Math.round(this.weather.sunlight * 100)}% Sun`),
+      el(
+        "span",
+        { style: { color: "#7dd3fc" } },
+        `${Math.round(this.weather.humidity * 100)}% Hum`
+      ),
+      el("span", { style: { color: "#fde047" } }, `${Math.round(this.weather.sunlight * 100)}% Sun`)
     );
     this.coachEl.textContent = this.coachText();
   }
 
   private coachText(): string {
     const ap = this.state.aperture;
-    if (this.weather.key === "night" && ap > 0.1) return "⚠️ No sunlight! Open stomata waste water without making food.";
-    if (this.weather.key === "heatwave" && ap > 0.4) return "🔥 Danger: high opening in a heatwave causes fatal water loss. Throttle down!";
-    if (this.weather.key === "monsoon" && ap < 0.8) return "🌧️ Opportunity: humidity is high — open up wide to grab CO₂ safely.";
+    if (this.weather.key === "night" && ap > 0.1)
+      return "⚠️ No sunlight! Open stomata waste water without making food.";
+    if (this.weather.key === "heatwave" && ap > 0.4)
+      return "🔥 Danger: high opening in a heatwave causes fatal water loss. Throttle down!";
+    if (this.weather.key === "monsoon" && ap < 0.8)
+      return "🌧️ Opportunity: humidity is high — open up wide to grab CO₂ safely.";
     if (ap > 0.8) return "🌿 Maximizing CO₂ — great growth, but watch your water.";
     if (ap < 0.2) return "🏜️ Conserving water, but glucose production has stalled.";
     return "✅ Balanced for the current weather. Keep it steady.";
@@ -164,7 +178,8 @@ class Photosynthesis implements GameInstance {
   private win(): void {
     this.ended = true;
     this.loop.stop();
-    const stars = this.ctx.services.hints.count() === 0 ? 3 : this.ctx.services.hints.count() === 1 ? 2 : 1;
+    const stars =
+      this.ctx.services.hints.count() === 0 ? 3 : this.ctx.services.hints.count() === 1 ? 2 : 1;
     const biomass = 40 + Math.round(this.state.water / 2);
     this.ctx.services.score.event("photosynthesis_complete", { waterLeft: this.state.water });
     this.ctx.services.outcome.succeed({
@@ -178,7 +193,8 @@ class Photosynthesis implements GameInstance {
     this.ended = true;
     this.loop.stop();
     this.ctx.services.outcome.fail({
-      message: "The plant dried out — too much water escaped. Try throttling the stomata down when it's hot and dry.",
+      message:
+        "The plant dried out — too much water escaped. Try throttling the stomata down when it's hot and dry.",
     });
   }
 
@@ -192,8 +208,22 @@ class Photosynthesis implements GameInstance {
 
     if (this.state.aperture > 0.05 && Math.random() < this.state.aperture * 1.5) {
       if (Math.random() > this.weather.humidity)
-        this.particles.spawn({ kind: "h2o", x: cx + (Math.random() - 0.5) * opening, y: cy, vx: (Math.random() - 0.5) * 4 * flow, vy: -Math.random() * 2 * flow - 1, size: 8 });
-      this.particles.spawn({ kind: "co2", x: cx + (Math.random() - 0.5) * 200, y: cy - 200, vx: (Math.random() - 0.5) * 2 * flow, vy: 2 * flow, size: 8 });
+        this.particles.spawn({
+          kind: "h2o",
+          x: cx + (Math.random() - 0.5) * opening,
+          y: cy,
+          vx: (Math.random() - 0.5) * 4 * flow,
+          vy: -Math.random() * 2 * flow - 1,
+          size: 8,
+        });
+      this.particles.spawn({
+        kind: "co2",
+        x: cx + (Math.random() - 0.5) * 200,
+        y: cy - 200,
+        vx: (Math.random() - 0.5) * 2 * flow,
+        vy: 2 * flow,
+        size: 8,
+      });
     }
     this.particles.update(0.01);
 

@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -61,7 +61,11 @@ class Pulley implements GameInstance {
             class: "chip",
             style:
               this.pulleys === n
-                ? { background: "var(--accent-blue)", color: "#fff", borderColor: "var(--accent-blue)" }
+                ? {
+                    background: "var(--accent-blue)",
+                    color: "#fff",
+                    borderColor: "var(--accent-blue)",
+                  }
                 : {},
             onclick: () => {
               if (this.hauling) return;
@@ -69,18 +73,22 @@ class Pulley implements GameInstance {
               this.buildPanel();
             },
           },
-          `${n} 🛞`,
-        ),
-      ),
+          `${n} 🛞`
+        )
+      )
     );
     const haulBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.haul() },
-      "🪢 Haul it up",
+      "🪢 Haul it up"
     );
 
     this.forceEl = el("span", {}, "");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.roundIdx} / ${ROUNDS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.roundIdx} / ${ROUNDS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
@@ -92,14 +100,14 @@ class Pulley implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Lift the load"),
+        el("span", {}, "Lift the load")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "How many pulleys?"),
       row,
       haulBtn,
       el("div", { class: "metric" }, el("span", {}, "💪 Force needed"), this.forceEl),
       el("div", { class: "metric" }, el("span", {}, "📦 Lifted"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -254,7 +262,14 @@ class Pulley implements GameInstance {
     c.fillText("Add pulleys, then haul the load to the top 📦", W / 2, 30);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     const rr = Math.min(r, w / 2, h / 2);
     if (w <= 0) return;
     c.beginPath();

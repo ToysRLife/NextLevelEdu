@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { drawLineGraph } from "@core/graph";
 
 // Heat transfer (MS-PS3-3/4): hot things cool toward room temperature, and
@@ -83,19 +83,35 @@ class Cocoa implements GameInstance {
       },
     });
     this.predRead = readout(`🌡️ Temp at ${this.round().checkMin} min`);
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
+    });
     this.coachEl.textContent = "Add insulation so it stays warm enough, then start the timer.";
-    this.goBtn = el("button", { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.run() }, "⏱️ Start cooling") as HTMLButtonElement;
+    this.goBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.run() },
+      "⏱️ Start cooling"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Keep above"), el("span", {}, `${this.round().target}°C at ${this.round().checkMin} min`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Keep above"),
+        el("span", {}, `${this.round().target}°C at ${this.round().checkMin} min`)
+      ),
       this.insulCtl.el,
       this.predRead.el,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Mugs saved"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }

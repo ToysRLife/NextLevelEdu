@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -69,21 +69,21 @@ class Buoyancy implements GameInstance {
         el(
           "button",
           {
-            class: "chip" + (m.key === this.material.key ? " active" : ""),
+            class: `chip${m.key === this.material.key ? " active" : ""}`,
             "data-m": m.key,
             onclick: () => {
               if (this.phase !== "setup") return;
               this.material = m;
-              this.chips.querySelectorAll("button").forEach((b) =>
-                b.classList.toggle("active", b.getAttribute("data-m") === m.key),
-              );
+              this.chips
+                .querySelectorAll("button")
+                .forEach((b) => b.classList.toggle("active", b.getAttribute("data-m") === m.key));
               this.updateReadout();
               this.render();
             },
           },
-          m.label,
-        ),
-      ),
+          m.label
+        )
+      )
     );
 
     const slider = el("input", {
@@ -107,7 +107,7 @@ class Buoyancy implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
     });
-    this.dropBtn = el("button", { class: "btn", onclick: () => this.drop() }, "⬇️ Drop It") as HTMLButtonElement;
+    this.dropBtn = el("button", { class: "btn", onclick: () => this.drop() }, "⬇️ Drop It");
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -115,7 +115,7 @@ class Buoyancy implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, this.target === "float" ? "Make it FLOAT" : "Make it SINK"),
+        el("span", {}, this.target === "float" ? "Make it FLOAT" : "Make it SINK")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Material"),
       this.chips,
@@ -124,7 +124,7 @@ class Buoyancy implements GameInstance {
       el("div", { class: "metric" }, el("span", {}, "⚖️ Density"), this.densEl),
       el("div", { class: "metric" }, el("span", {}, "🔮 Predict"), this.predictEl),
       this.dropBtn,
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -198,7 +198,10 @@ class Buoyancy implements GameInstance {
     const hintsUsed = this.ctx.services.hints.count();
     if (outcome === this.target) {
       const stars = hintsUsed === 0 ? 3 : hintsUsed === 1 ? 2 : 1;
-      this.ctx.services.score.event("buoyancy_match", { target: this.target, density: this.effDensity() });
+      this.ctx.services.score.event("buoyancy_match", {
+        target: this.target,
+        density: this.effDensity(),
+      });
       this.ctx.services.outcome.succeed({
         message:
           this.target === "float"
@@ -299,7 +302,8 @@ export const buoyancyGame: GameModule = {
     gradeBand: "2-4",
     emoji: "🛟",
     blurb: "Pick a material and hollow it out to control whether it floats or sinks.",
-    mission: "Make the object float or sink as the goal asks — by changing its density against water's.",
+    mission:
+      "Make the object float or sink as the goal asks — by changing its density against water's.",
     estMinutes: 3,
   },
   create: (ctx) => new Buoyancy(ctx),

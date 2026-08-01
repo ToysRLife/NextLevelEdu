@@ -3,7 +3,7 @@
 // GameModule. Platform services are injected, so games never touch storage,
 // auth, or the reward economy directly — those swap to Supabase later.
 
-export type Stream = "physics" | "chemistry" | "biology" | "earth-space";
+export type Stream = "maths" | "physics" | "chemistry" | "biology" | "earth-space";
 
 /** Coarse difficulty tier, derived from the learner's grade. */
 export type DifficultyTier = "junior" | "explorer" | "master"; // K-2 | 3-5 | 6+

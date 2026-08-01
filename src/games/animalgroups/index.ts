@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -25,14 +25,62 @@ interface Animal {
 }
 
 const ANIMALS: Animal[] = [
-  { name: "Dog", emoji: "🐶", group: "mammal", trait: "fur, feeds milk to pups", why: "Mammals have fur or hair and feed their babies milk." },
-  { name: "Eagle", emoji: "🦅", group: "bird", trait: "feathers, wings, lays eggs", why: "Birds have feathers and a beak, and lay eggs." },
-  { name: "Goldfish", emoji: "🐠", group: "fish", trait: "gills, fins, wet scales", why: "Fish live in water, breathe with gills, and have fins." },
-  { name: "Snake", emoji: "🐍", group: "reptile", trait: "dry scales, lays eggs on land", why: "Reptiles have dry, scaly skin and usually lay eggs on land." },
-  { name: "Frog", emoji: "🐸", group: "amphibian", trait: "moist skin, lives in water & on land", why: "Amphibians have moist skin and live both in water and on land." },
-  { name: "Bee", emoji: "🐝", group: "insect", trait: "six legs, three body parts", why: "Insects have six legs and three body parts." },
-  { name: "Dolphin", emoji: "🐬", group: "mammal", trait: "breathes air, feeds milk", why: "A dolphin lives in the sea but breathes air and feeds milk — it's a mammal, not a fish!" },
-  { name: "Turtle", emoji: "🐢", group: "reptile", trait: "scaly shell, lays eggs", why: "A turtle has dry scales and a shell and lays eggs — it's a reptile." },
+  {
+    name: "Dog",
+    emoji: "🐶",
+    group: "mammal",
+    trait: "fur, feeds milk to pups",
+    why: "Mammals have fur or hair and feed their babies milk.",
+  },
+  {
+    name: "Eagle",
+    emoji: "🦅",
+    group: "bird",
+    trait: "feathers, wings, lays eggs",
+    why: "Birds have feathers and a beak, and lay eggs.",
+  },
+  {
+    name: "Goldfish",
+    emoji: "🐠",
+    group: "fish",
+    trait: "gills, fins, wet scales",
+    why: "Fish live in water, breathe with gills, and have fins.",
+  },
+  {
+    name: "Snake",
+    emoji: "🐍",
+    group: "reptile",
+    trait: "dry scales, lays eggs on land",
+    why: "Reptiles have dry, scaly skin and usually lay eggs on land.",
+  },
+  {
+    name: "Frog",
+    emoji: "🐸",
+    group: "amphibian",
+    trait: "moist skin, lives in water & on land",
+    why: "Amphibians have moist skin and live both in water and on land.",
+  },
+  {
+    name: "Bee",
+    emoji: "🐝",
+    group: "insect",
+    trait: "six legs, three body parts",
+    why: "Insects have six legs and three body parts.",
+  },
+  {
+    name: "Dolphin",
+    emoji: "🐬",
+    group: "mammal",
+    trait: "breathes air, feeds milk",
+    why: "A dolphin lives in the sea but breathes air and feeds milk — it's a mammal, not a fish!",
+  },
+  {
+    name: "Turtle",
+    emoji: "🐢",
+    group: "reptile",
+    trait: "scaly shell, lays eggs",
+    why: "A turtle has dry scales and a shell and lays eggs — it's a reptile.",
+  },
 ];
 
 class AnimalGroups implements GameInstance {
@@ -70,11 +118,15 @@ class AnimalGroups implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...GROUPS.map((g) =>
-        el("button", { class: "chip", onclick: () => this.choose(g.key) }, `${g.emoji} ${g.label}`),
-      ),
+        el("button", { class: "chip", onclick: () => this.choose(g.key) }, `${g.emoji} ${g.label}`)
+      )
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${ANIMALS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.idx + 1} / ${ANIMALS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
@@ -87,12 +139,16 @@ class AnimalGroups implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Classify every animal"),
+        el("span", {}, "Classify every animal")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Which group does it belong to?"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Which group does it belong to?"
+      ),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🦓 Animal"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -189,7 +245,14 @@ class AnimalGroups implements GameInstance {
     c.fillText("What kind of animal is this?", W / 2, 60);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

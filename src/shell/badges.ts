@@ -1,6 +1,6 @@
 import { read, write } from "@platform/storage";
 import { GAME_MANIFESTS } from "../registry";
-import { getJoules, getStreak, getBuilt } from "./profile";
+import { getBuilt, getJoules, getStreak } from "./profile";
 import { getWorldReward } from "./worlds";
 
 const STREAMS = ["physics", "chemistry", "biology", "earth-space"] as const;
@@ -26,24 +26,132 @@ export interface Badge {
 }
 
 export const BADGES: Badge[] = [
-  { id: "first-steps", emoji: "🐣", title: "First Steps", desc: "Play your first mission", earned: (s) => s.played >= 1 },
-  { id: "five-wins", emoji: "🎯", title: "Getting the Hang", desc: "Win 5 missions", earned: (s) => s.wins >= 5 },
-  { id: "twenty-wins", emoji: "🚀", title: "On a Roll", desc: "Win 20 missions", earned: (s) => s.wins >= 20 },
-  { id: "fifty-wins", emoji: "🏆", title: "Mission Master", desc: "Win 50 missions", earned: (s) => s.wins >= 50 },
-  { id: "star-15", emoji: "⭐", title: "Star Collector", desc: "Earn 15 stars", earned: (s) => s.totalStars >= 15 },
-  { id: "star-50", emoji: "🌟", title: "Superstar", desc: "Earn 50 stars", earned: (s) => s.totalStars >= 50 },
-  { id: "triple-5", emoji: "💫", title: "Triple Threat", desc: "Get 3 stars on 5 games", earned: (s) => s.threeStars >= 5 },
-  { id: "physicist", emoji: "🔭", title: "Physicist", desc: "Win 5 physics missions", earned: (s) => s.perStreamWins.physics >= 5 },
-  { id: "chemist", emoji: "⚗️", title: "Chemist", desc: "Win 5 chemistry missions", earned: (s) => s.perStreamWins.chemistry >= 5 },
-  { id: "biologist", emoji: "🧬", title: "Biologist", desc: "Win 5 biology missions", earned: (s) => s.perStreamWins.biology >= 5 },
-  { id: "geologist", emoji: "🌍", title: "Earth Scientist", desc: "Win 5 earth & space missions", earned: (s) => s.perStreamWins["earth-space"] >= 5 },
-  { id: "builder", emoji: "🧱", title: "Builder", desc: "Build your first structure", earned: (s) => s.structuresBuilt >= 1 },
-  { id: "architect", emoji: "🏛️", title: "Architect", desc: "Build 10 structures", earned: (s) => s.structuresBuilt >= 10 },
-  { id: "world-master", emoji: "🌐", title: "World Master", desc: "Complete a whole world", earned: (s) => s.worldsComplete >= 1 },
-  { id: "spark", emoji: "⚡", title: "Bright Spark", desc: "Earn 1000 joules", earned: (s) => s.joules >= 1000 },
-  { id: "streak-3", emoji: "🔥", title: "On Fire", desc: "Play 3 days in a row", earned: (s) => s.longestStreak >= 3 },
-  { id: "streak-7", emoji: "☄️", title: "Unstoppable", desc: "Play 7 days in a row", earned: (s) => s.longestStreak >= 7 },
-  { id: "explorer-25", emoji: "🧭", title: "Explorer", desc: "Try 25 different games", earned: (s) => s.played >= 25 },
+  {
+    id: "first-steps",
+    emoji: "🐣",
+    title: "First Steps",
+    desc: "Play your first mission",
+    earned: (s) => s.played >= 1,
+  },
+  {
+    id: "five-wins",
+    emoji: "🎯",
+    title: "Getting the Hang",
+    desc: "Win 5 missions",
+    earned: (s) => s.wins >= 5,
+  },
+  {
+    id: "twenty-wins",
+    emoji: "🚀",
+    title: "On a Roll",
+    desc: "Win 20 missions",
+    earned: (s) => s.wins >= 20,
+  },
+  {
+    id: "fifty-wins",
+    emoji: "🏆",
+    title: "Mission Master",
+    desc: "Win 50 missions",
+    earned: (s) => s.wins >= 50,
+  },
+  {
+    id: "star-15",
+    emoji: "⭐",
+    title: "Star Collector",
+    desc: "Earn 15 stars",
+    earned: (s) => s.totalStars >= 15,
+  },
+  {
+    id: "star-50",
+    emoji: "🌟",
+    title: "Superstar",
+    desc: "Earn 50 stars",
+    earned: (s) => s.totalStars >= 50,
+  },
+  {
+    id: "triple-5",
+    emoji: "💫",
+    title: "Triple Threat",
+    desc: "Get 3 stars on 5 games",
+    earned: (s) => s.threeStars >= 5,
+  },
+  {
+    id: "physicist",
+    emoji: "🔭",
+    title: "Physicist",
+    desc: "Win 5 physics missions",
+    earned: (s) => s.perStreamWins.physics >= 5,
+  },
+  {
+    id: "chemist",
+    emoji: "⚗️",
+    title: "Chemist",
+    desc: "Win 5 chemistry missions",
+    earned: (s) => s.perStreamWins.chemistry >= 5,
+  },
+  {
+    id: "biologist",
+    emoji: "🧬",
+    title: "Biologist",
+    desc: "Win 5 biology missions",
+    earned: (s) => s.perStreamWins.biology >= 5,
+  },
+  {
+    id: "geologist",
+    emoji: "🌍",
+    title: "Earth Scientist",
+    desc: "Win 5 earth & space missions",
+    earned: (s) => s.perStreamWins["earth-space"] >= 5,
+  },
+  {
+    id: "builder",
+    emoji: "🧱",
+    title: "Builder",
+    desc: "Build your first structure",
+    earned: (s) => s.structuresBuilt >= 1,
+  },
+  {
+    id: "architect",
+    emoji: "🏛️",
+    title: "Architect",
+    desc: "Build 10 structures",
+    earned: (s) => s.structuresBuilt >= 10,
+  },
+  {
+    id: "world-master",
+    emoji: "🌐",
+    title: "World Master",
+    desc: "Complete a whole world",
+    earned: (s) => s.worldsComplete >= 1,
+  },
+  {
+    id: "spark",
+    emoji: "⚡",
+    title: "Bright Spark",
+    desc: "Earn 1000 joules",
+    earned: (s) => s.joules >= 1000,
+  },
+  {
+    id: "streak-3",
+    emoji: "🔥",
+    title: "On Fire",
+    desc: "Play 3 days in a row",
+    earned: (s) => s.longestStreak >= 3,
+  },
+  {
+    id: "streak-7",
+    emoji: "☄️",
+    title: "Unstoppable",
+    desc: "Play 7 days in a row",
+    earned: (s) => s.longestStreak >= 7,
+  },
+  {
+    id: "explorer-25",
+    emoji: "🧭",
+    title: "Explorer",
+    desc: "Try 25 different games",
+    earned: (s) => s.played >= 25,
+  },
 ];
 
 interface ProgressRec {
@@ -53,7 +161,12 @@ interface ProgressRec {
 }
 
 export function gatherStats(): PlayerStats {
-  const perStreamWins: Record<string, number> = { physics: 0, chemistry: 0, biology: 0, "earth-space": 0 };
+  const perStreamWins: Record<string, number> = {
+    physics: 0,
+    chemistry: 0,
+    biology: 0,
+    "earth-space": 0,
+  };
   let played = 0;
   let wins = 0;
   let totalStars = 0;
@@ -74,7 +187,17 @@ export function gatherStats(): PlayerStats {
     structuresBuilt += getBuilt(stream).length;
     if (getWorldReward(stream)?.complete) worldsComplete += 1;
   }
-  return { played, wins, totalStars, threeStars, perStreamWins, joules: getJoules(), longestStreak: getStreak().longest, structuresBuilt, worldsComplete };
+  return {
+    played,
+    wins,
+    totalStars,
+    threeStars,
+    perStreamWins,
+    joules: getJoules(),
+    longestStreak: getStreak().longest,
+    structuresBuilt,
+    worldsComplete,
+  };
 }
 
 /** Re-check all badges; returns the ones newly unlocked this call. */

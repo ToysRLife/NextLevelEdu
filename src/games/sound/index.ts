@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -78,7 +78,7 @@ class Sound implements GameInstance {
     const pluckBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.pluck() },
-      "🎸 Pluck & check",
+      "🎸 Pluck & check"
     );
 
     this.pitchEl = el("span", {}, "—");
@@ -87,7 +87,8 @@ class Sound implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
     });
-    this.coachEl.textContent = "Tune the string until its wave matches the faint target wave, then pluck.";
+    this.coachEl.textContent =
+      "Tune the string until its wave matches the faint target wave, then pluck.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -95,16 +96,20 @@ class Sound implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Match ${NEED} notes`),
+        el("span", {}, `Match ${NEED} notes`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "🎚️ String tension (pitch)"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "🎚️ String tension (pitch)"
+      ),
       tensionSlider,
       el("div", { class: "control-label" }, "🔊 Volume (loudness)"),
       volumeSlider,
       pluckBtn,
       el("div", { class: "metric" }, el("span", {}, "🎵 Pitch match"), this.pitchEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Matched"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -116,7 +121,8 @@ class Sound implements GameInstance {
   private updateReadout(): void {
     const pct = Math.round(this.matchPct() * 100);
     this.pitchEl.textContent = `${pct}%`;
-    this.pitchEl.style.color = pct > 92 ? "var(--accent-green)" : pct > 70 ? "var(--accent-orange)" : "var(--accent-red)";
+    this.pitchEl.style.color =
+      pct > 92 ? "var(--accent-green)" : pct > 70 ? "var(--accent-orange)" : "var(--accent-red)";
   }
 
   private pluck(): void {
@@ -163,7 +169,13 @@ class Sound implements GameInstance {
     this.render();
   }
 
-  private waveFor(c: CanvasRenderingContext2D, tension: number, amp: number, color: string, dashed: boolean): void {
+  private waveFor(
+    c: CanvasRenderingContext2D,
+    tension: number,
+    amp: number,
+    color: string,
+    dashed: boolean
+  ): void {
     const waves = 1 + (tension / 100) * 7; // higher tension = more waves
     c.strokeStyle = color;
     c.lineWidth = dashed ? 2 : 4;

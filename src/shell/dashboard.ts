@@ -1,27 +1,29 @@
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { read } from "@platform/storage";
-import type { GameManifest } from "@sdk/types";
+import type { GameManifest, Stream } from "@sdk/types";
 import { GAME_MANIFESTS } from "../registry";
-import { getFavorites, isFavorite, toggleFavorite, getRecent } from "./profile";
+import { getFavorites, getRecent, isFavorite, toggleFavorite } from "./profile";
 import {
-  difficultyOf,
+  type Difficulty,
   DIFFICULTY_META,
+  difficultyOf,
   hasWon,
   isUnlocked,
-  unlockHint,
-  streamGames,
   nextUpFor,
+  streamGames,
   streamProgress,
   STREAMS,
-  type Difficulty,
+  unlockHint,
 } from "./progression";
 
-// The home screen, designed like a world-class app: a difficulty filter on top
+// The home screen, designed like a world-class app: a set of filters on top
 // and a stack of horizontally-scrolling "shelves" (Jump back in, Favorites,
 // Recommended, then one per subject). Within a shelf, finished games sink to the
 // end unless favorited, and locked games trail behind a mastery gate.
 
 let activeDifficulty: Difficulty | "all" = "all";
+let activeStream: Stream | "all" = "all";
+let activeGrade: "all" | "K-2" | "3-5" | "6-8" = "all";
 
 const DIFF_FILTERS: { key: Difficulty | "all"; label: string }[] = [
   { key: "all", label: "🎯 All" },
@@ -30,8 +32,40 @@ const DIFF_FILTERS: { key: Difficulty | "all"; label: string }[] = [
   { key: "hard", label: "🔴 Hard" },
 ];
 
+const STREAM_FILTERS: { key: Stream | "all"; label: string }[] = [
+  { key: "all", label: "🌐 All" },
+  ...STREAMS.map((s) => ({ key: s.id, label: s.label })),
+];
+
+const GRADE_FILTERS = [
+  { key: "all", label: "All Grades" },
+  { key: "K-2", label: "K-2" },
+  { key: "3-5", label: "3-5" },
+  { key: "6-8", label: "6-8" },
+] as const;
+
 export function renderDashboard(root: HTMLElement): void {
-  const matchDiff = (m: GameManifest) => activeDifficulty === "all" || difficultyOf(m) === activeDifficulty;
+  const parseBand = (band: string): [number, number] => {
+    const normalized = band.replace(/K/gi, "0").trim();
+    const parts = normalized.split("-").map((part) => Number(part.trim()));
+    return parts.length === 2 ? [parts[0], parts[1]] : [parts[0], parts[0]];
+  };
+
+  const overlaps = (a: [number, number], b: [number, number]): boolean =>
+    a[0] <= b[1] && b[0] <= a[1];
+
+  const gradeMatches = (m: GameManifest): boolean => {
+    if (activeGrade === "all") return true;
+    return overlaps(parseBand(activeGrade), parseBand(m.gradeBand));
+  };
+
+  const streamMatches = (m: GameManifest): boolean =>
+    activeStream === "all" || m.stream === activeStream;
+
+  const matchDiff = (m: GameManifest) =>
+    (activeDifficulty === "all" || difficultyOf(m) === activeDifficulty) &&
+    streamMatches(m) &&
+    gradeMatches(m);
   const byId = (id: string) => GAME_MANIFESTS.find((m) => m.id === id);
 
   const rerender = () => renderDashboard(root);
@@ -55,14 +89,18 @@ export function renderDashboard(root: HTMLElement): void {
           rerender();
         },
       },
-      fav ? "❤️" : "🤍",
+      fav ? "❤️" : "🤍"
     );
 
     const badges = el(
       "div",
       { class: "sc-badges" },
-      el("span", { class: `diff-badge ${diff}` }, `${DIFFICULTY_META[diff].dot} ${DIFFICULTY_META[diff].label}`),
-      won ? el("span", { class: "done-badge" }, `✓ ${"⭐".repeat(stars)}`) : null,
+      el(
+        "span",
+        { class: `diff-badge ${diff}` },
+        `${DIFFICULTY_META[diff].dot} ${DIFFICULTY_META[diff].label}`
+      ),
+      won ? el("span", { class: "done-badge" }, `✓ ${"⭐".repeat(stars)}`) : null
     );
 
     return el(
@@ -76,7 +114,7 @@ export function renderDashboard(root: HTMLElement): void {
       unlocked ? heart : el("div", { class: "sc-locktag" }, "🔒"),
       el("div", { class: "sc-emoji" }, meta.emoji),
       el("div", { class: "sc-title" }, meta.title),
-      unlocked ? badges : el("div", { class: "sc-lock" }, unlockHint(meta)),
+      unlocked ? badges : el("div", { class: "sc-lock" }, unlockHint(meta))
     );
   }
 
@@ -90,9 +128,9 @@ export function renderDashboard(root: HTMLElement): void {
         "div",
         { class: "shelf-head" },
         el("h3", { class: "shelf-title" }, title),
-        caption ? el("span", { class: "shelf-caption" }, caption) : null,
+        caption ? el("span", { class: "shelf-caption" }, caption) : null
       ),
-      el("div", { class: "shelf-row" }, ...list.map(card)),
+      el("div", { class: "shelf-row" }, ...list.map(card))
     );
   }
 
@@ -124,7 +162,7 @@ export function renderDashboard(root: HTMLElement): void {
     shelves.push(shelf(s.label, streamGames(s.id), caption));
   }
 
-  const filterBar = el(
+  const difficultyBar = el(
     "div",
     { class: "filter-bar" },
     ...DIFF_FILTERS.map((f) =>
@@ -137,15 +175,57 @@ export function renderDashboard(root: HTMLElement): void {
             rerender();
           },
         },
-        f.label,
-      ),
-    ),
+        f.label
+      )
+    )
+  );
+
+  const streamBar = el(
+    "div",
+    { class: "filter-bar" },
+    ...STREAM_FILTERS.map((f) =>
+      el(
+        "button",
+        {
+          class: `filter-chip ${activeStream === f.key ? "active" : ""}`,
+          onclick: () => {
+            activeStream = f.key;
+            rerender();
+          },
+        },
+        f.label
+      )
+    )
+  );
+
+  const gradeBar = el(
+    "div",
+    { class: "filter-bar" },
+    ...GRADE_FILTERS.map((f) =>
+      el(
+        "button",
+        {
+          class: `filter-chip ${activeGrade === f.key ? "active" : ""}`,
+          onclick: () => {
+            activeGrade = f.key;
+            rerender();
+          },
+        },
+        f.label
+      )
+    )
   );
 
   const live = shelves.filter((s): s is HTMLElement => s !== null);
   const body = live.length
     ? live
-    : [el("p", { class: "admin-note" }, "No games match this difficulty yet — try another filter.")];
+    : [
+        el(
+          "p",
+          { class: "admin-note" },
+          "No games match this difficulty yet — try another filter."
+        ),
+      ];
 
   clear(root);
   root.append(
@@ -153,8 +233,10 @@ export function renderDashboard(root: HTMLElement): void {
       "div",
       { class: "container home" },
       el("h2", { class: "section-title" }, "Pick a Mission"),
-      filterBar,
-      ...body,
-    ),
+      difficultyBar,
+      streamBar,
+      gradeBar,
+      ...body
+    )
   );
 }

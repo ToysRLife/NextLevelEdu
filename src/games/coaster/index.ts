@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { drawBars } from "@core/graph";
 
 // Energy conservation (MS-PS3): a coaster trades potential energy (height) for
@@ -19,9 +19,26 @@ interface Round {
   hills: { x: number; peak: number }[]; // peak height in metres
 }
 const ROUNDS: Round[] = [
-  { hills: [{ x: 300, peak: 40 }, { x: 520, peak: 30 }] }, // tallest 40
-  { hills: [{ x: 260, peak: 45 }, { x: 470, peak: 65 }, { x: 660, peak: 35 }] }, // tallest 65
-  { hills: [{ x: 280, peak: 55 }, { x: 480, peak: 40 }, { x: 640, peak: 60 }] }, // tallest 60
+  {
+    hills: [
+      { x: 300, peak: 40 },
+      { x: 520, peak: 30 },
+    ],
+  }, // tallest 40
+  {
+    hills: [
+      { x: 260, peak: 45 },
+      { x: 470, peak: 65 },
+      { x: 660, peak: 35 },
+    ],
+  }, // tallest 65
+  {
+    hills: [
+      { x: 280, peak: 55 },
+      { x: 480, peak: 40 },
+      { x: 640, peak: 60 },
+    ],
+  }, // tallest 60
 ];
 
 class Coaster implements GameInstance {
@@ -91,20 +108,36 @@ class Coaster implements GameInstance {
     });
     this.tallestRead = readout("⛰️ Tallest hill");
     this.enoughRead = readout("⚡ Enough energy?");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-purple)", background: "#f5f3ff" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-purple)", background: "#f5f3ff" },
+    });
     this.coachEl.textContent = "Set your launch height, then send the car!";
-    this.goBtn = el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.launch() }, "🎢 Send the car") as HTMLButtonElement;
+    this.goBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.launch() },
+      "🎢 Send the car"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Goal"), el("span", {}, "Clear the whole track")),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Goal"),
+        el("span", {}, "Clear the whole track")
+      ),
       this.launchCtl.el,
       this.tallestRead.el,
       this.enoughRead.el,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Tracks cleared"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -163,7 +196,8 @@ class Coaster implements GameInstance {
       else {
         this.idx += 1;
         this.carX = 60;
-        this.coachEl.textContent = "🎢 Cleared! Next track has different hills — check the tallest one.";
+        this.coachEl.textContent =
+          "🎢 Cleared! Next track has different hills — check the tallest one.";
         this.buildPanel();
       }
     }
@@ -233,11 +267,20 @@ class Coaster implements GameInstance {
     // energy bars
     const ke = Math.max(0, this.launchH - this.heightAt(this.carX));
     const pe = this.heightAt(this.carX);
-    drawBars(c, 470, 70, 300, 180, [
-      { label: "Potential", value: pe, color: "#a78bfa" },
-      { label: "Kinetic", value: ke, color: "#f59e0b" },
-      { label: "Total", value: this.launchH, color: "#22c55e" },
-    ], Math.max(this.launchH, this.tallest()), "Energy (m)");
+    drawBars(
+      c,
+      470,
+      70,
+      300,
+      180,
+      [
+        { label: "Potential", value: pe, color: "#a78bfa" },
+        { label: "Kinetic", value: ke, color: "#f59e0b" },
+        { label: "Total", value: this.launchH, color: "#22c55e" },
+      ],
+      Math.max(this.launchH, this.tallest()),
+      "Energy (m)"
+    );
 
     c.fillStyle = "#5b21b6";
     c.font = "bold 18px Nunito, sans-serif";

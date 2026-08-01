@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -20,9 +20,24 @@ interface Target {
 // Sun is to the RIGHT. Moon angle 0 = New (between Earth and Sun),
 // PI = Full (opposite the Sun), PI/2 = First Quarter.
 const TARGETS: Target[] = [
-  { name: "Full Moon", emoji: "🌕", angle: Math.PI, hint: "Full Moon: the Moon is opposite the Sun, so we see its whole lit face." },
-  { name: "New Moon", emoji: "🌑", angle: 0, hint: "New Moon: the Moon is between Earth and the Sun, so its lit side faces away from us." },
-  { name: "First Quarter", emoji: "🌓", angle: Math.PI / 2, hint: "First Quarter: the Moon is at a right angle, so we see exactly half lit." },
+  {
+    name: "Full Moon",
+    emoji: "🌕",
+    angle: Math.PI,
+    hint: "Full Moon: the Moon is opposite the Sun, so we see its whole lit face.",
+  },
+  {
+    name: "New Moon",
+    emoji: "🌑",
+    angle: 0,
+    hint: "New Moon: the Moon is between Earth and the Sun, so its lit side faces away from us.",
+  },
+  {
+    name: "First Quarter",
+    emoji: "🌓",
+    angle: Math.PI / 2,
+    hint: "First Quarter: the Moon is at a right angle, so we see exactly half lit.",
+  },
 ];
 
 class MoonPhases implements GameInstance {
@@ -99,10 +114,14 @@ class MoonPhases implements GameInstance {
     const lockBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-purple)" }, onclick: () => this.lockIn() },
-      "🔒 This is the phase",
+      "🔒 This is the phase"
     );
 
-    this.targetEl = el("span", { style: { color: "var(--accent-purple)" } }, `${this.target().emoji} ${this.target().name}`);
+    this.targetEl = el(
+      "span",
+      { style: { color: "var(--accent-purple)" } },
+      `${this.target().emoji} ${this.target().name}`
+    );
     this.phaseEl = el("span", {}, "—");
     this.statusEl = el("span", {}, `0 / ${TARGETS.length}`);
     this.coachEl = el("div", {
@@ -117,13 +136,17 @@ class MoonPhases implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Make"),
-        this.targetEl,
+        this.targetEl
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Drag the Moon, then lock it"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Drag the Moon, then lock it"
+      ),
       lockBtn,
       el("div", { class: "metric" }, el("span", {}, "🌙 You see"), this.phaseEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Matched"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -177,7 +200,14 @@ class MoonPhases implements GameInstance {
   }
 
   // Draw the Moon's phase as seen from Earth.
-  private drawPhase(c: CanvasRenderingContext2D, cx: number, cy: number, r: number, f: number, waxing: boolean): void {
+  private drawPhase(
+    c: CanvasRenderingContext2D,
+    cx: number,
+    cy: number,
+    r: number,
+    f: number,
+    waxing: boolean
+  ): void {
     // dark disk
     c.fillStyle = "#2b2b40";
     c.beginPath();
@@ -304,7 +334,14 @@ class MoonPhases implements GameInstance {
     c.fillText(`Make a ${this.target().name} ${this.target().emoji}`, W / 2 + 60, 40);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

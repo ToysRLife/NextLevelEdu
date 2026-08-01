@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -74,11 +74,15 @@ class Speed implements GameInstance {
     this.goBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.go() },
-      "🚚 Deliver!",
-    ) as HTMLButtonElement;
+      "🚚 Deliver!"
+    );
 
     this.speedEl = el("span", {}, "");
-    this.statusEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.roundIdx} / ${ROUNDS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-blue)" } },
+      `${this.roundIdx} / ${ROUNDS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
@@ -90,14 +94,14 @@ class Speed implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Deliver"),
-        el("span", {}, `${this.round().dist} m in ${this.round().time} s`),
+        el("span", {}, `${this.round().dist} m in ${this.round().time} s`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🚚 Set the speed (m/s)"),
       slider,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "⚡ Speed"), this.speedEl),
       el("div", { class: "metric" }, el("span", {}, "📦 Delivered"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -131,11 +135,15 @@ class Speed implements GameInstance {
       const travelTime = r.dist / this.speed;
       if (Math.abs(travelTime - r.time) < this.tol) {
         this.ctx.services.audio.play("tick");
-        this.coachEl.textContent = `✅ On time! ${r.dist} ÷ ${r.time} = ${(r.dist / r.time)} m/s.`;
+        this.coachEl.textContent = `✅ On time! ${r.dist} ÷ ${r.time} = ${r.dist / r.time} m/s.`;
         this.roundIdx += 1;
         this.statusEl.textContent = `${this.roundIdx} / ${ROUNDS.length}`;
         if (this.roundIdx >= ROUNDS.length) this.win();
-        else { this.speed = 20; this.progress = 0; this.buildPanel(); }
+        else {
+          this.speed = 20;
+          this.progress = 0;
+          this.buildPanel();
+        }
       } else {
         this.mistakes += 1;
         this.ctx.services.audio.play("fail");

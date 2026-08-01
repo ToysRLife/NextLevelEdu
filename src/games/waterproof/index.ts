@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -13,12 +13,42 @@ interface Material {
 }
 
 const MATERIALS: Material[] = [
-  { name: "Plastic sheet", emoji: "🧴", waterproof: true, why: "Plastic keeps water out — it's waterproof." },
-  { name: "Rubber boot", emoji: "🥾", waterproof: true, why: "Rubber blocks water, so boots keep feet dry." },
-  { name: "Foil", emoji: "🪙", waterproof: true, why: "Metal foil doesn't let water through — waterproof." },
-  { name: "Paper", emoji: "📄", waterproof: false, why: "Paper soaks up water and goes soggy — not waterproof." },
-  { name: "Cotton cloth", emoji: "🧺", waterproof: false, why: "Cotton absorbs water — it gets wet through." },
-  { name: "Cardboard", emoji: "📦", waterproof: false, why: "Cardboard soaks up water and falls apart — not waterproof." },
+  {
+    name: "Plastic sheet",
+    emoji: "🧴",
+    waterproof: true,
+    why: "Plastic keeps water out — it's waterproof.",
+  },
+  {
+    name: "Rubber boot",
+    emoji: "🥾",
+    waterproof: true,
+    why: "Rubber blocks water, so boots keep feet dry.",
+  },
+  {
+    name: "Foil",
+    emoji: "🪙",
+    waterproof: true,
+    why: "Metal foil doesn't let water through — waterproof.",
+  },
+  {
+    name: "Paper",
+    emoji: "📄",
+    waterproof: false,
+    why: "Paper soaks up water and goes soggy — not waterproof.",
+  },
+  {
+    name: "Cotton cloth",
+    emoji: "🧺",
+    waterproof: false,
+    why: "Cotton absorbs water — it gets wet through.",
+  },
+  {
+    name: "Cardboard",
+    emoji: "📦",
+    waterproof: false,
+    why: "Cardboard soaks up water and falls apart — not waterproof.",
+  },
 ];
 
 class Waterproof implements GameInstance {
@@ -39,7 +69,8 @@ class Waterproof implements GameInstance {
   constructor(private readonly ctx: GameContext) {
     this.ctx2d = fitCanvas(ctx.canvas, W, H);
     this.order = [...MATERIALS].sort(() => Math.random() - 0.5);
-    for (let i = 0; i < 40; i++) this.rain.push({ x: Math.random() * W, y: Math.random() * H, v: 6 + Math.random() * 4 });
+    for (let i = 0; i < 40; i++)
+      this.rain.push({ x: Math.random() * W, y: Math.random() * H, v: 6 + Math.random() * 4 });
     this.buildPanel();
     ctx.services.hints.setHints([
       "Waterproof materials keep water out; others soak it up and get wet.",
@@ -57,13 +88,25 @@ class Waterproof implements GameInstance {
     const choices = el(
       "div",
       { class: "chip-row" },
-      el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.guess(true) }, "💧 Waterproof"),
-      el("button", { class: "btn secondary", onclick: () => this.guess(false) }, "🧽 Soaks in"),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-blue)" },
+          onclick: () => this.guess(true),
+        },
+        "💧 Waterproof"
+      ),
+      el("button", { class: "btn secondary", onclick: () => this.guess(false) }, "🧽 Soaks in")
     );
 
     // Reflect the real position — buildPanel() runs for each material, so a
     // hardcoded "1 / N" would freeze the counter until the last one.
-    this.progressEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.idx + 1} / ${MATERIALS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-blue)" } },
+      `${this.idx + 1} / ${MATERIALS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
@@ -76,12 +119,12 @@ class Waterproof implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "☔ Test"),
-        el("span", {}, this.current().name),
+        el("span", {}, this.current().name)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Waterproof or not?"),
       choices,
       el("div", { class: "metric" }, el("span", {}, "🧵 Material"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -130,7 +173,10 @@ class Waterproof implements GameInstance {
       this.anim += 0.05;
       for (const d of this.rain) {
         d.y += d.v;
-        if (d.y > H) { d.y = -10; d.x = Math.random() * W; }
+        if (d.y > H) {
+          d.y = -10;
+          d.x = Math.random() * W;
+        }
       }
       this.render();
       this.raf = requestAnimationFrame(draw);
@@ -201,7 +247,14 @@ class Waterproof implements GameInstance {
     c.fillText("Will it keep the rain out? ☔", W / 2, 50);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

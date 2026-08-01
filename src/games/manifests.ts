@@ -6,6 +6,30 @@ import type { GameManifest } from "@sdk/types";
 // adding or changing a game's meta.
 export const GAME_MANIFESTS: GameManifest[] = [
   {
+    "id": "addition2d",
+    "conceptId": "phys-02",
+    "title": "Add It Up",
+    "stream": "physics",
+    "gradeBand": "K-2",
+    "emoji": "➕",
+    "blurb": "Add two groups of objects and find the total.",
+    "mission": "Combine both groups and choose the correct total from the number pad.",
+    "estMinutes": 3,
+    "takeaway": "How quickly things move."
+  },
+  {
+    "id": "balloon",
+    "conceptId": "phys-02",
+    "title": "Balloon Pop",
+    "stream": "physics",
+    "gradeBand": "K-2",
+    "emoji": "🎈",
+    "blurb": "Tap the balloon with the correct answer to solve the math problem.",
+    "mission": "Pop the right balloon before it floats away.",
+    "estMinutes": 3,
+    "takeaway": "How quickly things move."
+  },
+  {
     "id": "forces",
     "conceptId": "phys-01",
     "title": "Push It!",
@@ -76,6 +100,18 @@ export const GAME_MANIFESTS: GameManifest[] = [
     "mission": "Use friction to bring the sled to rest on three targets.",
     "estMinutes": 3,
     "takeaway": "Rough surfaces slow things; smooth ones let them slide."
+  },
+  {
+    "id": "shooting",
+    "conceptId": "phys-02",
+    "title": "Airplane Shooter",
+    "stream": "physics",
+    "gradeBand": "3-5",
+    "emoji": "✈️",
+    "blurb": "Shoot the plane with the correct answer before it flies away.",
+    "mission": "Solve the problem and hit the matching airplane to score points.",
+    "estMinutes": 3,
+    "takeaway": "How quickly things move."
   },
   {
     "id": "levers",

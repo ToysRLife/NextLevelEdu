@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { byTier } from "@core/difficulty";
 
 // Momentum (MS-PS2): in a collision, momentum (mass × velocity) is conserved.
@@ -107,28 +107,51 @@ class CrashTest implements GameInstance {
       },
     });
     this.vfRead = readout("🤝 Combined speed");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
-    this.coachEl.textContent = "Pick a mass and speed for cart A, predict the wreck's speed, then crash!";
-    this.goBtn = el("button", { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.crash() }, "💥 Crash!") as HTMLButtonElement;
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
+    });
+    this.coachEl.textContent =
+      "Pick a mass and speed for cart A, predict the wreck's speed, then crash!";
+    this.goBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.crash() },
+      "💥 Crash!"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Target"), el("span", {}, `Wreck speed ${this.round().targetV} m/s`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Target"),
+        el("span", {}, `Wreck speed ${this.round().targetV} m/s`)
+      ),
       this.massCtl.el,
       this.speedCtl.el,
-      el("div", { class: "control-label", style: { marginTop: "6px" } }, "🤝 v = (mA × vA) ÷ (mA + mB)"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "6px" } },
+        "🤝 v = (mA × vA) ÷ (mA + mB)"
+      ),
       this.vfRead.el,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Crashes nailed"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
 
   private updateReadout(): void {
     const r = this.round();
-    this.vfRead.set(`${this.massA}×${this.speedA} ÷ ${this.massA + r.massB} = ${this.combinedV().toFixed(1)} m/s`);
+    this.vfRead.set(
+      `${this.massA}×${this.speedA} ÷ ${this.massA + r.massB} = ${this.combinedV().toFixed(1)} m/s`
+    );
   }
 
   private crash(): void {
@@ -269,7 +292,11 @@ class CrashTest implements GameInstance {
     c.textAlign = "center";
     c.fillText("Crash cart A into cart B so the wreck stops in the zone 💥", W / 2, 44);
     c.font = "14px Nunito, sans-serif";
-    c.fillText(`wreck speed: ${this.phase === "coast" ? this.wreckV.toFixed(1) : "0.0"} m/s`, W / 2, 70);
+    c.fillText(
+      `wreck speed: ${this.phase === "coast" ? this.wreckV.toFixed(1) : "0.0"} m/s`,
+      W / 2,
+      70
+    );
   }
 
   start(): void {

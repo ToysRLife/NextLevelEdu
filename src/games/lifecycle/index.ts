@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -105,11 +105,11 @@ class LifeCycle implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🔬 Cycle"),
-        el("span", {}, this.cycle.name),
+        el("span", {}, this.cycle.name)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Tap stages in order"),
       el("div", { class: "metric" }, el("span", {}, "✅ Placed"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -139,14 +139,18 @@ class LifeCycle implements GameInstance {
       card.flash = 1;
       this.mistakes += 1;
       this.ctx.services.audio.play("fail");
-      this.coachEl.textContent = "❌ Not the next stage — think about what comes first as the animal grows.";
+      this.coachEl.textContent =
+        "❌ Not the next stage — think about what comes first as the animal grows.";
     }
   }
 
   private win(): void {
     this.ended = true;
     const stars = this.mistakes === 0 ? 3 : this.mistakes <= 2 ? 2 : 1;
-    this.ctx.services.score.event("lifecycle_complete", { cycle: this.cycle.name, mistakes: this.mistakes });
+    this.ctx.services.score.event("lifecycle_complete", {
+      cycle: this.cycle.name,
+      mistakes: this.mistakes,
+    });
     this.ctx.services.outcome.succeed({
       message: `You ordered the ${this.cycle.name} life cycle perfectly! Every creature grows through stages in a set order.`,
       stars,
@@ -168,7 +172,14 @@ class LifeCycle implements GameInstance {
     return gap + i * (CARD + gap);
   }
 
-  private drawCard(c: CanvasRenderingContext2D, x: number, y: number, stage: Stage, bg: string, border: string): void {
+  private drawCard(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    stage: Stage,
+    bg: string,
+    border: string
+  ): void {
     c.fillStyle = bg;
     c.strokeStyle = border;
     c.lineWidth = 4;
@@ -185,7 +196,14 @@ class LifeCycle implements GameInstance {
     c.textBaseline = "alphabetic";
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);
@@ -264,7 +282,8 @@ export const lifecycleGame: GameModule = {
     gradeBand: "2-3",
     emoji: "🦋",
     blurb: "Put the stages of an animal's life in the right order, from egg to adult.",
-    mission: "Tap the life-cycle stages in the correct order, from the start of life all the way to the grown-up.",
+    mission:
+      "Tap the life-cycle stages in the correct order, from the start of life all the way to the grown-up.",
     estMinutes: 2,
   },
   create: (ctx) => new LifeCycle(ctx),

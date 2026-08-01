@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 import { byTier } from "@core/difficulty";
 
 // Acids & bases (MS-PS1-2): pH measures how acidic or basic a solution is — low
@@ -27,7 +27,19 @@ const pHfor = (acidVol: number): number => {
 
 // Universal-indicator colour for a pH.
 const colorFor = (pH: number): string =>
-  pH < 3 ? "#dc2626" : pH < 5 ? "#f97316" : pH < 6.5 ? "#facc15" : pH < 7.5 ? "#22c55e" : pH < 9 ? "#14b8a6" : pH < 11.5 ? "#3b82f6" : "#7c3aed";
+  pH < 3
+    ? "#dc2626"
+    : pH < 5
+      ? "#f97316"
+      : pH < 6.5
+        ? "#facc15"
+        : pH < 7.5
+          ? "#22c55e"
+          : pH < 9
+            ? "#14b8a6"
+            : pH < 11.5
+              ? "#3b82f6"
+              : "#7c3aed";
 
 const ROUNDS: number[] = [12, 7, 2]; // target pH values
 
@@ -73,22 +85,46 @@ class PhMixer implements GameInstance {
       step: 1,
       unit: "mL",
       color: "var(--accent-red)",
-      onInput: (v) => { this.acidVol = v; this.updateReadout(); },
+      onInput: (v) => {
+        this.acidVol = v;
+        this.updateReadout();
+      },
     });
     this.phRead = readout("🌈 Solution pH");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-red)", background: "#fef2f2" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-red)", background: "#fef2f2" },
+    });
     this.coachEl.textContent = "Pour acid into the base to reach the target pH.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Target pH"), el("span", {}, `${this.target()}`)),
-      el("div", { class: "metric" }, el("span", {}, "🧫 Starting base"), el("span", {}, `${BASE_VOL} mL · pH ${pHfor(0).toFixed(1)}`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Target pH"),
+        el("span", {}, `${this.target()}`)
+      ),
+      el(
+        "div",
+        { class: "metric" },
+        el("span", {}, "🧫 Starting base"),
+        el("span", {}, `${BASE_VOL} mL · pH ${pHfor(0).toFixed(1)}`)
+      ),
       this.acidCtl.el,
       this.phRead.el,
-      el("button", { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.check() }, "🌈 Test the pH"),
+      el(
+        "button",
+        { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.check() },
+        "🌈 Test the pH"
+      ),
       el("div", { class: "metric" }, el("span", {}, "✅ pH targets hit"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -116,7 +152,9 @@ class PhMixer implements GameInstance {
       this.misses += 1;
       this.ctx.services.audio.play("fail");
       this.coachEl.textContent =
-        ph > this.target() ? `pH ${ph.toFixed(1)} is too basic — add more acid.` : `pH ${ph.toFixed(1)} is too acidic — you added too much acid.`;
+        ph > this.target()
+          ? `pH ${ph.toFixed(1)} is too basic — add more acid.`
+          : `pH ${ph.toFixed(1)} is too acidic — you added too much acid.`;
     }
   }
 
@@ -173,7 +211,10 @@ class PhMixer implements GameInstance {
     c.fill();
 
     // beaker with liquid coloured by pH
-    const bx = W / 2 - 90, by = 250, bw = 180, bh = 260;
+    const bx = W / 2 - 90,
+      by = 250,
+      bw = 180,
+      bh = 260;
     c.strokeStyle = "#cbd5e1";
     c.lineWidth = 5;
     c.strokeRect(bx, by, bw, bh);
@@ -185,7 +226,8 @@ class PhMixer implements GameInstance {
     c.strokeStyle = "rgba(255,255,255,0.5)";
     c.lineWidth = 2;
     c.beginPath();
-    for (let x = 0; x <= bw - 8; x += 6) c.lineTo(bx + 4 + x, by + bh - lh + Math.sin(x * 0.1 + this.anim) * 3);
+    for (let x = 0; x <= bw - 8; x += 6)
+      c.lineTo(bx + 4 + x, by + bh - lh + Math.sin(x * 0.1 + this.anim) * 3);
     c.stroke();
 
     c.fillStyle = "#fff";
@@ -222,7 +264,8 @@ export const phMixerGame: GameModule = {
     stream: "chemistry",
     gradeBand: "6-8",
     emoji: "🧪",
-    blurb: "Pour acid into a base and watch the universal indicator change colour as you hit each target pH.",
+    blurb:
+      "Pour acid into a base and watch the universal indicator change colour as you hit each target pH.",
     mission: "Add the right amount of acid to reach each target pH.",
     estMinutes: 3,
   },

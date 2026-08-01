@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -92,7 +92,11 @@ class Habitats implements GameInstance {
   }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${ANIMALS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.idx + 1} / ${ANIMALS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
@@ -105,23 +109,29 @@ class Habitats implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Send each animal home"),
+        el("span", {}, "Send each animal home")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Drag the animal to its habitat"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Drag the animal to its habitat"
+      ),
       el("div", { class: "metric" }, el("span", {}, "🐾 Animal"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
   private zoneAt(p: Point): Zone | null {
-    return ZONES.find((z) => p.x >= z.x && p.x <= z.x + z.w && p.y >= z.y && p.y <= z.y + z.h) ?? null;
+    return (
+      ZONES.find((z) => p.x >= z.x && p.x <= z.x + z.w && p.y >= z.y && p.y <= z.y + z.h) ?? null
+    );
   }
 
   private drop(p: Point): void {
     if (this.ended) return;
     const z = this.zoneAt(p);
     const cur = this.current();
-    if (z && z.key === cur.zone) {
+    if (z?.key === cur.zone) {
       this.flash = 1;
       this.flashZone = z.key;
       this.ctx.services.audio.play("tick");
@@ -219,7 +229,14 @@ class Habitats implements GameInstance {
     c.fillText("Drag each animal to its habitat 🏡", W / 2, 50);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

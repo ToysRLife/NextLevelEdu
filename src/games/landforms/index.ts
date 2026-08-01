@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -14,8 +14,16 @@ interface Landform {
 const NAMES = ["Mountain", "Valley", "River", "Island", "Lake", "Plateau"];
 
 const FORMS: Landform[] = [
-  { key: "Mountain", name: "Mountain", why: "A mountain is a tall, steep peak rising high above the land." },
-  { key: "Valley", name: "Valley", why: "A valley is the low dip of land between hills or mountains." },
+  {
+    key: "Mountain",
+    name: "Mountain",
+    why: "A mountain is a tall, steep peak rising high above the land.",
+  },
+  {
+    key: "Valley",
+    name: "Valley",
+    why: "A valley is the low dip of land between hills or mountains.",
+  },
   { key: "River", name: "River", why: "A river is flowing water that winds across the land." },
   { key: "Island", name: "Island", why: "An island is land with water all the way around it." },
   { key: "Lake", name: "Lake", why: "A lake is a body of water surrounded by land." },
@@ -56,10 +64,14 @@ class Landforms implements GameInstance {
     const chips = el(
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
-      ...NAMES.map((n) => el("button", { class: "chip", onclick: () => this.choose(n) }, n)),
+      ...NAMES.map((n) => el("button", { class: "chip", onclick: () => this.choose(n) }, n))
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${FORMS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-orange)" } },
+      `${this.idx + 1} / ${FORMS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
@@ -72,12 +84,12 @@ class Landforms implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Name every landform"),
+        el("span", {}, "Name every landform")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Which landform is it?"),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🗺️ Landform"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -148,7 +160,10 @@ class Landforms implements GameInstance {
     }
 
     // frame for the scene
-    const fx = 200, fy = 130, fw = 400, fh = 300;
+    const fx = 200,
+      fy = 130,
+      fw = 400,
+      fh = 300;
     c.fillStyle = "#fff";
     c.strokeStyle = "#fdba74";
     c.lineWidth = 6;
@@ -168,7 +183,14 @@ class Landforms implements GameInstance {
     c.fillText("What landform is this?", W / 2, 60);
   }
 
-  private drawForm(c: CanvasRenderingContext2D, key: string, x: number, y: number, w: number, h: number): void {
+  private drawForm(
+    c: CanvasRenderingContext2D,
+    key: string,
+    x: number,
+    y: number,
+    w: number,
+    h: number
+  ): void {
     const base = y + h;
     // sky
     c.fillStyle = "#cfeffd";
@@ -178,58 +200,90 @@ class Landforms implements GameInstance {
     const water = "#38bdf8";
 
     if (key === "Mountain") {
-      c.fillStyle = land; c.fillRect(x, base - 60, w, 60);
+      c.fillStyle = land;
+      c.fillRect(x, base - 60, w, 60);
       c.fillStyle = rock;
       c.beginPath();
       c.moveTo(x + 60, base - 50);
       c.lineTo(x + 200, y + 60);
       c.lineTo(x + 340, base - 50);
-      c.closePath(); c.fill();
+      c.closePath();
+      c.fill();
       // snow cap
       c.fillStyle = "#fff";
-      c.beginPath(); c.moveTo(x + 175, y + 95); c.lineTo(x + 200, y + 60); c.lineTo(x + 225, y + 95); c.closePath(); c.fill();
+      c.beginPath();
+      c.moveTo(x + 175, y + 95);
+      c.lineTo(x + 200, y + 60);
+      c.lineTo(x + 225, y + 95);
+      c.closePath();
+      c.fill();
     } else if (key === "Valley") {
       c.fillStyle = land;
       c.beginPath();
-      c.moveTo(x, y + 60); c.lineTo(x + 140, base); c.lineTo(x + 260, base); c.lineTo(x + w, y + 60);
-      c.lineTo(x + w, base); c.lineTo(x, base); c.closePath(); c.fill();
+      c.moveTo(x, y + 60);
+      c.lineTo(x + 140, base);
+      c.lineTo(x + 260, base);
+      c.lineTo(x + w, y + 60);
+      c.lineTo(x + w, base);
+      c.lineTo(x, base);
+      c.closePath();
+      c.fill();
       c.fillStyle = water;
       c.fillRect(x + 170, base - 30, 60, 30);
     } else if (key === "River") {
-      c.fillStyle = land; c.fillRect(x, y + 40, w, h - 40);
-      c.strokeStyle = water; c.lineWidth = 26;
+      c.fillStyle = land;
+      c.fillRect(x, y + 40, w, h - 40);
+      c.strokeStyle = water;
+      c.lineWidth = 26;
       c.beginPath();
       c.moveTo(x + 40, y + 60);
       c.bezierCurveTo(x + 160, y + 120, x + 240, y + 200, x + 360, base - 20);
       c.stroke();
     } else if (key === "Island") {
-      c.fillStyle = water; c.fillRect(x, y, w, h);
+      c.fillStyle = water;
+      c.fillRect(x, y, w, h);
       c.fillStyle = "#fcd34d";
-      c.beginPath(); c.ellipse(x + w / 2, base - 90, 110, 60, 0, 0, Math.PI * 2); c.fill();
+      c.beginPath();
+      c.ellipse(x + w / 2, base - 90, 110, 60, 0, 0, Math.PI * 2);
+      c.fill();
       c.fillStyle = "#16a34a";
       c.fillText("🌴", x + w / 2, base - 90);
-      c.font = "40px serif"; c.textAlign = "center";
+      c.font = "40px serif";
+      c.textAlign = "center";
       c.fillText("🌴", x + w / 2, base - 80);
     } else if (key === "Lake") {
-      c.fillStyle = land; c.fillRect(x, y, w, h);
-      c.fillStyle = "#3f6212"; c.fillRect(x, y, w, 40);
+      c.fillStyle = land;
+      c.fillRect(x, y, w, h);
+      c.fillStyle = "#3f6212";
+      c.fillRect(x, y, w, 40);
       c.fillStyle = water;
-      c.beginPath(); c.ellipse(x + w / 2, y + h / 2 + 20, 130, 80, 0, 0, Math.PI * 2); c.fill();
+      c.beginPath();
+      c.ellipse(x + w / 2, y + h / 2 + 20, 130, 80, 0, 0, Math.PI * 2);
+      c.fill();
     } else if (key === "Plateau") {
-      c.fillStyle = land; c.fillRect(x, base - 50, w, 50);
+      c.fillStyle = land;
+      c.fillRect(x, base - 50, w, 50);
       c.fillStyle = rock;
       c.beginPath();
       c.moveTo(x + 90, base - 40);
       c.lineTo(x + 110, y + 110);
       c.lineTo(x + 290, y + 110);
       c.lineTo(x + 310, base - 40);
-      c.closePath(); c.fill();
+      c.closePath();
+      c.fill();
       c.fillStyle = "#65a30d";
       c.fillRect(x + 110, y + 100, 180, 14); // flat green top
     }
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

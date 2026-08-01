@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -15,27 +15,52 @@ interface Round {
 const ROUNDS: Round[] = [
   {
     property: "colour",
-    items: [{ emoji: "🍎", odd: false }, { emoji: "🍓", odd: false }, { emoji: "🌶️", odd: false }, { emoji: "🫐", odd: true }],
+    items: [
+      { emoji: "🍎", odd: false },
+      { emoji: "🍓", odd: false },
+      { emoji: "🌶️", odd: false },
+      { emoji: "🫐", odd: true },
+    ],
     why: "The blueberry is blue — the others are all red.",
   },
   {
     property: "shape",
-    items: [{ emoji: "⚽", odd: false }, { emoji: "🍊", odd: false }, { emoji: "🔴", odd: false }, { emoji: "📦", odd: true }],
+    items: [
+      { emoji: "⚽", odd: false },
+      { emoji: "🍊", odd: false },
+      { emoji: "🔴", odd: false },
+      { emoji: "📦", odd: true },
+    ],
     why: "The box is square — the others are all round.",
   },
   {
     property: "see-through",
-    items: [{ emoji: "🪟", odd: false }, { emoji: "🥛", odd: false }, { emoji: "🧊", odd: false }, { emoji: "🧱", odd: true }],
+    items: [
+      { emoji: "🪟", odd: false },
+      { emoji: "🥛", odd: false },
+      { emoji: "🧊", odd: false },
+      { emoji: "🧱", odd: true },
+    ],
     why: "The brick is solid — you can see through the others.",
   },
   {
     property: "lives in water",
-    items: [{ emoji: "🐟", odd: false }, { emoji: "🐙", odd: false }, { emoji: "🐬", odd: false }, { emoji: "🐰", odd: true }],
+    items: [
+      { emoji: "🐟", odd: false },
+      { emoji: "🐙", odd: false },
+      { emoji: "🐬", odd: false },
+      { emoji: "🐰", odd: true },
+    ],
     why: "The rabbit lives on land — the others live in water.",
   },
   {
     property: "soft",
-    items: [{ emoji: "🧸", odd: false }, { emoji: "🧶", odd: false }, { emoji: "☁️", odd: false }, { emoji: "🪨", odd: true }],
+    items: [
+      { emoji: "🧸", odd: false },
+      { emoji: "🧶", odd: false },
+      { emoji: "☁️", odd: false },
+      { emoji: "🪨", odd: true },
+    ],
     why: "The rock is hard — the others are soft.",
   },
 ];
@@ -58,7 +83,10 @@ class OddOneOut implements GameInstance {
 
   constructor(private readonly ctx: GameContext) {
     this.ctx2d = fitCanvas(ctx.canvas, W, H);
-    this.order = ROUNDS.map((r) => ({ ...r, items: [...r.items].sort(() => Math.random() - 0.5) })).sort(() => Math.random() - 0.5);
+    this.order = ROUNDS.map((r) => ({
+      ...r,
+      items: [...r.items].sort(() => Math.random() - 0.5),
+    })).sort(() => Math.random() - 0.5);
     this.layout();
     this.detach = onPointer(ctx.canvas, W, H, { down: (p) => this.tap(p) });
     this.buildPanel();
@@ -84,7 +112,11 @@ class OddOneOut implements GameInstance {
   }
 
   private buildPanel(): void {
-    this.progressEl = el("span", { style: { color: "var(--accent-pink)" } }, `${this.idx + 1} / ${ROUNDS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-pink)" } },
+      `${this.idx + 1} / ${ROUNDS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-pink)", background: "#fdf2f8" },
@@ -97,11 +129,15 @@ class OddOneOut implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Compare by"),
-        el("span", {}, this.current().property),
+        el("span", {}, this.current().property)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Tap the odd one out on the board"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Tap the odd one out on the board"
+      ),
       el("div", { class: "metric" }, el("span", {}, "🧩 Puzzle"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -211,7 +247,10 @@ class OddOneOut implements GameInstance {
     this.idx = 0;
     this.mistakes = 0;
     this.flash = 0;
-    this.order = ROUNDS.map((r) => ({ ...r, items: [...r.items].sort(() => Math.random() - 0.5) })).sort(() => Math.random() - 0.5);
+    this.order = ROUNDS.map((r) => ({
+      ...r,
+      items: [...r.items].sort(() => Math.random() - 0.5),
+    })).sort(() => Math.random() - 0.5);
     this.ctx.services.hints.reset();
     this.buildPanel();
   }

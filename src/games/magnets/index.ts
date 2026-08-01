@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -51,7 +51,7 @@ class Magnets implements GameInstance {
           this.updateReadout();
         },
       },
-      "🔄 Flip Pole",
+      "🔄 Flip Pole"
     );
 
     this.modeEl = el("span", { style: { color: "var(--accent-pink)" } }, "Repel");
@@ -67,7 +67,7 @@ class Magnets implements GameInstance {
       flipBtn,
       el("div", { class: "metric" }, el("span", {}, "🧲 Effect"), this.modeEl),
       el("div", { class: "metric" }, el("span", {}, "⏱️ Time"), this.timeEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -108,8 +108,8 @@ class Magnets implements GameInstance {
     const f = dtMs / 16.67;
     this.timeLeft -= dtMs / 1000;
 
-    let dx = this.puck.x - this.mag.x;
-    let dy = this.puck.y - this.mag.y;
+    const dx = this.puck.x - this.mag.x;
+    const dy = this.puck.y - this.mag.y;
     let r = Math.hypot(dx, dy);
     if (r < 30) r = 30;
     const force = K / (r * r);
@@ -166,7 +166,8 @@ class Magnets implements GameInstance {
     if (hintsUsed >= 2) stars = Math.min(stars, 2);
     this.ctx.services.score.event("magnets_goal", { timeLeft: Math.round(this.timeLeft) });
     this.ctx.services.outcome.succeed({
-      message: "Parked the puck in the goal! You used attraction and repulsion to steer it without ever touching it.",
+      message:
+        "Parked the puck in the goal! You used attraction and repulsion to steer it without ever touching it.",
       stars,
       resources: { Alloy: 40 },
     });
@@ -176,7 +177,8 @@ class Magnets implements GameInstance {
     this.ended = true;
     this.loop.stop();
     this.ctx.services.outcome.fail({
-      message: "Time's up! Try pulling the puck most of the way by attracting it, then flip to repel for fine control.",
+      message:
+        "Time's up! Try pulling the puck most of the way by attracting it, then flip to repel for fine control.",
     });
   }
 
@@ -282,7 +284,8 @@ export const magnetsGame: GameModule = {
     gradeBand: "3",
     emoji: "🧲",
     blurb: "Use attraction and repulsion to steer a magnetic puck into the goal — no touching!",
-    mission: "Guide the puck into the goal ring using only magnetic force: flip your poles to pull it close, then push it in.",
+    mission:
+      "Guide the puck into the goal ring using only magnetic force: flip your poles to pull it close, then push it in.",
     estMinutes: 4,
   },
   create: (ctx) => new Magnets(ctx),

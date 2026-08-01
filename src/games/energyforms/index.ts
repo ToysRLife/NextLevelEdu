@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -23,13 +23,48 @@ interface Item {
 }
 
 const ITEMS: Item[] = [
-  { name: "The Sun", emoji: "☀️", form: "light", why: "The Sun shines — that's light energy (and heat too!)." },
-  { name: "A campfire", emoji: "🔥", form: "heat", why: "A fire gives off heat energy, warming everything nearby." },
-  { name: "A beating drum", emoji: "🥁", form: "sound", why: "A drum vibrates the air — that's sound energy." },
-  { name: "A running child", emoji: "🏃", form: "motion", why: "Anything moving has motion (kinetic) energy." },
-  { name: "A battery", emoji: "🔋", form: "electrical", why: "A battery stores and gives out electrical energy." },
-  { name: "A ringing bell", emoji: "🔔", form: "sound", why: "A bell vibrates to make sound energy." },
-  { name: "A speeding car", emoji: "🚗", form: "motion", why: "A moving car carries motion energy." },
+  {
+    name: "The Sun",
+    emoji: "☀️",
+    form: "light",
+    why: "The Sun shines — that's light energy (and heat too!).",
+  },
+  {
+    name: "A campfire",
+    emoji: "🔥",
+    form: "heat",
+    why: "A fire gives off heat energy, warming everything nearby.",
+  },
+  {
+    name: "A beating drum",
+    emoji: "🥁",
+    form: "sound",
+    why: "A drum vibrates the air — that's sound energy.",
+  },
+  {
+    name: "A running child",
+    emoji: "🏃",
+    form: "motion",
+    why: "Anything moving has motion (kinetic) energy.",
+  },
+  {
+    name: "A battery",
+    emoji: "🔋",
+    form: "electrical",
+    why: "A battery stores and gives out electrical energy.",
+  },
+  {
+    name: "A ringing bell",
+    emoji: "🔔",
+    form: "sound",
+    why: "A bell vibrates to make sound energy.",
+  },
+  {
+    name: "A speeding car",
+    emoji: "🚗",
+    form: "motion",
+    why: "A moving car carries motion energy.",
+  },
   { name: "A torch beam", emoji: "🔦", form: "light", why: "A torch sends out light energy." },
 ];
 
@@ -67,10 +102,20 @@ class EnergyForms implements GameInstance {
     const chips = el(
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
-      ...FORMS.map((fm) => el("button", { class: "chip", onclick: () => this.choose(fm.key) }, `${fm.emoji} ${fm.label}`)),
+      ...FORMS.map((fm) =>
+        el(
+          "button",
+          { class: "chip", onclick: () => this.choose(fm.key) },
+          `${fm.emoji} ${fm.label}`
+        )
+      )
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-yellow)" } }, `${this.idx + 1} / ${ITEMS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-yellow)" } },
+      `${this.idx + 1} / ${ITEMS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-yellow)", background: "#fefce8" },
@@ -83,12 +128,12 @@ class EnergyForms implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Spot every energy"),
+        el("span", {}, "Spot every energy")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Which form of energy?"),
       chips,
       el("div", { class: "metric" }, el("span", {}, "⚡ Item"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -179,7 +224,14 @@ class EnergyForms implements GameInstance {
     c.fillText("Name the form of energy ⚡", W / 2, 60);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

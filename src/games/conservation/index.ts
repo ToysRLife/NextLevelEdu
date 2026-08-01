@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -16,10 +16,34 @@ interface Scenario {
 }
 
 const SCENARIOS: Scenario[] = [
-  { title: "Ice melts in a sealed cup", emoji: "🧊", sealed: true, answer: "same", why: "Melting only changes ice to water — the same particles are still there, so the mass is unchanged." },
-  { title: "Salt dissolves in a sealed jar", emoji: "🧂", sealed: true, answer: "same", why: "The salt spreads out but doesn't disappear — every particle stays in the jar, so mass stays the same." },
-  { title: "A candle burns in the open air", emoji: "🕯️", sealed: false, answer: "less", why: "Burning turns the wax into gases that float away into the air, so what's left weighs less." },
-  { title: "A fizzy tablet in a sealed bottle", emoji: "🥤", sealed: true, answer: "same", why: "It makes gas, but the sealed bottle traps it — nothing escapes, so the mass doesn't change." },
+  {
+    title: "Ice melts in a sealed cup",
+    emoji: "🧊",
+    sealed: true,
+    answer: "same",
+    why: "Melting only changes ice to water — the same particles are still there, so the mass is unchanged.",
+  },
+  {
+    title: "Salt dissolves in a sealed jar",
+    emoji: "🧂",
+    sealed: true,
+    answer: "same",
+    why: "The salt spreads out but doesn't disappear — every particle stays in the jar, so mass stays the same.",
+  },
+  {
+    title: "A candle burns in the open air",
+    emoji: "🕯️",
+    sealed: false,
+    answer: "less",
+    why: "Burning turns the wax into gases that float away into the air, so what's left weighs less.",
+  },
+  {
+    title: "A fizzy tablet in a sealed bottle",
+    emoji: "🥤",
+    sealed: true,
+    answer: "same",
+    why: "It makes gas, but the sealed bottle traps it — nothing escapes, so the mass doesn't change.",
+  },
 ];
 
 class Conservation implements GameInstance {
@@ -56,7 +80,11 @@ class Conservation implements GameInstance {
 
   private buildPanel(): void {
     clear(this.ctx.panel);
-    this.progressEl = el("span", { style: { color: "var(--accent-purple)" } }, `${this.idx + 1} / ${SCENARIOS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-purple)" } },
+      `${this.idx + 1} / ${SCENARIOS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },
@@ -66,7 +94,7 @@ class Conservation implements GameInstance {
       "div",
       { class: "metric", style: { background: "#1e293b", color: "#fff" } },
       el("span", {}, "⚖️ After the change"),
-      el("span", {}, "more / same / less?"),
+      el("span", {}, "more / same / less?")
     );
 
     if (!this.revealed) {
@@ -74,29 +102,53 @@ class Conservation implements GameInstance {
       const choices = el(
         "div",
         { class: "chip-row", style: { flexWrap: "wrap" } },
-        el("button", { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.guess("more") }, "⬆️ More"),
-        el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.guess("same") }, "⚖️ Same"),
-        el("button", { class: "btn", style: { background: "var(--accent-red)" }, onclick: () => this.guess("less") }, "⬇️ Less"),
+        el(
+          "button",
+          {
+            class: "btn",
+            style: { background: "var(--accent-orange)" },
+            onclick: () => this.guess("more"),
+          },
+          "⬆️ More"
+        ),
+        el(
+          "button",
+          {
+            class: "btn",
+            style: { background: "var(--accent-blue)" },
+            onclick: () => this.guess("same"),
+          },
+          "⚖️ Same"
+        ),
+        el(
+          "button",
+          {
+            class: "btn",
+            style: { background: "var(--accent-red)" },
+            onclick: () => this.guess("less"),
+          },
+          "⬇️ Less"
+        )
       );
       this.ctx.panel.append(
         head,
         el("div", { class: "control-label", style: { marginTop: "8px" } }, this.current().title),
         choices,
         el("div", { class: "metric" }, el("span", {}, "🧪 Experiment"), this.progressEl),
-        this.coachEl,
+        this.coachEl
       );
     } else {
       const nextBtn = el(
         "button",
         { class: "btn", style: { background: "var(--accent-purple)" }, onclick: () => this.next() },
-        this.idx + 1 >= this.order.length ? "🏁 Finish" : "Next ▶",
+        this.idx + 1 >= this.order.length ? "🏁 Finish" : "Next ▶"
       );
       this.ctx.panel.append(
         head,
         el("div", { class: "control-label", style: { marginTop: "8px" } }, this.current().title),
         nextBtn,
         el("div", { class: "metric" }, el("span", {}, "🧪 Experiment"), this.progressEl),
-        this.coachEl,
+        this.coachEl
       );
     }
   }
@@ -213,7 +265,13 @@ class Conservation implements GameInstance {
     c.fillText(cur.title, cx, 98);
   }
 
-  private drawPan(c: CanvasRenderingContext2D, x: number, y: number, label: string, content: string): void {
+  private drawPan(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    label: string,
+    content: string
+  ): void {
     c.strokeStyle = "#7c3aed";
     c.lineWidth = 2;
     c.beginPath();

@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -64,11 +64,32 @@ class Fossils implements GameInstance {
   }
 
   private setup(): void {
-    this.dirt = Array.from({ length: ROWS }, () => new Array(COLS).fill(1));
+    this.dirt = Array.from({ length: ROWS }, () => Array.from({ length: COLS }, () => 1));
     this.fossils = [
-      { emoji: "🦴", name: "Ice-age bone", age: "newest — near the top", row: 2, col: 6, revealed: false },
-      { emoji: "🐚", name: "Ancient sea shell", age: "older — buried deeper", row: 7, col: 16, revealed: false },
-      { emoji: "🦕", name: "Dinosaur fossil", age: "oldest — deepest layer", row: 11, col: 10, revealed: false },
+      {
+        emoji: "🦴",
+        name: "Ice-age bone",
+        age: "newest — near the top",
+        row: 2,
+        col: 6,
+        revealed: false,
+      },
+      {
+        emoji: "🐚",
+        name: "Ancient sea shell",
+        age: "older — buried deeper",
+        row: 7,
+        col: 16,
+        revealed: false,
+      },
+      {
+        emoji: "🦕",
+        name: "Dinosaur fossil",
+        age: "oldest — deepest layer",
+        row: 11,
+        col: 10,
+        revealed: false,
+      },
     ];
   }
 
@@ -86,11 +107,15 @@ class Fossils implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Uncover 3 fossils"),
+        el("span", {}, "Uncover 3 fossils")
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Brush over the rock to dig"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Brush over the rock to dig"
+      ),
       el("div", { class: "metric" }, el("span", {}, "🦴 Found"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -116,7 +141,7 @@ class Fossils implements GameInstance {
   private checkReveals(): void {
     for (const f of this.fossils) {
       if (f.revealed) continue;
-      let clear = 0;
+      let revealedCount = 0;
       let total = 0;
       for (let dr = -1; dr <= 1; dr++) {
         for (let dc = -1; dc <= 1; dc++) {
@@ -124,10 +149,10 @@ class Fossils implements GameInstance {
           const c = f.col + dc;
           if (r < 0 || r >= ROWS || c < 0 || c >= COLS) continue;
           total++;
-          if (this.dirt[r][c] < 0.25) clear++;
+          if (this.dirt[r][c] < 0.25) revealedCount++;
         }
       }
-      if (total > 0 && clear / total >= 0.78) {
+      if (total > 0 && revealedCount / total >= 0.78) {
         f.revealed = true;
         this.found += 1;
         this.ctx.services.audio.play("reward");

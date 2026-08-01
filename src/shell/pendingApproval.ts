@@ -1,4 +1,4 @@
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { cloud } from "@platform/cloud";
 
 // Shown when a signed-in account hasn't been approved by an admin yet (or while
@@ -13,7 +13,7 @@ export function renderPendingApproval(root: HTMLElement, state: "checking" | "pe
     card.append(
       el("div", { class: "login-hero spin" }, "🛰️"),
       el("h1", { class: "login-title" }, "Getting ready…"),
-      el("p", { class: "login-sub" }, "Checking your account."),
+      el("p", { class: "login-sub" }, "Checking your account.")
     );
   } else {
     card.append(
@@ -22,12 +22,12 @@ export function renderPendingApproval(root: HTMLElement, state: "checking" | "pe
       el(
         "p",
         { class: "login-sub" },
-        user ? `Thanks for signing in, ${user.name.split(" ")[0]}!` : "Thanks for signing in!",
+        user ? `Thanks for signing in, ${user.name.split(" ")[0]}!` : "Thanks for signing in!"
       ),
       el(
         "p",
         { class: "login-note-lead" },
-        "Your account is waiting for a grown-up to approve it. Once it's approved, you'll be able to play all the games and build your worlds.",
+        "Your account is waiting for a grown-up to approve it. Once it's approved, you'll be able to play all the games and build your worlds."
       ),
       el(
         "button",
@@ -40,8 +40,8 @@ export function renderPendingApproval(root: HTMLElement, state: "checking" | "pe
             void c.recheck();
           },
         },
-        "🔄 Check again",
-      ),
+        "🔄 Check again"
+      )
     );
     if (c.canRemind()) {
       card.append(
@@ -60,13 +60,13 @@ export function renderPendingApproval(root: HTMLElement, state: "checking" | "pe
               }, 30000);
             },
           },
-          "📨 Remind the grown-up",
-        ),
+          "📨 Remind the grown-up"
+        )
       );
     }
     card.append(
       el("button", { class: "btn secondary", onclick: () => void c.signOut() }, "Sign out"),
-      el("p", { class: "login-foot" }, "An approval usually only takes a little while."),
+      el("p", { class: "login-foot" }, "An approval usually only takes a little while.")
     );
   }
 

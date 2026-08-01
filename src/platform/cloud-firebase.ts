@@ -1,5 +1,5 @@
-import type { CloudProvider, CloudUser, CloudDoc, PendingUser, FeedbackEntry } from "./cloud";
-import { SIGNUP_NOTIFY_URL, ADMIN_EMAILS } from "./cloud-config";
+import type { CloudDoc, CloudProvider, CloudUser, FeedbackEntry, PendingUser } from "./cloud";
+import { ADMIN_EMAILS, SIGNUP_NOTIFY_URL } from "./cloud-config";
 
 // Real cross-device cloud save via Firebase Auth (Google) + Firestore.
 //
@@ -120,7 +120,7 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
       await init();
       try {
         const res = await authMod.getRedirectResult(auth);
-        if (res && res.user) {
+        if (res?.user) {
           const user = toUser(res.user);
           cache(user);
           return user;
@@ -144,7 +144,11 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
         // Popup blocked, dismissed, or unsupported (mobile) → fall back to a
         // full-page redirect, which no popup blocker can stop. The page
         // navigates to Google and back; resumeRedirect() finishes the job.
-        if (code.includes("popup") || code.includes("cancelled") || code.includes("operation-not-supported")) {
+        if (
+          code.includes("popup") ||
+          code.includes("cancelled") ||
+          code.includes("operation-not-supported")
+        ) {
           await authMod.signInWithRedirect(auth, provider);
           return null; // page is navigating away
         }
@@ -187,7 +191,11 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
       await init();
       const q = fsMod.query(fsMod.collection(db, "users"), fsMod.where("approved", "==", false));
       const snap = await fsMod.getDocs(q);
-      return snap.docs.map((d: any) => ({ uid: d.id, name: d.data().name || "", email: d.data().email || "" }));
+      return snap.docs.map((d: any) => ({
+        uid: d.id,
+        name: d.data().name || "",
+        email: d.data().email || "",
+      }));
     },
 
     async approveUser(uid: string, email = "", name = ""): Promise<void> {
@@ -199,7 +207,11 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
 
     async listFeedback(): Promise<FeedbackEntry[]> {
       await init();
-      const q = fsMod.query(fsMod.collection(db, "feedback"), fsMod.orderBy("time", "desc"), fsMod.limit(50));
+      const q = fsMod.query(
+        fsMod.collection(db, "feedback"),
+        fsMod.orderBy("time", "desc"),
+        fsMod.limit(50)
+      );
       const snap = await fsMod.getDocs(q);
       return snap.docs.map((d: any) => ({
         gameId: d.data().gameId || "",
@@ -252,8 +264,14 @@ export function makeFirebaseProvider(config: Record<string, string>): CloudProvi
           await fsMod.setDoc(
             ref,
             hasSave
-              ? { email, name, approved: true, grandfathered: true, createdAt: fsMod.serverTimestamp() }
-              : { email, name, approved: false, createdAt: fsMod.serverTimestamp() },
+              ? {
+                  email,
+                  name,
+                  approved: true,
+                  grandfathered: true,
+                  createdAt: fsMod.serverTimestamp(),
+                }
+              : { email, name, approved: false, createdAt: fsMod.serverTimestamp() }
           );
         }
         cacheApproval(user.uid, approved);

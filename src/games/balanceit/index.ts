@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { slider, type SliderHandle } from "@core/controls";
 
 // Conservation of mass (MS-PS1-5): atoms are never created or destroyed in a
@@ -21,16 +21,28 @@ interface Equation {
 
 const ROUNDS: Equation[] = [
   {
-    reactants: [{ formula: "H₂", atoms: { H: 2 } }, { formula: "O₂", atoms: { O: 2 } }],
+    reactants: [
+      { formula: "H₂", atoms: { H: 2 } },
+      { formula: "O₂", atoms: { O: 2 } },
+    ],
     products: [{ formula: "H₂O", atoms: { H: 2, O: 1 } }],
   },
   {
-    reactants: [{ formula: "N₂", atoms: { N: 2 } }, { formula: "H₂", atoms: { H: 2 } }],
+    reactants: [
+      { formula: "N₂", atoms: { N: 2 } },
+      { formula: "H₂", atoms: { H: 2 } },
+    ],
     products: [{ formula: "NH₃", atoms: { N: 1, H: 3 } }],
   },
   {
-    reactants: [{ formula: "CH₄", atoms: { C: 1, H: 4 } }, { formula: "O₂", atoms: { O: 2 } }],
-    products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }],
+    reactants: [
+      { formula: "CH₄", atoms: { C: 1, H: 4 } },
+      { formula: "O₂", atoms: { O: 2 } },
+    ],
+    products: [
+      { formula: "CO₂", atoms: { C: 1, O: 2 } },
+      { formula: "H₂O", atoms: { H: 2, O: 1 } },
+    ],
   },
 ];
 
@@ -88,36 +100,66 @@ class BalanceIt implements GameInstance {
         value: 1,
         step: 1,
         color: i < this.eq().reactants.length ? "var(--accent-blue)" : "var(--accent-green)",
-        onInput: (v) => { this.coeffs[i] = v; this.updateTally(); this.render(); },
-      }),
+        onInput: (v) => {
+          this.coeffs[i] = v;
+          this.updateTally();
+          this.render();
+        },
+      })
     );
-    this.tallyEl = el("div", { class: "readout", style: { whiteSpace: "normal", lineHeight: "1.6" } });
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" } });
+    this.tallyEl = el("div", {
+      class: "readout",
+      style: { whiteSpace: "normal", lineHeight: "1.6" },
+    });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
+    });
     this.coachEl.textContent = "Match every atom count on both sides to balance the equation.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "⚖️ Balance"), el("span", {}, this.equationText())),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "⚖️ Balance"),
+        el("span", {}, this.equationText())
+      ),
       ...this.ctls.map((c) => c.el),
       this.tallyEl,
-      el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.check() }, "⚖️ Check balance"),
+      el(
+        "button",
+        { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.check() },
+        "⚖️ Check balance"
+      ),
       el("div", { class: "metric" }, el("span", {}, "✅ Balanced"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateTally();
   }
 
   private equationText(): string {
-    const r = this.eq().reactants.map((s) => s.formula).join(" + ");
-    const p = this.eq().products.map((s) => s.formula).join(" + ");
+    const r = this.eq()
+      .reactants.map((s) => s.formula)
+      .join(" + ");
+    const p = this.eq()
+      .products.map((s) => s.formula)
+      .join(" + ");
     return `${r} → ${p}`;
   }
 
   private balanced(): boolean {
     const rOff = 0;
     const pOff = this.eq().reactants.length;
-    return this.elements().every((e) => this.sideCount(this.eq().reactants, rOff, e) === this.sideCount(this.eq().products, pOff, e));
+    return this.elements().every(
+      (e) =>
+        this.sideCount(this.eq().reactants, rOff, e) === this.sideCount(this.eq().products, pOff, e)
+    );
   }
 
   private updateTally(): void {
@@ -127,7 +169,7 @@ class BalanceIt implements GameInstance {
       const r = this.sideCount(this.eq().products, pOff, e);
       return `${e}: ${l} ${l === r ? "=" : "≠"} ${r}`;
     });
-    this.tallyEl.textContent = "Atom tally — " + rows.join("  ·  ");
+    this.tallyEl.textContent = `Atom tally — ${rows.join("  ·  ")}`;
     this.tallyEl.style.color = this.balanced() ? "var(--accent-green)" : "var(--ink)";
   }
 
@@ -148,7 +190,10 @@ class BalanceIt implements GameInstance {
       this.misses += 1;
       this.ctx.services.audio.play("fail");
       const pOff = this.eq().reactants.length;
-      const off = this.elements().find((e) => this.sideCount(this.eq().reactants, 0, e) !== this.sideCount(this.eq().products, pOff, e));
+      const off = this.elements().find(
+        (e) =>
+          this.sideCount(this.eq().reactants, 0, e) !== this.sideCount(this.eq().products, pOff, e)
+      );
       this.coachEl.textContent = `Not balanced yet — ${off} doesn't match on both sides. Adjust the coefficients.`;
     }
   }
@@ -178,7 +223,8 @@ class BalanceIt implements GameInstance {
     }
     // balance beam tilting toward the heavier side (by total atoms)
     const pOff = this.eq().reactants.length;
-    let lAtoms = 0, rAtoms = 0;
+    let lAtoms = 0,
+      rAtoms = 0;
     for (const e of this.elements()) {
       lAtoms += this.sideCount(this.eq().reactants, 0, e);
       rAtoms += this.sideCount(this.eq().products, pOff, e);
@@ -202,7 +248,10 @@ class BalanceIt implements GameInstance {
     c.lineTo(220, 0);
     c.stroke();
     // pans
-    for (const [x, label, atoms, side] of [[-220, "Reactants", lAtoms, this.eq().reactants], [220, "Products", rAtoms, this.eq().products]] as [number, string, number, Species[]][]) {
+    for (const [x, label, atoms, side] of [
+      [-220, "Reactants", lAtoms, this.eq().reactants],
+      [220, "Products", rAtoms, this.eq().products],
+    ] as [number, string, number, Species[]][]) {
       c.fillStyle = "#1e293b";
       c.fillRect(x - 70, 40, 140, 8);
       c.fillStyle = "#e2e8f0";
@@ -247,7 +296,8 @@ export const balanceItGame: GameModule = {
     stream: "chemistry",
     gradeBand: "6-8",
     emoji: "⚖️",
-    blurb: "Set the coefficients so every atom is accounted for — and discover conservation of mass.",
+    blurb:
+      "Set the coefficients so every atom is accounted for — and discover conservation of mass.",
     mission: "Balance each chemical equation so atoms match on both sides.",
     estMinutes: 4,
   },

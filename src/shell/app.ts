@@ -1,8 +1,8 @@
-import { el, clear } from "@core/dom";
-import { getPersona, getJoules, rankForJoules, hasPersona, getStreak } from "./profile";
+import { clear, el } from "@core/dom";
+import { getJoules, getPersona, getStreak, hasPersona, rankForJoules } from "./profile";
 import { renderDashboard } from "./dashboard";
 import { renderGameHost } from "./gameHost";
-import { renderWorlds, renderWorld } from "./worlds";
+import { renderWorld, renderWorlds } from "./worlds";
 import { renderBadges } from "./badgesPage";
 import { renderCloud } from "./cloudPage";
 import { renderOnboarding } from "./onboarding";
@@ -118,24 +118,40 @@ export function mountApp(root: HTMLElement): void {
   window.addEventListener("hashchange", route, { signal });
   window.addEventListener("joules-changed", refreshStats, { signal });
   window.addEventListener("streak-changed", refreshStats, { signal });
-  window.addEventListener("badges-changed", () => {
-    if (location.hash === "#/badges") renderBadges(view);
-  }, { signal });
+  window.addEventListener(
+    "badges-changed",
+    () => {
+      if (location.hash === "#/badges") renderBadges(view);
+    },
+    { signal }
+  );
   window.addEventListener("persona-changed", refreshNav, { signal });
   // Cloud sync: a pull rewrites local state, so refresh everything; a status
   // change just updates the nav chip and the account page if open.
-  window.addEventListener("cloud-synced", () => {
-    refreshNav();
-    route();
-  }, { signal });
-  window.addEventListener("cloud-changed", () => {
-    refreshStats();
-    if (location.hash === "#/account") renderCloud(view);
-  }, { signal });
+  window.addEventListener(
+    "cloud-synced",
+    () => {
+      refreshNav();
+      route();
+    },
+    { signal }
+  );
+  window.addEventListener(
+    "cloud-changed",
+    () => {
+      refreshStats();
+      if (location.hash === "#/account") renderCloud(view);
+    },
+    { signal }
+  );
   // A single-world view re-renders itself on build; the overview needs a nudge.
-  window.addEventListener("resources-changed", () => {
-    if (location.hash === "#/worlds") renderWorlds(view);
-  }, { signal });
+  window.addEventListener(
+    "resources-changed",
+    () => {
+      if (location.hash === "#/worlds") renderWorlds(view);
+    },
+    { signal }
+  );
 
   refreshNav();
   route();
@@ -156,16 +172,31 @@ function mountNav(root: HTMLElement, view: HTMLElement): void {
   const nav = el(
     "nav",
     {},
-    el("div", { class: "nav-brand", onclick: () => (location.hash = "#/") }, "NextLevel ", el("span", {}, "Edu")),
+    el(
+      "div",
+      { class: "nav-brand", onclick: () => (location.hash = "#/") },
+      "NextLevel ",
+      el("span", {}, "Edu")
+    ),
     el(
       "div",
       { class: "nav-links" },
       el("button", { class: "nav-link", onclick: () => (location.hash = "#/") }, "🎯 Missions"),
       el("button", { class: "nav-link", onclick: () => (location.hash = "#/worlds") }, "🏗️ Worlds"),
-      el("button", { class: "nav-link", onclick: () => (location.hash = "#/badges") }, "🏅 Trophies"),
-      cloud().isAdmin() ? el("button", { class: "nav-link", onclick: () => (location.hash = "#/admin") }, "🛠️ Admin") : null,
+      el(
+        "button",
+        { class: "nav-link", onclick: () => (location.hash = "#/badges") },
+        "🏅 Trophies"
+      ),
+      cloud().isAdmin()
+        ? el(
+            "button",
+            { class: "nav-link", onclick: () => (location.hash = "#/admin") },
+            "🛠️ Admin"
+          )
+        : null,
       cloudBtn(),
-      muteBtn(),
+      muteBtn()
     ),
     el(
       "div",
@@ -173,8 +204,8 @@ function mountNav(root: HTMLElement, view: HTMLElement): void {
       streakEl,
       joulesEl,
       el("div", { class: "persona-avatar" }, persona.emoji),
-      el("div", { class: "persona-meta" }, el("strong", {}, persona.alias), rankEl),
-    ),
+      el("div", { class: "persona-meta" }, el("strong", {}, persona.alias), rankEl)
+    )
   );
 
   clear(root);
@@ -189,12 +220,20 @@ function cloudLabel(): string {
   return s === "syncing" ? "🔄 Syncing" : s === "error" ? "☁️ Offline" : "☁️ Saved";
 }
 function cloudBtn(): HTMLElement {
-  cloudEl = el("button", { class: "nav-link", title: "Cloud save", onclick: () => (location.hash = "#/account") }, cloudLabel());
+  cloudEl = el(
+    "button",
+    { class: "nav-link", title: "Cloud save", onclick: () => (location.hash = "#/account") },
+    cloudLabel()
+  );
   return cloudEl;
 }
 
 function muteBtn(): HTMLElement {
-  const btn = el("button", { class: "nav-link", title: "Sound on/off" }, audio.isMuted() ? "🔇 Sound" : "🔊 Sound");
+  const btn = el(
+    "button",
+    { class: "nav-link", title: "Sound on/off" },
+    audio.isMuted() ? "🔇 Sound" : "🔊 Sound"
+  );
   btn.onclick = () => {
     const next = !audio.isMuted();
     audio.setMuted(next);

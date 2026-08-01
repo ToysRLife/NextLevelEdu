@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -64,7 +64,8 @@ class Rainbow implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },
     });
-    this.coachEl.textContent = "Tilt the prism so the rainbow lands on the pot of gold. Hold it there!";
+    this.coachEl.textContent =
+      "Tilt the prism so the rainbow lands on the pot of gold. Hold it there!";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -72,13 +73,13 @@ class Rainbow implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Land ${NEED} rainbows`),
+        el("span", {}, `Land ${NEED} rainbows`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🔺 Tilt the prism"),
       slider,
       el("div", { class: "metric" }, el("span", {}, "🌈 Aim"), this.aimEl),
       el("div", { class: "metric" }, el("span", {}, "🪙 Rainbows landed"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -90,7 +91,8 @@ class Rainbow implements GameInstance {
 
   private updateReadout(): void {
     const off = this.centerHitY() - this.targetY;
-    this.aimEl.textContent = Math.abs(off) < this.tol ? "on target 🎯" : off < 0 ? "too high ⬆️" : "too low ⬇️";
+    this.aimEl.textContent =
+      Math.abs(off) < this.tol ? "on target 🎯" : off < 0 ? "too high ⬆️" : "too low ⬇️";
   }
 
   private renderLoop(): void {

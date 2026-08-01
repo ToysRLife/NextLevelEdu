@@ -5,7 +5,7 @@
 export function fitCanvas(
   canvas: HTMLCanvasElement,
   width: number,
-  height: number,
+  height: number
 ): CanvasRenderingContext2D {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = Math.round(width * dpr);

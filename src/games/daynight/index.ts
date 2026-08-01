@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -18,9 +18,24 @@ interface Prompt {
 }
 
 const PROMPTS: Prompt[] = [
-  { name: "Noon (midday)", emoji: "☀️", test: (cos) => cos > 0.92, hint: "At noon the city faces straight toward the Sun, so it's brightest." },
-  { name: "Midnight", emoji: "🌙", test: (cos) => cos < -0.92, hint: "At midnight the city faces away from the Sun, into Earth's shadow." },
-  { name: "Sunrise or sunset", emoji: "🌅", test: (cos) => Math.abs(cos) < 0.16, hint: "At sunrise/sunset the city is on the edge between the lit and dark sides." },
+  {
+    name: "Noon (midday)",
+    emoji: "☀️",
+    test: (cos) => cos > 0.92,
+    hint: "At noon the city faces straight toward the Sun, so it's brightest.",
+  },
+  {
+    name: "Midnight",
+    emoji: "🌙",
+    test: (cos) => cos < -0.92,
+    hint: "At midnight the city faces away from the Sun, into Earth's shadow.",
+  },
+  {
+    name: "Sunrise or sunset",
+    emoji: "🌅",
+    test: (cos) => Math.abs(cos) < 0.16,
+    hint: "At sunrise/sunset the city is on the edge between the lit and dark sides.",
+  },
 ];
 
 class DayNight implements GameInstance {
@@ -88,10 +103,14 @@ class DayNight implements GameInstance {
     const lockBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.lockIn() },
-      "🔒 Lock the time",
+      "🔒 Lock the time"
     );
 
-    this.promptEl = el("span", { style: { color: "var(--accent-blue)" } }, `${this.target().emoji} ${this.target().name}`);
+    this.promptEl = el(
+      "span",
+      { style: { color: "var(--accent-blue)" } },
+      `${this.target().emoji} ${this.target().name}`
+    );
     this.timeEl = el("span", {}, "—");
     this.statusEl = el("span", {}, `0 / ${PROMPTS.length}`);
     this.coachEl = el("div", {
@@ -106,13 +125,17 @@ class DayNight implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Make it"),
-        this.promptEl,
+        this.promptEl
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Drag the city to spin Earth"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Drag the city to spin Earth"
+      ),
       lockBtn,
       el("div", { class: "metric" }, el("span", {}, "🏙️ City time"), this.timeEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Matched"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }

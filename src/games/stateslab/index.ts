@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 
 // States of matter & particle motion (MS-PS1-4): heating gives particles more
 // energy so they move faster and spread out. Below freezing they lock into a
@@ -17,7 +17,14 @@ const STATE_EMOJI: Record<State, string> = { Solid: "🧊", Liquid: "💧", Gas:
 
 const ROUNDS: State[] = ["Liquid", "Gas", "Solid"];
 
-interface P { x: number; y: number; vx: number; vy: number; hx: number; hy: number }
+interface P {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  hx: number;
+  hy: number;
+}
 
 class StatesLab implements GameInstance {
   private readonly ctx2d: CanvasRenderingContext2D;
@@ -38,10 +45,15 @@ class StatesLab implements GameInstance {
   constructor(private readonly ctx: GameContext) {
     this.ctx2d = fitCanvas(ctx.canvas, W, H);
     // 5x5 lattice of particles with "home" positions for the solid state
-    const cols = 5, rows = 5, gap = 70, ox = W / 2 - (cols - 1) * gap / 2, oy = 330 - (rows - 1) * gap / 2;
+    const cols = 5,
+      rows = 5,
+      gap = 70,
+      ox = W / 2 - ((cols - 1) * gap) / 2,
+      oy = 330 - ((rows - 1) * gap) / 2;
     for (let r = 0; r < rows; r++)
       for (let cI = 0; cI < cols; cI++) {
-        const hx = ox + cI * gap, hy = oy + r * gap;
+        const hx = ox + cI * gap,
+          hy = oy + r * gap;
         this.parts.push({ x: hx, y: hy, vx: 0, vy: 0, hx, hy });
       }
     this.buildPanel();
@@ -66,22 +78,50 @@ class StatesLab implements GameInstance {
       step: 1,
       unit: "°C",
       color: "var(--accent-orange)",
-      onInput: (v) => { this.temp = v; this.updateReadout(); },
+      onInput: (v) => {
+        this.temp = v;
+        this.updateReadout();
+      },
     });
     this.stateRead = readout("🔬 State of matter");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
+    });
     this.coachEl.textContent = "Heat or cool the substance until it reaches the target state.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Target state"), el("span", {}, `${STATE_EMOJI[this.target()]} ${this.target()}`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Target state"),
+        el("span", {}, `${STATE_EMOJI[this.target()]} ${this.target()}`)
+      ),
       this.tempCtl.el,
       this.stateRead.el,
-      el("div", { class: "metric" }, el("span", {}, "❄️ Freezes at 0°C · 🔥 boils at 100°C"), el("span", {}, "")),
-      el("button", { class: "btn", style: { background: "var(--accent-orange)" }, onclick: () => this.check() }, "🔒 Lock in this state"),
+      el(
+        "div",
+        { class: "metric" },
+        el("span", {}, "❄️ Freezes at 0°C · 🔥 boils at 100°C"),
+        el("span", {}, "")
+      ),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-orange)" },
+          onclick: () => this.check(),
+        },
+        "🔒 Lock in this state"
+      ),
       el("div", { class: "metric" }, el("span", {}, "✅ States reached"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -109,7 +149,11 @@ class StatesLab implements GameInstance {
       this.ctx.services.audio.play("fail");
       const t = this.target();
       this.coachEl.textContent =
-        t === "Solid" ? "Need a solid — cool it below 0°C to freeze." : t === "Gas" ? "Need a gas — heat it above 100°C to boil." : "Need a liquid — keep it between 0°C and 100°C.";
+        t === "Solid"
+          ? "Need a solid — cool it below 0°C to freeze."
+          : t === "Gas"
+            ? "Need a gas — heat it above 100°C to boil."
+            : "Need a liquid — keep it between 0°C and 100°C.";
     }
   }
 
@@ -143,11 +187,14 @@ class StatesLab implements GameInstance {
       if (s === "Solid") {
         // jiggle around the home lattice site
         const amp = 2 + energy * 6;
-        p.x = p.hx + (Math.sin((p.hx + p.y) * 0.5 + performance.now() * 0.005) * amp);
-        p.y = p.hy + (Math.cos((p.hy + p.x) * 0.5 + performance.now() * 0.005) * amp);
+        p.x = p.hx + Math.sin((p.hx + p.y) * 0.5 + performance.now() * 0.005) * amp;
+        p.y = p.hy + Math.cos((p.hy + p.x) * 0.5 + performance.now() * 0.005) * amp;
       } else {
         const speed = s === "Gas" ? 3 + energy * 6 : 1 + energy * 2;
-        if (p.vx === 0 && p.vy === 0) { p.vx = (((p.hx % 7) - 3) / 3) * speed; p.vy = (((p.hy % 5) - 2) / 2) * speed; }
+        if (p.vx === 0 && p.vy === 0) {
+          p.vx = (((p.hx % 7) - 3) / 3) * speed;
+          p.vy = (((p.hy % 5) - 2) / 2) * speed;
+        }
         const sp = Math.hypot(p.vx, p.vy) || 1;
         p.vx = (p.vx / sp) * speed;
         p.vy = (p.vy / sp) * speed;
@@ -156,10 +203,22 @@ class StatesLab implements GameInstance {
         // liquid settles toward the bottom (gravity); gas fills the box
         if (s === "Liquid") p.vy += 0.25;
         const lo = s === "Liquid" ? box.y + box.h * 0.45 : box.y;
-        if (p.x < box.x + 8) { p.x = box.x + 8; p.vx = Math.abs(p.vx); }
-        if (p.x > box.x + box.w - 8) { p.x = box.x + box.w - 8; p.vx = -Math.abs(p.vx); }
-        if (p.y < lo + 8) { p.y = lo + 8; p.vy = Math.abs(p.vy); }
-        if (p.y > box.y + box.h - 8) { p.y = box.y + box.h - 8; p.vy = -Math.abs(p.vy) * (s === "Liquid" ? 0.6 : 1); }
+        if (p.x < box.x + 8) {
+          p.x = box.x + 8;
+          p.vx = Math.abs(p.vx);
+        }
+        if (p.x > box.x + box.w - 8) {
+          p.x = box.x + box.w - 8;
+          p.vx = -Math.abs(p.vx);
+        }
+        if (p.y < lo + 8) {
+          p.y = lo + 8;
+          p.vy = Math.abs(p.vy);
+        }
+        if (p.y > box.y + box.h - 8) {
+          p.y = box.y + box.h - 8;
+          p.vy = -Math.abs(p.vy) * (s === "Liquid" ? 0.6 : 1);
+        }
       }
     }
   }
@@ -207,7 +266,12 @@ class StatesLab implements GameInstance {
     this.idx = 0;
     this.hits = 0;
     this.misses = 0;
-    for (const p of this.parts) { p.x = p.hx; p.y = p.hy; p.vx = 0; p.vy = 0; }
+    for (const p of this.parts) {
+      p.x = p.hx;
+      p.y = p.hy;
+      p.vx = 0;
+      p.vy = 0;
+    }
     this.ctx.services.hints.reset();
     this.buildPanel();
   }
@@ -224,7 +288,8 @@ export const statesLabGame: GameModule = {
     stream: "chemistry",
     gradeBand: "6-8",
     emoji: "🔬",
-    blurb: "Heat and cool a substance to watch its particles lock up, flow, or fly apart — solid, liquid, gas.",
+    blurb:
+      "Heat and cool a substance to watch its particles lock up, flow, or fly apart — solid, liquid, gas.",
     mission: "Set the temperature to reach each target state of matter.",
     estMinutes: 3,
   },

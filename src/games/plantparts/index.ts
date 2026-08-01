@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -15,10 +15,30 @@ interface PartInfo {
 }
 
 const PARTS: PartInfo[] = [
-  { key: "root", name: "Roots", job: "drink up water and hold the plant in the soil", jobShort: "💧 Drink water & anchor" },
-  { key: "stem", name: "Stem", job: "hold the plant up and carry water to the leaves", jobShort: "🪵 Hold up & carry water" },
-  { key: "leaf", name: "Leaf", job: "catch sunlight to make food for the plant", jobShort: "☀️ Make food from sunlight" },
-  { key: "flower", name: "Flower", job: "make seeds so new plants can grow", jobShort: "🌸 Make seeds" },
+  {
+    key: "root",
+    name: "Roots",
+    job: "drink up water and hold the plant in the soil",
+    jobShort: "💧 Drink water & anchor",
+  },
+  {
+    key: "stem",
+    name: "Stem",
+    job: "hold the plant up and carry water to the leaves",
+    jobShort: "🪵 Hold up & carry water",
+  },
+  {
+    key: "leaf",
+    name: "Leaf",
+    job: "catch sunlight to make food for the plant",
+    jobShort: "☀️ Make food from sunlight",
+  },
+  {
+    key: "flower",
+    name: "Flower",
+    job: "make seeds so new plants can grow",
+    jobShort: "🌸 Make seeds",
+  },
 ];
 
 class PlantParts implements GameInstance {
@@ -58,11 +78,15 @@ class PlantParts implements GameInstance {
       "div",
       { class: "chip-row", style: { flexWrap: "wrap" } },
       ...choices.map((p) =>
-        el("button", { class: "chip", onclick: () => this.choose(p.key) }, p.jobShort),
-      ),
+        el("button", { class: "chip", onclick: () => this.choose(p.key) }, p.jobShort)
+      )
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.idx + 1} / ${PARTS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.idx + 1} / ${PARTS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
@@ -75,12 +99,12 @@ class PlantParts implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Part"),
-        el("span", {}, this.current().name),
+        el("span", {}, this.current().name)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Pick this part's job"),
       chips,
       el("div", { class: "metric" }, el("span", {}, "🌱 Part"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 

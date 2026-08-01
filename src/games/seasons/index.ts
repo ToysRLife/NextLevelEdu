@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -91,7 +91,7 @@ class Seasons implements GameInstance {
     const lockBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.lockIn() },
-      "🔒 Lock in this position",
+      "🔒 Lock in this position"
     );
 
     this.promptEl = el("span", { style: { color: "var(--accent-blue)" } }, PROMPTS[0].label);
@@ -108,12 +108,16 @@ class Seasons implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Make it"),
-        this.promptEl,
+        this.promptEl
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "Drag Earth, then lock it in"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "Drag Earth, then lock it in"
+      ),
       lockBtn,
       el("div", { class: "metric" }, el("span", {}, "🌍 Northern season"), this.seasonEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -271,7 +275,11 @@ class Seasons implements GameInstance {
     c.fillText("Drag Earth around the Sun 🌍", W / 2, 40);
     c.font = "13px Nunito, sans-serif";
     c.fillStyle = "rgba(255,255,255,0.6)";
-    c.fillText("The red axis always points the same way — that's what makes the seasons.", W / 2, 64);
+    c.fillText(
+      "The red axis always points the same way — that's what makes the seasons.",
+      W / 2,
+      64
+    );
   }
 
   start(): void {}
@@ -299,7 +307,8 @@ export const seasonsGame: GameModule = {
     stream: "earth-space",
     gradeBand: "5-6",
     emoji: "🌍",
-    blurb: "Drag Earth around the Sun and discover how its tilt — not distance — makes the seasons.",
+    blurb:
+      "Drag Earth around the Sun and discover how its tilt — not distance — makes the seasons.",
     mission: "Position Earth's tilted axis to create summer, winter, and an equinox in the north.",
     estMinutes: 3,
   },

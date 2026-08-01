@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -16,11 +16,36 @@ const ITEMS: Item[] = [
   { name: "Wood", emoji: "🪵", natural: true, why: "Wood comes from trees — it's natural." },
   { name: "Rock", emoji: "🪨", natural: true, why: "Rock forms in the Earth — it's natural." },
   { name: "Wool", emoji: "🧶", natural: true, why: "Wool grows on sheep — it's natural." },
-  { name: "Seashell", emoji: "🐚", natural: true, why: "A shell is made by a sea creature — natural." },
-  { name: "Plastic bottle", emoji: "🧴", natural: false, why: "Plastic is made in factories from oil — it's man-made." },
-  { name: "Brick", emoji: "🧱", natural: false, why: "Bricks are made by baking shaped clay — man-made." },
-  { name: "Tin can", emoji: "🥫", natural: false, why: "Cans are manufactured from metal — man-made." },
-  { name: "Glass", emoji: "🪟", natural: false, why: "Glass is made by melting sand in a factory — man-made." },
+  {
+    name: "Seashell",
+    emoji: "🐚",
+    natural: true,
+    why: "A shell is made by a sea creature — natural.",
+  },
+  {
+    name: "Plastic bottle",
+    emoji: "🧴",
+    natural: false,
+    why: "Plastic is made in factories from oil — it's man-made.",
+  },
+  {
+    name: "Brick",
+    emoji: "🧱",
+    natural: false,
+    why: "Bricks are made by baking shaped clay — man-made.",
+  },
+  {
+    name: "Tin can",
+    emoji: "🥫",
+    natural: false,
+    why: "Cans are manufactured from metal — man-made.",
+  },
+  {
+    name: "Glass",
+    emoji: "🪟",
+    natural: false,
+    why: "Glass is made by melting sand in a factory — man-made.",
+  },
 ];
 
 class ManMade implements GameInstance {
@@ -57,11 +82,31 @@ class ManMade implements GameInstance {
     const choices = el(
       "div",
       { class: "chip-row" },
-      el("button", { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.choose(true) }, "🌿 Natural"),
-      el("button", { class: "btn", style: { background: "var(--accent-purple)" }, onclick: () => this.choose(false) }, "🏭 Man-made"),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-green)" },
+          onclick: () => this.choose(true),
+        },
+        "🌿 Natural"
+      ),
+      el(
+        "button",
+        {
+          class: "btn",
+          style: { background: "var(--accent-purple)" },
+          onclick: () => this.choose(false),
+        },
+        "🏭 Man-made"
+      )
     );
 
-    this.progressEl = el("span", { style: { color: "var(--accent-orange)" } }, `${this.idx + 1} / ${ITEMS.length}`);
+    this.progressEl = el(
+      "span",
+      { style: { color: "var(--accent-orange)" } },
+      `${this.idx + 1} / ${ITEMS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-orange)", background: "#fff7ed" },
@@ -74,12 +119,12 @@ class ManMade implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Sort all 8"),
+        el("span", {}, "Sort all 8")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Natural or man-made?"),
       choices,
       el("div", { class: "metric" }, el("span", {}, "📦 Item"), this.progressEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -170,7 +215,14 @@ class ManMade implements GameInstance {
     c.fillText("Natural 🌿 or man-made 🏭?", W / 2, 60);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

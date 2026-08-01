@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
 import { onPointer, type Point } from "@core/input";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -90,17 +90,17 @@ class Levers implements GameInstance {
     const closer = el(
       "button",
       { class: "btn secondary", onclick: () => this.nudge(-1) },
-      "◀ Move closer",
+      "◀ Move closer"
     );
     const farther = el(
       "button",
       { class: "btn secondary", onclick: () => this.nudge(1) },
-      "Move farther ▶",
+      "Move farther ▶"
     );
     const checkBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-purple)" }, onclick: () => this.check() },
-      "⚖️ Check balance",
+      "⚖️ Check balance"
     );
 
     this.distEl = el("span", {}, "3 units");
@@ -110,7 +110,8 @@ class Levers implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-purple)", background: "#faf5ff" },
     });
-    this.coachEl.textContent = "Slide your weight (drag it, or use the buttons) until the beam balances.";
+    this.coachEl.textContent =
+      "Slide your weight (drag it, or use the buttons) until the beam balances.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -118,7 +119,7 @@ class Levers implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, "Balance the beam"),
+        el("span", {}, "Balance the beam")
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "Move your weight"),
       el("div", { class: "chip-row" }, closer, farther),
@@ -126,7 +127,7 @@ class Levers implements GameInstance {
       el("div", { class: "metric" }, el("span", {}, "📏 Your distance"), this.distEl),
       el("div", { class: "metric" }, el("span", {}, "🔄 Turning effort"), this.torqueEl),
       el("div", { class: "metric" }, el("span", {}, "🏁 Progress"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -250,7 +251,13 @@ class Levers implements GameInstance {
     c.fillText("Turning effort = weight × distance from the pivot", W / 2, 86);
   }
 
-  private drawWeight(c: CanvasRenderingContext2D, x: number, weight: number, color: string, label: string): void {
+  private drawWeight(
+    c: CanvasRenderingContext2D,
+    x: number,
+    weight: number,
+    color: string,
+    label: string
+  ): void {
     const h = 24 + weight * 14;
     c.fillStyle = color;
     c.fillRect(x - 22, -10 - h, 44, h);

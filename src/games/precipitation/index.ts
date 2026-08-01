@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -104,21 +104,31 @@ class Precipitation implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Forecast"),
-        el("span", {}, `${this.target().emoji} ${this.target().label}`),
+        el("span", {}, `${this.target().emoji} ${this.target().label}`)
       ),
-      el("div", { class: "control-label", style: { marginTop: "8px" } }, "🌡️ Temperature (cold → hot)"),
+      el(
+        "div",
+        { class: "control-label", style: { marginTop: "8px" } },
+        "🌡️ Temperature (cold → hot)"
+      ),
       tempSlider,
       el("div", { class: "control-label" }, "💧 Moisture (dry → humid)"),
       moistSlider,
       el("div", { class: "metric" }, el("span", {}, "☁️ Now falling"), this.nowEl),
       el("div", { class: "metric" }, el("span", {}, "✅ Matched"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
 
   private label(p: Precip): string {
-    return p === "rain" ? "🌧️ Rain" : p === "snow" ? "❄️ Snow" : p === "hail" ? "🧊 Hail" : "· Nothing";
+    return p === "rain"
+      ? "🌧️ Rain"
+      : p === "snow"
+        ? "❄️ Snow"
+        : p === "hail"
+          ? "🧊 Hail"
+          : "· Nothing";
   }
 
   private updateReadout(): void {
@@ -200,7 +210,13 @@ class Precipitation implements GameInstance {
     // cloud — darker/bigger with more moisture
     const grey = 255 - this.moisture * 110;
     c.fillStyle = `rgb(${grey},${grey},${grey + 5})`;
-    for (const [dx, dy, r] of [[-90, 0, 50], [-30, -20, 60], [40, -10, 55], [100, 5, 45], [0, 15, 65]] as const) {
+    for (const [dx, dy, r] of [
+      [-90, 0, 50],
+      [-30, -20, 60],
+      [40, -10, 55],
+      [100, 5, 45],
+      [0, 15, 65],
+    ] as const) {
       c.beginPath();
       c.arc(W / 2 + dx, CLOUD_Y + dy, r, 0, Math.PI * 2);
       c.fill();

@@ -1,6 +1,6 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 
 const W = 800;
 const H = 600;
@@ -54,9 +54,24 @@ interface Habitat {
 }
 
 const HABITATS: Habitat[] = [
-  { name: "Frozen Arctic", emoji: "🧊", bg: "#dbeafe", correct: { covering: "thickfur", body: "blubber", feet: "snowpaws" } },
-  { name: "Hot Desert", emoji: "🏜️", bg: "#fef3c7", correct: { covering: "thincoat", body: "hump", feet: "sandpads" } },
-  { name: "Rainforest", emoji: "🌴", bg: "#dcfce7", correct: { covering: "waterproof", body: "tail", feet: "claws" } },
+  {
+    name: "Frozen Arctic",
+    emoji: "🧊",
+    bg: "#dbeafe",
+    correct: { covering: "thickfur", body: "blubber", feet: "snowpaws" },
+  },
+  {
+    name: "Hot Desert",
+    emoji: "🏜️",
+    bg: "#fef3c7",
+    correct: { covering: "thincoat", body: "hump", feet: "sandpads" },
+  },
+  {
+    name: "Rainforest",
+    emoji: "🌴",
+    bg: "#dcfce7",
+    correct: { covering: "waterproof", body: "tail", feet: "claws" },
+  },
 ];
 
 class Adaptations implements GameInstance {
@@ -106,7 +121,11 @@ class Adaptations implements GameInstance {
               {
                 class: "chip",
                 style: isSel
-                  ? { background: "var(--accent-green)", color: "#fff", borderColor: "var(--accent-green)" }
+                  ? {
+                      background: "var(--accent-green)",
+                      color: "#fff",
+                      borderColor: "var(--accent-green)",
+                    }
                   : {},
                 onclick: () => {
                   this.selected[cat.id] = o.key;
@@ -114,20 +133,24 @@ class Adaptations implements GameInstance {
                   this.buildPanel();
                 },
               },
-              `${o.emoji} ${o.label}`,
+              `${o.emoji} ${o.label}`
             );
-          }),
-        ),
-      ),
+          })
+        )
+      )
     );
 
     const releaseBtn = el(
       "button",
       { class: "btn", style: { background: "var(--accent-green)" }, onclick: () => this.release() },
-      "🌿 Release into the wild",
+      "🌿 Release into the wild"
     );
 
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.survived} / ${HABITATS.length}`);
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.survived} / ${HABITATS.length}`
+    );
     this.coachEl = el("div", {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-green)", background: "#f0fdf4" },
@@ -140,12 +163,12 @@ class Adaptations implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Survive"),
-        el("span", {}, this.habitat().name),
+        el("span", {}, this.habitat().name)
       ),
       ...rows,
       releaseBtn,
       el("div", { class: "metric" }, el("span", {}, "🏆 Survived"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
   }
 
@@ -158,7 +181,7 @@ class Adaptations implements GameInstance {
       return;
     }
     const wrong = (Object.keys(h.correct) as (keyof Habitat["correct"])[]).filter(
-      (k) => picks[k] !== h.correct[k],
+      (k) => picks[k] !== h.correct[k]
     );
     if (wrong.length === 0) {
       this.survived += 1;
@@ -261,7 +284,14 @@ class Adaptations implements GameInstance {
     c.fillText(`${h.emoji} ${h.name}`, W / 2, 62);
   }
 
-  private roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  private roundRect(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ): void {
     c.beginPath();
     c.moveTo(x + r, y);
     c.arcTo(x + w, y, x + w, y + h, r);

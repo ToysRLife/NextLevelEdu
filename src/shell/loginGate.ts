@@ -1,4 +1,4 @@
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { cloud } from "@platform/cloud";
 import { isCloudConfigured } from "@platform/cloud-config";
 import { GAME_MANIFESTS } from "../registry";
@@ -18,9 +18,13 @@ export function renderLoginGate(root: HTMLElement): void {
     el(
       "p",
       { class: "login-sub" },
-      `Play ${GAME_MANIFESTS.length} science adventures, build your own worlds, and collect trophies.`,
+      `Play ${GAME_MANIFESTS.length} science adventures, build your own worlds, and collect trophies.`
     ),
-    el("p", { class: "login-note-lead" }, "Sign in to start — your progress follows you to every device."),
+    el(
+      "p",
+      { class: "login-note-lead" },
+      "Sign in to start — your progress follows you to every device."
+    )
   );
 
   if (c.needsName) {
@@ -33,7 +37,7 @@ export function renderLoginGate(root: HTMLElement): void {
       onkeydown: (e: KeyboardEvent) => {
         if (e.key === "Enter") go.click();
       },
-    }) as HTMLInputElement;
+    });
     const go = el(
       "button",
       {
@@ -43,8 +47,8 @@ export function renderLoginGate(root: HTMLElement): void {
           if (name) void c.signIn(name);
         },
       },
-      "🚀 Start exploring",
-    ) as HTMLButtonElement;
+      "🚀 Start exploring"
+    );
     card.append(input, go);
   } else {
     card.append(el("button", { class: "btn big", onclick: () => void c.signIn() }, c.signInLabel));
@@ -54,7 +58,13 @@ export function renderLoginGate(root: HTMLElement): void {
     card.append(el("p", { class: "account-note" }, "Demo mode: saving to this device only."));
   }
 
-  card.append(el("p", { class: "login-foot" }, "For learning at home and in class. A grown-up can help you sign in."));
+  card.append(
+    el(
+      "p",
+      { class: "login-foot" },
+      "For learning at home and in class. A grown-up can help you sign in."
+    )
+  );
 
   clear(root);
   root.append(el("div", { class: "login-screen" }, card));

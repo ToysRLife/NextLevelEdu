@@ -1,7 +1,7 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
+import { clear, el } from "@core/dom";
 import { byTier } from "@core/difficulty";
 
 const W = 800;
@@ -64,7 +64,8 @@ class Evaporation implements GameInstance {
       class: "hint-panel",
       style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
     });
-    this.coachEl.textContent = "Heat the water to evaporate it — the vapour will condense on the cold lid.";
+    this.coachEl.textContent =
+      "Heat the water to evaporate it — the vapour will condense on the cold lid.";
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
@@ -72,12 +73,12 @@ class Evaporation implements GameInstance {
         "div",
         { class: "metric", style: { background: "#1e293b", color: "#fff" } },
         el("span", {}, "🎯 Goal"),
-        el("span", {}, `Collect ${this.need} droplets`),
+        el("span", {}, `Collect ${this.need} droplets`)
       ),
       el("div", { class: "control-label", style: { marginTop: "8px" } }, "🔥 Heat"),
       slider,
       el("div", { class: "metric" }, el("span", {}, "💧 Droplets on lid"), this.dropEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }

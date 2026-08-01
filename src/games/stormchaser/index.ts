@@ -1,8 +1,8 @@
-import type { GameModule, GameContext, GameInstance } from "@sdk/types";
+import type { GameContext, GameInstance, GameModule } from "@sdk/types";
 import { SimLoop } from "@core/loop";
 import { fitCanvas } from "@core/canvas";
-import { el, clear } from "@core/dom";
-import { slider, readout, type SliderHandle } from "@core/controls";
+import { clear, el } from "@core/dom";
+import { readout, slider, type SliderHandle } from "@core/controls";
 
 // Weather (MS-ESS2-5): air temperature and moisture (humidity) decide the
 // weather. Dry air is sunny; moist air clouds over; very moist air rains —
@@ -52,7 +52,8 @@ class StormChaser implements GameInstance {
   constructor(private readonly ctx: GameContext) {
     this.ctx2d = fitCanvas(ctx.canvas, W, H);
     this.loop = new SimLoop((dt) => this.tick(dt));
-    for (let i = 0; i < 50; i++) this.drops.push({ x: Math.random() * W, y: Math.random() * H, v: 6 + Math.random() * 5 });
+    for (let i = 0; i < 50; i++)
+      this.drops.push({ x: Math.random() * W, y: Math.random() * H, v: 6 + Math.random() * 5 });
     this.buildPanel();
     ctx.services.hints.setHints([
       "Weather is made by the air's temperature and how much moisture (humidity) it carries.",
@@ -97,20 +98,36 @@ class StormChaser implements GameInstance {
       },
     });
     this.fcRead = readout("🔮 Forecast");
-    this.statusEl = el("span", { style: { color: "var(--accent-green)" } }, `${this.hits} / ${ROUNDS.length}`);
-    this.coachEl = el("div", { class: "hint-panel", style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" } });
+    this.statusEl = el(
+      "span",
+      { style: { color: "var(--accent-green)" } },
+      `${this.hits} / ${ROUNDS.length}`
+    );
+    this.coachEl = el("div", {
+      class: "hint-panel",
+      style: { borderLeftColor: "var(--accent-blue)", background: "#eff6ff" },
+    });
     this.coachEl.textContent = "Mix temperature and humidity to brew the target weather.";
-    this.goBtn = el("button", { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.brew() }, "🌬️ Brew the weather") as HTMLButtonElement;
+    this.goBtn = el(
+      "button",
+      { class: "btn", style: { background: "var(--accent-blue)" }, onclick: () => this.brew() },
+      "🌬️ Brew the weather"
+    );
 
     clear(this.ctx.panel);
     this.ctx.panel.append(
-      el("div", { class: "metric", style: { background: "#1e293b", color: "#fff" } }, el("span", {}, "🎯 Target"), el("span", {}, `${WEATHER_EMOJI[this.target()]} ${this.target()}`)),
+      el(
+        "div",
+        { class: "metric", style: { background: "#1e293b", color: "#fff" } },
+        el("span", {}, "🎯 Target"),
+        el("span", {}, `${WEATHER_EMOJI[this.target()]} ${this.target()}`)
+      ),
       this.tempCtl.el,
       this.humCtl.el,
       this.fcRead.el,
       this.goBtn,
       el("div", { class: "metric" }, el("span", {}, "✅ Forecasts nailed"), this.statusEl),
-      this.coachEl,
+      this.coachEl
     );
     this.updateReadout();
   }
@@ -151,9 +168,12 @@ class StormChaser implements GameInstance {
     if (f === "Rain" || f === "Thunderstorm") {
       for (const d of this.drops) {
         d.y += d.v;
-        if (d.y > H) { d.y = -10; d.x = Math.random() * W; }
+        if (d.y > H) {
+          d.y = -10;
+          d.x = Math.random() * W;
+        }
       }
-      if (f === "Thunderstorm") this.bolt = this.bolt > 0 ? this.bolt - 1 : (this.prog > 0 ? 14 : 0);
+      if (f === "Thunderstorm") this.bolt = this.bolt > 0 ? this.bolt - 1 : this.prog > 0 ? 14 : 0;
     }
     this.render();
   }
@@ -273,7 +293,11 @@ class StormChaser implements GameInstance {
     c.fillText("Mix the air to brew the weather 🌬️", W / 2, 44);
     c.fillStyle = "#fff";
     c.font = "bold 22px Nunito, sans-serif";
-    c.fillText(`${WEATHER_EMOJI[f]} ${f}  ·  ${this.temp}°C  ·  ${this.humidity}% humidity`, W / 2, H - 30);
+    c.fillText(
+      `${WEATHER_EMOJI[f]} ${f}  ·  ${this.temp}°C  ·  ${this.humidity}% humidity`,
+      W / 2,
+      H - 30
+    );
   }
 
   start(): void {

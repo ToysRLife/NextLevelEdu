@@ -12,6 +12,8 @@ export default [
       "coverage",
       "src/games/manifests.ts",
       "src/platform/**",
+      "src/**/*.js",
+      "src/**/*.jsx",
     ],
   },
   js.configs.recommended,
